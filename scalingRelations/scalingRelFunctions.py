@@ -11,6 +11,8 @@ def get_integral(sigI,sigJ,deltat,b,fL,fH,beta):
     Calculate equation 18 from Siemens+2013
     """
 
+    if sigI==sigJ: return 0 # check this is okay 
+
     x1 = - (deltat * sigI * sigI) / ( b * fH**-beta )
     x2 = - (deltat * sigI * sigI) / ( b * fL**-beta )
     x3 = - (deltat * sigJ * sigJ) / ( b * fH**-beta )
@@ -39,6 +41,8 @@ def hellings_downs(angle):
     return hdCurve
 
 
+
+
 def avePTASNR(sigmaIs,sigmaJs,angles,A,alpha,beta,fref,T,c):
     """ 
     This is from equation 17 of: Siemens+2013
@@ -51,15 +55,13 @@ def avePTASNR(sigmaIs,sigmaJs,angles,A,alpha,beta,fref,T,c):
 
     total=0
    
-    # only uses selection of angles for now. 
-    # will want to add pulsars with different noise later.
     count = 0
     for sigI,sigJ,ang in zip(sigmaIs,sigmaJs,angles): 
 
         hd = hellings_downs(ang)
 
         integral = get_integral(sigI,sigJ,deltat,b,fL,fH,beta)
-        print(count)
+        #print(count)
         count+=1
 
         aveSNRSinglePair = 2.*T*hd*hd*integral
@@ -72,6 +74,9 @@ def avePTASNR(sigmaIs,sigmaJs,angles,A,alpha,beta,fref,T,c):
 
 
 
+
+
+# think about whether to use these: 
 def scalingIntermediate(M,c,A,sigma,T,beta):
 
     snr = (M*c*A*A*T**beta)/(sigma*sigma)
