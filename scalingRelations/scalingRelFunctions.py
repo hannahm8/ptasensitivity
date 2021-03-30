@@ -24,7 +24,7 @@ def get_integral(sigI,sigJ,deltat,b,fL,fH,beta):
              + fL * sigJ*sigJ * sc.hyp2f1(1, beta**-1, 1 + beta**-1, x4) ) \
              / ( sigI*sigI - sigJ*sigJ )
     
-    return value
+    return float(value)
 
 
 
@@ -55,14 +55,14 @@ def avePTASNR(sigmaIs,sigmaJs,angles,A,alpha,beta,fref,T,c):
 
     total=0
    
-    count = 0
+
     for sigI,sigJ,ang in zip(sigmaIs,sigmaJs,angles): 
 
         hd = hellings_downs(ang)
 
         integral = get_integral(sigI,sigJ,deltat,b,fL,fH,beta)
         #print(count)
-        count+=1
+
 
         aveSNRSinglePair = 2.*T*hd*hd*integral
 
@@ -77,19 +77,45 @@ def avePTASNR(sigmaIs,sigmaJs,angles,A,alpha,beta,fref,T,c):
 
 
 # think about whether to use these: 
-def scalingIntermediate(M,c,A,sigma,T,beta):
+#def scalingIntermediate(M,c,A,sigma,T,beta):
+#    snr = (M*c*A*A*T**beta)/(sigma*sigma)
+#    return snr
 
-    snr = (M*c*A*A*T**beta)/(sigma*sigma)
 
+def scalingIntermediate(angles,sig,T,alpha,beta,fref,c,A):
+    T = 1.55*T
+    hdTotal = 0
+    for ang in angles:
+        hdTotal += hellings_downs(ang)
+    hdContribution = np.sqrt(hdTotal)
+
+    b=get_b(A,fref,alpha)
+    snr = (hdContribution * b * c * T**beta) / (sig*sig * np.sqrt(4.*beta - 2) )
+    
     return snr
 
 
-def scalingLoud(M,c,A,sigma,T,beta):
-    
-    fraction = (c*A*A) / (sigma*sigma)
-    snr = M*fraction**(1./(2.*beta))*T**(1./2.)
-    
+
+def scalingLoud(angles,alpha,beta,sig,T,c,fref,A):
+    T = 1.55*T
+    hdTotal = 0
+    for ang in angles:
+        hdTotal += hellings_downs(ang)
+    hdContribution = np.sqrt(hdTotal)
+    b=get_b(A,fref,alpha)
+    #print(alpha, ((b*c)/(2.*sig*sig)), 2.*alpha*T * ((b*c)/(2.*sig*sig))**(1./beta))
+    #snr = hdContribution * np.sqrt( 2.*alpha*T * ((b*c)/(2.*sig*sig))**(1./beta) )
+    bracket1 = (b*c)/(2.*sig*sig)
+    bracket2 = alpha * bracket1**(1./beta) * T - 1.
+    snr = hdContribution * np.sqrt( 2. * bracket2 )
+
     return snr
+#def scalingLoud(M,c,A,sigma,T,beta):
+#    
+#    fraction = (c*A*A) / (sigma*sigma)
+#    snr = M*fraction**(1./(2.*beta))*T**(1./2.)
+#    
+#    return snr
 
 
 def transition(c,A,T,alpha,beta,fref,sigma):
