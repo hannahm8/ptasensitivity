@@ -113,8 +113,11 @@ def avePTASNR(psrNames,psrConstants,hdValues,obsTimes,A,alpha,beta,fref,T,c):
           #hd = hellings_downs(angle[ipsr][jpsr])
           hd = hdValues[ipsr][jpsr]
 
-          sigI = psrConstants[ipsr] / np.sqrt(obsTimes[ipsr])
-          sigJ = psrConstants[jpsr] / np.sqrt(obsTimes[jpsr])
+          if obsTimes[ipsr]==0 or obsTimes[jpsr]==0:
+            sigI, sigJ=0.0, 0.0
+          else:
+            sigI = psrConstants[ipsr] / np.sqrt(obsTimes[ipsr])
+            sigJ = psrConstants[jpsr] / np.sqrt(obsTimes[jpsr])
 
           integral = get_integral(sigI,sigJ,deltat, b, fL, fH, beta)
 

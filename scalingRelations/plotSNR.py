@@ -1,50 +1,26 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import snrFunctions
-
+import readInData
 
 
 # red in th deat
 psrDataFile = '../data/psrDetails.dat'
-psrNames = np.genfromtxt(psrDataFile,usecols=0,dtype=str)
-psrData = np.genfromtxt(psrDataFile,names=True)
 
+psrNames, \
+psrObsConstants, \
+psrStartingObsTimes, \
+angles, \
+hdValues = readInData.readDataIntoDicts(psrDataFile)
 
-
-# compute obs constants 
-obsConstants = [ sig * np.sqrt(intT) for sig, intT in \
-                                     zip (psrData['ExpPrecision']*1.E-6, \
-                                          psrData['IntTime'])]
-psrObsConstants = {}
-psrStartingObsTimes = {}
-for psr, oc, st in zip(psrNames, obsConstants, psrData['IntTime']):
-    psrObsConstants[psr] = float(oc)
-    psrStartingObsTimes[psr] = float(st)
-
-
-# work out angles and hd values ahead of time
-angles = {}
-hdValues = {}
-for i, ipsr in enumerate(psrNames):
-    onePSRAng = {}
-    onePSRHDs = {}
-    for j, jpsr in enumerate(psrNames):
-        if jpsr==ipsr:
-            angle = 0
-            hd = None
-        else: 
-            elati, elongi = psrData['ELAT'][i], psrData['ELONG'][i]
-            elatj, elongj = psrData['ELAT'][j], psrData['ELONG'][j]
-            angle = snrFunctions.h2(elati,elatj,elongi,elongj)
-            hd = snrFunctions.hellings_downs(angle)
-        onePSRAng[jpsr] = angle
-        onePSRHDs[jpsr] = hd
-    angles[ipsr]   = onePSRAng
-    hdValues[ipsr] = onePSRHDs
+totalTime=0
+for ipsr in psrNames:
+    totalTime+=psrStartingObsTimes[ipsr]
 
 
 oneYearInSeconds = (365.25*24.*60.*60.)
 
-Ts = np.linspace(0,15,50)
+Ts = np.linspace(0,15,10)
 TInSeconds = Ts * oneYearInSeconds
 
 A = 2.E-15
@@ -66,8 +42,46 @@ for i, Ti in enumerate(TInSeconds):
 
 
 
-import matplotlib.pyplot as plt
-plt.plot(Ts,snr)
+# the worst constant 
+psrW, psrWName = max(zip(psrObsConstants.values(), psrObsConstants.keys()))
+# the best constnt
+psrB, psrBName = min(zip(psrObsConstants.values(), psrObsConstants.keys()))
+
+
+
+
+# update
+psrStartingObsTimes[psrWName] = 0
+
+for ipsr in psrNames: 
+
+    print(ipsr)
+    if ipsr==psrWName:
+        print('pass')
+        pass
+    else:
+        # make a copy 
+        editedTimes = psrStartingObsTimes
+        editedTimes[ipsr]+=psrW
+
+        snrTrials = np.zeros(len(Ts))
+        for i, Ti in enumerate(TInSeconds):
+            snrTrials[i] = snrFunctions.avePTASNR(psrNames,\
+                                            psrObsConstants,\
+                                            hdValues,\
+                                            editedTimes,\
+                                            A,alpha,beta,fref,Ti,c)
+
+        plt.plot(Ts,snrTrials,color='k',alpha=0.5)
+
+
+
+plt.plot(Ts,snr,label='v0',color='y')
+
+
+plt.legend()
+
+
 plt.grid()
 plt.show()
 
