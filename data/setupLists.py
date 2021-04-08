@@ -2,20 +2,21 @@ import numpy as np
 
 
 
-catalog = np.genfromtxt('psrCatElatElong.dat',skip_header=5,dtype=str)
+#catalog = np.genfromtxt('psrCatElatElong.dat',skip_header=5,dtype=str)
+catalog = np.genfromtxt('psrCatRADDECD.dat',skip_header=74,dtype=str)
 catPSRNames = catalog[:,1]
 
-elongs = [ float(catalog[i,3]) for i in range(len(catalog[:,3])) ]
-elats  = [ float(catalog[i,6]) for i in range(len(catalog[:,6])) ]
+ras   = [ float(catalog[i,3]) for i in range(len(catalog[:,3])) ]
+decs  = [ float(catalog[i,5]) for i in range(len(catalog[:,5])) ]
 
-print(elats[0])
+
 
 meertimePSRs = np.genfromtxt('meerTimePSRs.dat',dtype=str,skip_header=2)
 
 
 
 psrListOut = open('psrDetails.dat','w')
-psrListOut.write('#PSR\tELAT\tELONG\tIntTime\tExpPrecision\n')
+psrListOut.write('#PSR\tRA\tDEC\tIntTime\tExpPrecision\n')
 trueCount, falseCount = 0, 0
 
 for psrName,intTime,expPrecision in zip(meertimePSRs[:,0], \
@@ -27,8 +28,8 @@ for psrName,intTime,expPrecision in zip(meertimePSRs[:,0], \
     
         element=np.where(catPSRNames==psrName)[0][0]
         psrListOut.write('{}\t{}\t{}\t{}\t{}\n'.format(psrName, \
-                                                           elats[element], \
-                                                           elongs[element], \
+                                                           ras[element], \
+                                                           decs[element], \
                                                            intTime, \
                                                            expPrecision))
 

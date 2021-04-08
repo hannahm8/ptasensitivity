@@ -29,9 +29,9 @@ def readDataIntoDicts(psrDataFile):
                 angle = 0
                 hd = None
             else: 
-                elati, elongi = psrData['ELAT'][i], psrData['ELONG'][i]
-                elatj, elongj = psrData['ELAT'][j], psrData['ELONG'][j]
-                angle = snrFunctions.h2(elati,elatj,elongi,elongj)
+                rai, deci = psrData['RA'][i], psrData['DEC'][i]
+                raj, decj = psrData['RA'][j], psrData['DEC'][j]
+                angle = snrFunctions.h2(rai,raj,deci,decj)
                 hd = snrFunctions.hellings_downs(angle)
             onePSRAng[jpsr] = angle
             onePSRHDs[jpsr] = hd

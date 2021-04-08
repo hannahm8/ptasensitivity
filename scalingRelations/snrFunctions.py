@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.special as sc
+from scipy.integrate import quad
 
 """
  Class. Quantum Grav. 30 224015
@@ -56,20 +57,32 @@ def get_integral(sigI,sigJ,deltat,b,fL,fH,beta):
     Calculate equation 18 from Siemens+2013
     """
 
-    if sigI==sigJ: return 0 # check this is okay 
+    sigIsigI = sigI*sigI
+    sigJsigJ = sigJ*sigJ
 
-    x1 = - (deltat * sigI * sigI) / ( b * fH**-beta )
-    x2 = - (deltat * sigI * sigI) / ( b * fL**-beta )
-    x3 = - (deltat * sigJ * sigJ) / ( b * fH**-beta )
-    x4 = - (deltat * sigJ * sigJ) / ( b * fL**-beta )
+    #integrand if sigI==sigJ
+    def integrandEqual(f,sig,deltat,b,beta):  
+        I = 1./(1.+(sig*sig*deltat)/(b*f**-beta))**2.
+        return I 
 
-    value = (  fH * sigI*sigI * sc.hyp2f1(1, beta**-1, 1 + beta**-1, x1) \
-             - fL * sigI*sigI * sc.hyp2f1(1, beta**-1, 1 + beta**-1, x2) \
-             - fH * sigJ*sigJ * sc.hyp2f1(1, beta**-1, 1 + beta**-1, x3) \
-             + fL * sigJ*sigJ * sc.hyp2f1(1, beta**-1, 1 + beta**-1, x4) ) \
-             / ( sigI*sigI - sigJ*sigJ )
-    
-    return float(value)
+    if abs(sigI-sigJ)<0.000000001:  
+        integral = quad(integrandEqual, fL, fH, args=(sigI,deltat,b,beta))
+        #if sigI==sigJ: 
+        #    print('same', integral)
+        return integral[0] 
+
+    x1 = - (deltat * sigIsigI) / ( b * fH**-beta )
+    x2 = - (deltat * sigIsigI) / ( b * fL**-beta )
+    x3 = - (deltat * sigJsigJ) / ( b * fH**-beta )
+    x4 = - (deltat * sigJsigJ) / ( b * fL**-beta )
+
+    value = (  fH * sigIsigI * sc.hyp2f1(1, beta**-1, 1 + beta**-1, x1) \
+             - fL * sigIsigI * sc.hyp2f1(1, beta**-1, 1 + beta**-1, x2) \
+             - fH * sigJsigJ * sc.hyp2f1(1, beta**-1, 1 + beta**-1, x3) \
+             + fL * sigJsigJ * sc.hyp2f1(1, beta**-1, 1 + beta**-1, x4) ) \
+             / ( sigIsigI - sigJsigJ )
+    #print(value)
+    return float((value))
 
 
 
@@ -100,8 +113,8 @@ def avePTASNR(psrNames,psrConstants,hdValues,obsTimes,A,alpha,beta,fref,T,c):
     This is from equation 17 of: Siemens+2013
     """
     fL=1./T
-    fH=1./c #check
-    deltat = 1./c #check
+    fH=0.5*c #1./c #check
+    deltat = 1./c 
 
     b=get_b(A,fref,alpha)
     total=0
@@ -119,11 +132,12 @@ def avePTASNR(psrNames,psrConstants,hdValues,obsTimes,A,alpha,beta,fref,T,c):
             sigI = psrConstants[ipsr] / np.sqrt(obsTimes[ipsr])
             sigJ = psrConstants[jpsr] / np.sqrt(obsTimes[jpsr])
 
-          integral = get_integral(sigI,sigJ,deltat, b, fL, fH, beta)
-
-          aveSNRSinglePulsarPair = 2.*T*hd*hd*integral 
-          total+=aveSNRSinglePulsarPair
-          
+            integral = get_integral(sigI,sigJ,deltat, b, fL, fH, beta)
+  
+            aveSNRSinglePulsarPair = 2.*T*hd*hd*integral 
+            total+=aveSNRSinglePulsarPair
+            if aveSNRSinglePulsarPair<0: 
+              print(sigI,sigJ, integral)
     return np.sqrt(total)
 
 """
