@@ -37,8 +37,8 @@ def plotResult(newTimes,hdValues,psrObsConstants,shuffleNumber,resultsDir):
 
 
 
-psrDataFile = '../data/psrDetails.dat'
-#psrDataFile = '../data/trialDataFix.dat'
+psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/psrDetails.dat'
+#psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/trialPSRData.dat'
 dataOriginalFormat = np.genfromtxt(psrDataFile, names=True)
 
 psrNames, \
@@ -84,7 +84,7 @@ startSNR = snrFunctions.avePTASNR(psrNames,\
 bestSNRRatioSoFar = 1.
 psrDataFileUpdate = psrDataFile
 
-resultsDir = 'halfTimeShuffle'
+resultsDir = './times'
 
 improvement = True
 count = 0
@@ -92,7 +92,9 @@ count = 0
 psrTimeShuffle = psrStartingObsTimes.copy()
 psrNames = list(psrNames)
 
-logFile=open('{}/shuffleLog.dat'.format(resultsDir),'w')
+# clear log file
+logFile=open('shuffleLog.dat'.format(resultsDir),'w')
+logFile.close()
 
 while improvement==True:
 
@@ -126,7 +128,9 @@ while improvement==True:
                 pass
 
     if check==0: 
-        print('no improvement found')
+        logFile=open('shuffleLog.dat','a')
+        logFile.write('\n\nno improvement found\n\n')
+        logFile.close()	
         break
 
 
@@ -141,7 +145,9 @@ while improvement==True:
     #psrNames.remove(psrToGive)
 
     print(psrNames,len(psrNames))
+    logFile=open('shuffleLog.dat'.format(resultsDir),'a')
     logFile.write("""
+    Shuffle {}
     NPSRs {}
     Best outcome:
     give {} time to {}
@@ -149,8 +155,8 @@ while improvement==True:
     SNR ratio so far: {}
     Total time: {}
     \n\n
-    """.format(len(psrNames), psrToGive,psrToTake,bestSNR,bestSNRRatioSoFar,sum(psrTimeShuffle.values())))
-
+    """.format(count,len(psrNames), psrToGive,psrToTake,bestSNR,bestSNRRatioSoFar,sum(psrTimeShuffle.values())))
+    logFile.close()
 
     
     # save outcome  
@@ -158,13 +164,13 @@ while improvement==True:
     for i,psr in enumerate(psrNames): 
         shuffleResult.write('{}\t{}\n'.format(psr, psrTimeShuffle[psr]))
     shuffleResult.close()
-    plotResult(psrTimeShuffle,hdValues,psrObsConstants,count,resultsDir)
-    # plot shuffle result
     
     count+=1
+
+
+plotResult(psrTimeShuffle,hdValues,psrObsConstants,count,resultsDir)
+    
         
-#PSR	RA	DEC	IntTime	ExpPrecision
-logFile.close()  
 
 """
 Best outcome - only takes one out 
