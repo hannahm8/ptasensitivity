@@ -84,7 +84,7 @@ startSNR = snrFunctions.avePTASNR(psrNames,\
 bestSNRRatioSoFar = 1.
 psrDataFileUpdate = psrDataFile
 
-resultsDir = 'oneToOneShuffle'
+resultsDir = 'halfTimeShuffle'
 
 improvement = True
 count = 0
@@ -92,7 +92,7 @@ count = 0
 psrTimeShuffle = psrStartingObsTimes.copy()
 psrNames = list(psrNames)
 
-logFile=open('{}/log.dat'.format(resultsDir),'w')
+logFile=open('{}/shuffleLog.dat'.format(resultsDir),'w')
 
 while improvement==True:
 
@@ -104,7 +104,7 @@ while improvement==True:
 
             # give ipsr time to jpsr
             editedTimes = psrTimeShuffle.copy()
-            timeToShift = editedTimes[ipsr]
+            timeToShift = editedTimes[ipsr]/2.
             editedTimes[ipsr] -= timeToShift
             editedTimes[jpsr] += timeToShift
 
@@ -120,7 +120,7 @@ while improvement==True:
                 bestSNR = snr
                 psrToGive = ipsr
                 psrToTake = jpsr
-                print(improvement)
+                #print(improvement)
                 check=1
             else:
                 pass
@@ -131,7 +131,7 @@ while improvement==True:
 
 
     # psrTimeShuffle
-    timeToShift = psrTimeShuffle[psrToGive]
+    timeToShift = psrTimeShuffle[psrToGive]/2.
     psrTimeShuffle[psrToGive] -= timeToShift
     psrTimeShuffle[psrToTake] += timeToShift
 
