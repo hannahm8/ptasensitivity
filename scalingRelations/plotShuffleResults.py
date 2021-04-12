@@ -53,11 +53,22 @@ def timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes):
 
     plt.clf()
 
-    change = shuffleT - startT
+    fracChange = (shuffleT - startT)/startT
     plt.figure(figsize = (4,18))
-    plt.scatter(change, psrNames)   
+    plt.scatter(fracChange, psrNames)   
+    plt.axvline(0)
     plt.tight_layout()
+    plt.xlabel('(new tobs - old tobs) / old tobs')
     plt.savefig('timeDiffPerPSR.png')
+    plt.show()
+
+    plt.clf()
+    plt.figure(figsize = (4,18))
+    plt.scatter(startT, psrNames, label='original')
+    plt.scatter(shuffleT,psrNames, label='new')
+    plt.xlabel('tobs (s)')
+    plt.tight_layout()
+    plt.savefig('obsTimes.png')
     plt.show()
     
     return None
