@@ -12,6 +12,8 @@ originalLabel = sys.argv[2]
 shuffleFile   = sys.argv[3]
 shuffleLabel  = sys.argv[4]
 
+output = sys.argv[5]
+
 # data file
 #psrDataFile = '../data/psrDetails.dat'
 
@@ -80,4 +82,5 @@ plt.xlabel('Time (years)')
 plt.ylabel('SNR')
 plt.legend()
 
+plt.savefig(output)
 plt.show()
