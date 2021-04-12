@@ -53,7 +53,7 @@ def timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes):
 
     plt.clf()
 
-    change = startT - shuffleT
+    change = shuffleT - startT
     plt.figure(figsize = (4,18))
     plt.scatter(change, psrNames)   
     plt.tight_layout()
