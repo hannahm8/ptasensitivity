@@ -5,6 +5,65 @@ import matplotlib.pyplot as plt
 import snrFunctions
 import readInData
 
+
+def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,label): 
+
+    # general stuff 
+    oneYearInSeconds = (365.25*24.*60.*60.)
+    A = 2.E-15
+    beta = 13./3
+    alpha = (3.-beta)/2.
+    fref = 1./oneYearInSeconds
+    c = 26./oneYearInSeconds
+
+    T = np.linspace(1., 11., 50)
+    TInSeconds = T * oneYearInSeconds
+
+
+    snr = np.zeros(len(T))
+    for i, Ti in enumerate(TInSeconds):
+
+        snr[i] = snrFunctions.avePTASNR(psrNames,\
+                                        psrObsConstants,\
+                                        hdValues,\
+                                        psrTimes,\
+                                        A,alpha,beta,fref,Ti,c)
+    plt.plot(T,snr,label=label)
+    return None
+
+
+
+def timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes):
+
+    # scatter plot  
+    startT, shuffleT = np.zeros(len(psrNames)), np.zeros(len(psrNames))
+    for i,psr in enumerate(psrNames):
+        startT[i]   = psrStartingObsTimes[psr] 
+        shuffleT[i] = psrShuffleTimes[psr]
+
+    maximumTime = max(max(startT),max(shuffleT)) 
+    timeLim = maximumTime *1.1
+    plt.scatter(startT,shuffleT)    
+    plt.xlim(0,timeLim)
+    plt.ylim(0,timeLim)
+    plt.xlabel('original obs. time (s)')
+    plt.ylabel('new obs. time (s)') 
+    plt.savefig('newTVoldT.png')
+    plt.show()
+
+    plt.clf()
+
+    change = startT - shuffleT
+    plt.figure(figsize = (4,18))
+    plt.scatter(change, psrNames)   
+    plt.tight_layout()
+    plt.savefig('timeDiffPerPSR.png')
+    plt.show()
+    
+    return None
+
+
+
 # command line arguments
 originalFile  = sys.argv[1]
 originalLabel = sys.argv[2]
@@ -31,56 +90,24 @@ hdValues = readInData.readDataIntoDicts(originalFile)
 psrTimeShuffleDataNames = np.genfromtxt(shuffleFile,usecols=0,dtype=str)
 psrTimeShuffleDataTimes = np.genfromtxt(shuffleFile,usecols=1)
 
-
 # create dictionary
 psrShuffleTimes = {}
 for psrName, psrTime in zip(psrTimeShuffleDataNames, psrTimeShuffleDataTimes):
     psrShuffleTimes[psrName] = psrTime
 
 
-
-# plot
-
-oneYearInSeconds = (365.25*24.*60.*60.)
-
-T = np.linspace(1., 11., 50)
-TInSeconds = T * oneYearInSeconds
-
-A = 2.E-15
-beta = 13./3
-alpha = (3.-beta)/2.
-
-fref = 1./oneYearInSeconds
-
-c = 26./oneYearInSeconds
-
-snr = np.zeros(len(T))
-for i, Ti in enumerate(TInSeconds):
-
-    snr[i] = snrFunctions.avePTASNR(psrNames,\
-                                  psrObsConstants,\
-                                  hdValues,\
-                                  psrStartingObsTimes,\
-                                  A,alpha,beta,fref,Ti,c)
-plt.plot(T,snr,label=originalLabel)
-
-
-snr = np.zeros(len(T))
-for i, Ti in enumerate(TInSeconds):
-
-    snr[i] = snrFunctions.avePTASNR(psrNames,\
-                                  psrObsConstants,\
-                                  hdValues,\
-                                  psrShuffleTimes,\
-                                  A,alpha,beta,fref,Ti,c)
-
-plt.plot(T,snr,label=shuffleLabel)
-
-
+# plotting the SNR vs Time
+plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrStartingObsTimes,originalLabel)
+plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrShuffleTimes,shuffleLabel)
 
 plt.xlabel('Time (years)')
 plt.ylabel('SNR')
 plt.legend()
-
-plt.savefig(output)
+plt.savefig('{}_SNRVTime.png'.format(output))
 plt.show()
+
+
+
+# compare the old and new times for each pulsar & how each changed
+timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes)
+
