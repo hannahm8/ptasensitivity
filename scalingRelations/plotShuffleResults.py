@@ -71,7 +71,7 @@ def timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes):
     plt.savefig('obsTimes.png')
     plt.show()
     
-    return None
+    return startT,shuffleT
 
 
 
@@ -120,5 +120,9 @@ plt.show()
 
 
 # compare the old and new times for each pulsar & how each changed
-timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes)
+startTime shuffleTime = timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes)
+
+plt.clf()
+plt.plot(psrObsConstants,(shuffleTime-startTime)/startT)
+plt.show()
 
