@@ -39,3 +39,56 @@ def readDataIntoDicts(psrDataFile):
         hdValues[ipsr] = onePSRHDs
 
     return psrNames, psrObsConstants, psrStartingObsTimes, angles, hdValues
+
+
+
+
+
+
+
+def readDataIntoDicts_dphdDiff(psrDataFile):
+
+    """
+    Same as above but this will return difference between dipole and hd     
+    correlations 
+    """
+    psrNames = np.genfromtxt(psrDataFile,usecols=0,dtype=str)
+    psrData  = np.genfromtxt(psrDataFile,names=True)
+
+    # compute obs constants 
+    obsConstants = [ sig * np.sqrt(intT) for sig, intT in \
+                                         zip (psrData['ExpPrecision']*1.E-6, \
+                                              psrData['IntTime'])]
+    psrObsConstants = {}
+    psrStartingObsTimes = {}
+    for psr, oc, st in zip(psrNames, obsConstants, psrData['IntTime']):
+        psrObsConstants[psr] = float(oc)
+        psrStartingObsTimes[psr] = float(st)
+
+
+    # work out angles and hd values ahead of time
+    angles = {}
+    dphdDiffValues = {}
+    for i, ipsr in enumerate(psrNames):
+        onePSRAng = {}
+        onePSRDiffs = {}
+        for j, jpsr in enumerate(psrNames):
+            if jpsr==ipsr:
+                angle = 0
+                diff = None
+            else: 
+                rai, deci = psrData['RA'][i], psrData['DEC'][i]
+                raj, decj = psrData['RA'][j], psrData['DEC'][j]
+                angle = snrFunctions.h2(rai,raj,deci,decj)
+                hd = snrFunctions.hellings_downs(angle)
+                dp = snrFunctions.dipole(angle)
+                diff = dp-hd
+            onePSRAng[jpsr] = angle
+            onePSRDiffs[jpsr] = diff
+        angles[ipsr] = onePSRAng
+        dphdDiffValues[ipsr] = onePSRDiffs
+
+    return psrNames, psrObsConstants, psrStartingObsTimes, angles, dphdDiffValues
+
+
+

@@ -4,7 +4,7 @@ import snrFunctions
 import readInData
 
 
-def plotResult(newTimes,hdValues,psrObsConstants,shuffleNumber,resultsDir):
+def plotResult(newTimes,angCorrValues,psrObsConstants,shuffleNumber,resultsDir):
 
     oneYearInSeconds = (365.25*24.*60.*60.)
 
@@ -24,7 +24,7 @@ def plotResult(newTimes,hdValues,psrObsConstants,shuffleNumber,resultsDir):
 
         snr[i] = snrFunctions.avePTASNR(psrNames,\
                                   psrObsConstants,\
-                                  hdValues,\
+                                  angCorrValues,\
                                   newTimes,\
                                   A,alpha,beta,fref,Ti,c)
     plt.plot(T,snr,label='shuffle {}'.format(shuffleNumber))
@@ -38,15 +38,23 @@ def plotResult(newTimes,hdValues,psrObsConstants,shuffleNumber,resultsDir):
 
 
 psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/psrDetails.dat'
-#psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/trialPSRData.dat'
+#psrDataFile = '/home/hannahm/repositories/ptasensitivity/data/trialPSRData.dat'
 dataOriginalFormat = np.genfromtxt(psrDataFile, names=True)
-
+"""
 psrNames, \
 psrObsConstants, \
 psrStartingObsTimes, \
 angles, \
-hdValues = readInData.readDataIntoDicts(psrDataFile)
-
+angCorrValues = readInData.readDataIntoDicts(psrDataFile)
+"""
+"""
+We are using the dp-hd value here!
+"""
+psrNames, \
+psrObsConstants, \
+psrStartingObsTimes, \
+angles, \
+angCorrValues = readInData.readDataIntoDicts_dphdDiff(psrDataFile)
 
 
 totalTime=0
@@ -68,7 +76,7 @@ c = 26./oneYearInSeconds
 
 startSNR = snrFunctions.avePTASNR(psrNames,\
                                   psrObsConstants,\
-                                  hdValues,\
+                                  angCorrValues,\
                                   psrStartingObsTimes,\
                                   A,alpha,beta,fref,TInSeconds,c)
 
@@ -112,7 +120,7 @@ while improvement==True:
 
             snr = snrFunctions.avePTASNR(psrNames,\
                                          psrObsConstants,\
-                                         hdValues,\
+                                         angCorrValues,\
                                          editedTimes,\
                                          A,alpha,beta,fref,TInSeconds,c)
             currentRatio = snr/startSNR
@@ -168,9 +176,8 @@ while improvement==True:
     count+=1
 
 
-plotResult(psrTimeShuffle,hdValues,psrObsConstants,count,resultsDir)
-    
-        
+plotResult(psrTimeShuffle,angCorrValues,psrObsConstants,count,resultsDir)
+       
 
 """
 Best outcome - only takes one out 

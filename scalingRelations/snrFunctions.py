@@ -102,7 +102,8 @@ def hellings_downs(angle):
     hdCurve = (1./2.) \
               - (1./4.)*((1.-np.cos(angle))/2.) \
               + (3./2.)*((1.-np.cos(angle))/2.)*np.log((1.-np.cos(angle))/2.)
-    return hdCurve
+
+    return hdCurve*2.
 
 
 
@@ -110,7 +111,7 @@ def dipole(angle):
     """
     Dipole values
     """ 
-    dipValue = (1./2.)*(-3./2.) * (np.cos(0) + np.cos(0)) \
+    dipValue = (-3./2.) * (np.cos(0) + np.cos(0)) \
                * ( np.cos(angle) - (4./3.) \
                   - 4.*((np.tan(angle/2.))**2.)*np.log(np.sin(angle/2.)) )
     return dipValue
