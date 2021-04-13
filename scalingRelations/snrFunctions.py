@@ -106,6 +106,18 @@ def hellings_downs(angle):
 
 
 
+def dipole(angle):
+    """
+    Dipole values
+    """ 
+    dipValue = (1./2.)*(-3./2.) * (np.cos(0) + np.cos(0)) \
+               * ( np.cos(angle) - (4./3.) \
+                  - 4.*((np.tan(angle/2.))**2.)*np.log(np.sin(angle/2.)) )
+    return dipValue
+
+
+
+
 #def avePTASNR(sigmaIs,sigmaJs,angles,A,alpha,beta,fref,T,c):
 def avePTASNR(psrNames,psrConstants,hdValues,obsTimes,A,alpha,beta,fref,T,c):
 
