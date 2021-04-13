@@ -106,7 +106,7 @@ while improvement==True:
 
             # give ipsr time to jpsr
             editedTimes = psrTimeShuffle.copy()
-            timeToShift = editedTimes[ipsr]/2.
+            timeToShift = editedTimes[ipsr]/4.
             editedTimes[ipsr] -= timeToShift
             editedTimes[jpsr] += timeToShift
 
@@ -135,7 +135,7 @@ while improvement==True:
 
 
     # psrTimeShuffle
-    timeToShift = psrTimeShuffle[psrToGive]/2.
+    timeToShift = psrTimeShuffle[psrToGive]/4.
     psrTimeShuffle[psrToGive] -= timeToShift
     psrTimeShuffle[psrToTake] += timeToShift
 
