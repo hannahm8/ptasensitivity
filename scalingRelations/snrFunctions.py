@@ -94,6 +94,14 @@ def get_b(A,fref,alpha):
     return b
 
 
+def get_d(redAmp,fref,gamma):
+    """
+    compute constant for red noise 
+    """
+    nSecondsInYear = 365.25*24.*60.60.
+    d = (redAmp*redAmp) / (1./fref)**-gamma * yr**3.
+    return d
+
 
 def hellings_downs(angle):
     """
@@ -171,6 +179,33 @@ def avePTASNR(psrNames,psrConstants,hdValues,obsTimes,A,alpha,beta,fref,T,c):
 
 
 """
+
+def psrPSD(c,fref,sigma,redAmp,gamma,A,alpha,f):
+
+    deltat = 1./c 
+    white = 2.*sigma*deltat
+    
+    d = get_d(redAmp,fref,gamma)
+    red   = d*f**-gamma
+    
+    b = get_b(A,fref,alpha)
+    gw = b*f**-beta
+
+    return white+red+gw
+    
+
+
+def integral():
+
+    psdI = psrPSD(c,fref,sigI,redAmpI,gammaI,A,alpha,f)
+    psdJ = psrPSD(c,fref,sigJ,redAmpJ,gammaJ,A,alpha,f)
+
+    
+    toIntegrate = ((b**2)*f**-2.*beta ) / (psdI*psdJ) 
+
+
+
+
 
 
 
