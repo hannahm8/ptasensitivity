@@ -111,7 +111,7 @@ def hellings_downs(angle):
               - (1./4.)*((1.-np.cos(angle))/2.) \
               + (3./2.)*((1.-np.cos(angle))/2.)*np.log((1.-np.cos(angle))/2.)
 
-    return hdCurve*2.
+    return hdCurve
 
 
 
