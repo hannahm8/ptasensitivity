@@ -43,9 +43,6 @@ def readDataIntoDicts(psrDataFile):
 
 
 
-
-
-
 def readDataIntoDicts_dphdDiff(psrDataFile):
 
     """

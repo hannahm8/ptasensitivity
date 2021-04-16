@@ -4,6 +4,7 @@ from scipy.integrate import quad
 
 """
  Class. Quantum Grav. 30 224015
+ Goncharov+2021
 """
 
 
@@ -62,13 +63,15 @@ def get_integral(sigI,sigJ,deltat,b,fL,fH,beta):
 
     #integrand if sigI==sigJ
     def integrandEqual(f,sig,deltat,b,beta):  
-        I = 1./(1.+(sig*sig*deltat)/(b*f**-beta))**2.
+        I = ( (b*f**-beta) / (b*f**-beta + 2.*sig*sig*deltat) )**2. 
+        #I = 1./(1.+(sig*sig*deltat)/(b*f**-beta))**2.
         return I 
 
-    if abs(sigI-sigJ)<0.000000001:  
+    if abs(sigI-sigJ)<.0000000000000001:  
         integral = quad(integrandEqual, fL, fH, args=(sigI,deltat,b,beta))
         #if sigI==sigJ: 
         #    print('same', integral)
+        #print (integral)
         return integral[0] 
 
     x1 = - (deltat * sigIsigI) / ( b * fH**-beta )
@@ -98,8 +101,8 @@ def get_d(redAmp,fref,gamma):
     """
     compute constant for red noise 
     """
-    nSecondsInYear = 365.25*24.*60.60.
-    d = (redAmp*redAmp) / (1./fref)**-gamma * yr**3.
+    nSecondsInYear = 365.25*24.*60.*60.
+    d = (redAmp*redAmp) / (1./fref)**-gamma * nSecondsInYear**3.
     return d
 
 
@@ -158,7 +161,7 @@ def avePTASNR(psrNames,psrConstants,hdValues,obsTimes,A,alpha,beta,fref,T,c):
             aveSNRSinglePulsarPair = 2.*T*hd*hd*integral 
             total+=aveSNRSinglePulsarPair
             if aveSNRSinglePulsarPair<0: 
-              print(sigI,sigJ, integral)
+              print('problem',sigI,sigJ, integral)
     return np.sqrt(total)
 
 """
@@ -179,32 +182,100 @@ def avePTASNR(psrNames,psrConstants,hdValues,obsTimes,A,alpha,beta,fref,T,c):
 
 
 """
-
-def psrPSD(c,fref,sigma,redAmp,gamma,A,alpha,f):
+"""
+def integrand(f, c,fref,sigI,rAI,gammaI,sigJ,rAJ,gammaJ,A,alpha):
 
     deltat = 1./c 
-    white = 2.*sigma*deltat
+    wI = 2.*sigI*deltat
+    wJ = 2.*sigJ*deltat
     
-    d = get_d(redAmp,fref,gamma)
-    red   = d*f**-gamma
+    dI = get_d(rAI,fref,gammaI)
+    rI = dI*f**-gammaI
+    dJ = get_d(rAJ,fref,gammaJ)
+    rJ = dJ*f**-gammaJ
     
     b = get_b(A,fref,alpha)
     gw = b*f**-beta
 
-    return white+red+gw
+    I = (gw*gw) / ((wI+rI+gw)*(wJ+rJ+gw))
+
+    return I
+"""  
+
+
+def get_integral_with_red_noise(c,fref,sigI,rAI,gamI,sigJ,rAJ,gamJ,A,alpha,beta,T):
+
+    def wrg_integrand(f,c,fref,sigmaI,redAI,gammaI,sigmaJ,redAJ,gammaJ,A,alpha,beta):
+        # white noise
+        deltat = 1./c 
+        wI = 2.*sigmaI*deltat
+        wJ = 2.*sigmaJ*deltat
+      
+        # red noise
+        nSecondsInYear = 365.25*24.*60.*60.
+        aI = (redAI*redAI*nSecondsInYear**3.) / (12.*np.pi*np.pi)
+        aJ = (redAJ*redAJ*nSecondsInYear**3.) / (12.*np.pi*np.pi)
+        
+        # gw signal
+        b = get_b(A,fref,alpha)
+        #gw = b*f**-beta
+        #print(wI,wJ,rI,rJ,gw)
+        # overall 
+        #I = (gw*gw) / ((wI+rI+gw)*(wJ+rJ+gw))
+
+        I = (b*f**-beta)**2 \
+            / (  (b*f**-beta + 2.*sigI*sigI*deltat + aI*(f/fref)**-gammaI) \
+               * (b*f**-beta + 2.*sigJ*sigJ*deltat + aJ*(f/fref)**-gammaJ) ) 
+
+        return I
+        
+    fL=1./T
+    fH=0.5*c 
+
+    value = quad(wrg_integrand, fL, fH, args=(c,fref,\
+                                          sigI,rAI,gamI,\
+                                          sigJ,rAJ,gamJ,\
+                                          A,alpha,beta))
+    return value[0]
+
+
+def avePSD_incRedNoise(psrNames,psrConstants,angCorrelationValues,obsTimes,rAs,gammas,\
+                       A,alpha,beta,fref,T,c):
+
+    fL=1./T
+    fH=0.5*c #1./c #check
+    #deltat = 1./c 
+
+    #b=get_b(A,fref,alpha)
+
+    total=0
     
+    for i,ipsr in enumerate(psrNames):
+      for j,jpsr in enumerate(psrNames):
+        if (i>j):  # no double counting
 
+          #hd = hellings_downs(angle[ipsr][jpsr])
+          corr = angCorrelationValues[ipsr][jpsr]
 
-def integral():
-
-    psdI = psrPSD(c,fref,sigI,redAmpI,gammaI,A,alpha,f)
-    psdJ = psrPSD(c,fref,sigJ,redAmpJ,gammaJ,A,alpha,f)
-
+          if obsTimes[ipsr]==0 or obsTimes[jpsr]==0:
+            pass # skip if either are not observed 
+          else:
+            # get the sigmas for these times. 
+            sigI = psrConstants[ipsr] / np.sqrt(obsTimes[ipsr])
+            sigJ = psrConstants[jpsr] / np.sqrt(obsTimes[jpsr])
+            
+            integral = get_integral_with_red_noise(c,fref,\
+                                                   sigI,rAs[ipsr],gammas[ipsr],\
+                                                   sigJ,rAs[jpsr],gammas[jpsr],\
+                                                   A,alpha,beta,T)
+  
+            aveSNRSinglePulsarPair = 2.*T*corr*corr*integral 
+            total+=aveSNRSinglePulsarPair
+            #if aveSNRSinglePulsarPair<0: 
+            #  print(sigI,sigJ, integral)
     
-    toIntegrate = ((b**2)*f**-2.*beta ) / (psdI*psdJ) 
-
-
-
+    #print(T,total)
+    return np.sqrt(total)
 
 
 
