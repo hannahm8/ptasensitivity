@@ -1,9 +1,12 @@
 import numpy as np
 import scipy.special as sc
 from scipy.integrate import quad
+from scipy.integrate import simps
+from numpy import trapz
 
 """
  Class. Quantum Grav. 30 224015
+ Goncharov+2021
 """
 
 
@@ -54,6 +57,7 @@ def h2(lat1d,lat2d,lon1d,lon2d):
 
 def get_integral(sigI,sigJ,deltat,b,fL,fH,beta):
     """
+    This has been replaced by get_integral_with_red_noise
     Calculate equation 18 from Siemens+2013
     """
 
@@ -61,14 +65,18 @@ def get_integral(sigI,sigJ,deltat,b,fL,fH,beta):
     sigJsigJ = sigJ*sigJ
 
     #integrand if sigI==sigJ
-    def integrandEqual(f,sig,deltat,b,beta):  
-        I = 1./(1.+(sig*sig*deltat)/(b*f**-beta))**2.
+    def integrandEqual(f,sigI,sigJ,deltat,b,beta):  
+        #I = ( (b*f**-beta) / (b*f**-beta + 2.*sig*sig*deltat) )**2. 
+        I = ((b**2.)*(f**(-2.*beta))) \
+            / ((b*f**-beta + 2.*sigI*sigI*deltat)*(b*f**-beta + 2.*sigJ*sigJ*deltat)) 
+        #I = 1./(1.+(sig*sig*deltat)/(b*f**-beta))**2.
         return I 
 
-    if abs(sigI-sigJ)<0.000000001:  
-        integral = quad(integrandEqual, fL, fH, args=(sigI,deltat,b,beta))
+    if abs(sigI-sigJ)<.000001:  
+        integral = quad(integrandEqual, fL, fH, args=(sigI,sigJ,deltat,b,beta))
         #if sigI==sigJ: 
         #    print('same', integral)
+        #print (integral)
         return integral[0] 
 
     x1 = - (deltat * sigIsigI) / ( b * fH**-beta )
@@ -94,6 +102,14 @@ def get_b(A,fref,alpha):
     return b
 
 
+def get_d(redAmp,fref,gamma):
+    """
+    compute constant for red noise 
+    """
+    nSecondsInYear = 365.25*24.*60.*60.
+    d = (redAmp*redAmp) / (1./fref)**-gamma * nSecondsInYear**3.
+    return d
+
 
 def hellings_downs(angle):
     """
@@ -109,7 +125,10 @@ def hellings_downs(angle):
 
 def dipole(angle):
     """
-    Dipole values
+    Dipole values   
+    This is from 
+    https://journals-aps-org.eu1.proxy.openathens.net/prd/pdf/10.1103/PhysRevD.79.084030 
+    Anholm+2009
     """ 
     dipValue = (-3./2.) * (np.cos(0) + np.cos(0)) \
                * ( np.cos(angle) - (4./3.) \
@@ -140,7 +159,8 @@ def avePTASNR(psrNames,psrConstants,hdValues,obsTimes,A,alpha,beta,fref,T,c):
           hd = hdValues[ipsr][jpsr]
 
           if obsTimes[ipsr]==0 or obsTimes[jpsr]==0:
-            sigI, sigJ=0.0, 0.0
+            #sigI, sigJ=0.0, 0.0
+            pass
           else:
             sigI = psrConstants[ipsr] / np.sqrt(obsTimes[ipsr])
             sigJ = psrConstants[jpsr] / np.sqrt(obsTimes[jpsr])
@@ -150,7 +170,7 @@ def avePTASNR(psrNames,psrConstants,hdValues,obsTimes,A,alpha,beta,fref,T,c):
             aveSNRSinglePulsarPair = 2.*T*hd*hd*integral 
             total+=aveSNRSinglePulsarPair
             if aveSNRSinglePulsarPair<0: 
-              print(sigI,sigJ, integral)
+              print('problem',sigI,sigJ, integral)
     return np.sqrt(total)
 
 """
@@ -171,6 +191,107 @@ def avePTASNR(psrNames,psrConstants,hdValues,obsTimes,A,alpha,beta,fref,T,c):
 
 
 """
+"""
+def integrand(f, c,fref,sigI,rAI,gammaI,sigJ,rAJ,gammaJ,A,alpha):
+
+    deltat = 1./c 
+    wI = 2.*sigI*deltat
+    wJ = 2.*sigJ*deltat
+    
+    dI = get_d(rAI,fref,gammaI)
+    rI = dI*f**-gammaI
+    dJ = get_d(rAJ,fref,gammaJ)
+    rJ = dJ*f**-gammaJ
+    
+    b = get_b(A,fref,alpha)
+    gw = b*f**-beta
+
+    I = (gw*gw) / ((wI+rI+gw)*(wJ+rJ+gw))
+
+    return I
+"""  
+
+
+def get_integral_with_red_noise(c,fref,sigI,rAI,gamI,sigJ,rAJ,gamJ,A,alpha,beta,T):
+
+    def wrg_integrand(f,c,fref,sigmaI,redAI,gammaI,sigmaJ,redAJ,gammaJ,A,alpha,beta):
+        # white noise
+        deltat = 1./c 
+      
+        # red noise
+        nSecondsInYear = 365.25*24.*60.*60.
+        aI = (redAI*redAI*(nSecondsInYear**3.)) / (12.*np.pi*np.pi)
+        aJ = (redAJ*redAJ*(nSecondsInYear**3.)) / (12.*np.pi*np.pi)
+        
+        # gw signal
+        b = get_b(A,fref,alpha)
+        #gw = b*f**-beta
+        #print(wI,wJ,rI,rJ,gw)
+        # overall 
+        #I = (gw*gw) / ((wI+rI+gw)*(wJ+rJ+gw))
+
+        I = ((b**2.)*(f**-(2.*beta))) \
+            / (  (b*(f**-beta) + 2.*sigI*sigI*deltat + aI*(f/fref)**-gammaI) \
+               * (b*(f**-beta) + 2.*sigJ*sigJ*deltat + aJ*(f/fref)**-gammaJ) ) 
+
+        return I
+        
+    fL=1./T
+    fH=0.5*c 
+
+    value = quad(wrg_integrand, fL, fH, args=(c,fref,\
+                                          sigI,rAI,gamI,\
+                                          sigJ,rAJ,gamJ,\
+                                          A,alpha,beta))
+
+    # test with trapz rule
+    #x = np.linspace(fL,fH,500)
+    #y = wrg_integrand(x,c,fref,sigI,rAI,gamI,sigJ,rAJ,gamJ,A,alpha,beta)
+    #tzInt = trapz(y,x)
+    #siInt = simps(y,x)  
+    #print(tzInt,siInt,value)
+
+    return value[0]
+
+
+def avePTASNR_incRedNoise(psrNames,psrConstants,angCorrelationValues,obsTimes,rAs,gammas,\
+                       A,alpha,beta,fref,T,c):
+
+    fL=1./T
+    fH=0.5*c 
+
+    #b=get_b(A,fref,alpha)
+
+    total=0
+    
+    for i,ipsr in enumerate(psrNames):
+      for j,jpsr in enumerate(psrNames):
+        if (i>j):  # no double counting
+
+          #hd = hellings_downs(angle[ipsr][jpsr])
+          corr = angCorrelationValues[ipsr][jpsr]
+
+          if obsTimes[ipsr]==0 or obsTimes[jpsr]==0:
+            sigI, sigJ = 0,0
+            pass # skip if either are not observed 
+          else:
+            # get the sigmas for these times. 
+            sigI = psrConstants[ipsr] / np.sqrt(obsTimes[ipsr])
+            sigJ = psrConstants[jpsr] / np.sqrt(obsTimes[jpsr])
+            
+            integral = get_integral_with_red_noise(c,fref,\
+                                                   sigI,rAs[ipsr],gammas[ipsr],\
+                                                   sigJ,rAs[jpsr],gammas[jpsr],\
+                                                   A,alpha,beta,T)
+  
+            aveSNRSinglePulsarPair = 2.*T*corr*corr*integral 
+            total+=aveSNRSinglePulsarPair
+            #if aveSNRSinglePulsarPair<0: 
+            #  print(sigI,sigJ, integral)
+    
+    #print(T,total)
+    return np.sqrt(total)
+
 
 
 
@@ -224,3 +345,5 @@ def transition(c,A,T,alpha,beta,fref,sigma):
     elif sigma<value: 
         return 'i'
     return None
+
+

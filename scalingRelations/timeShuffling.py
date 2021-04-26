@@ -83,7 +83,13 @@ startSNR = snrFunctions.avePTASNR(psrNames,\
 #print(psrStartingObsTimes.values)
 #print(sum(psrStartingObsTimes.values()))
 #exit()
+redAmps, gammas = {}, {}
+for ipsr in psrNames:
+   redAmps[ipsr] = 0
 
+gammas = psrObsConstants.copy()
+for ipsr in psrNames: 
+    gammas[ipsr] = 1
 
 
 #orderedPSRList = sorted(zip(psrObsConstants.values(),psrObsConstants.keys()),reverse=True)
@@ -118,11 +124,12 @@ while improvement==True:
             editedTimes[ipsr] -= timeToShift
             editedTimes[jpsr] += timeToShift
 
-            snr = snrFunctions.avePTASNR(psrNames,\
-                                         psrObsConstants,\
-                                         angCorrValues,\
-                                         editedTimes,\
-                                         A,alpha,beta,fref,TInSeconds,c)
+            snr = snrFunctions.avePTASNR_incRedNoise(psrNames,\
+                                                     psrObsConstants,\
+                                                     angCorrValues,\
+                                                     editedTimes,\
+                                                     redAmps, gammas, \
+                                                     A,alpha,beta,fref,TInSeconds,c)
             currentRatio = snr/startSNR
             #print(currentRatio)
             if currentRatio > 1 and currentRatio>bestSNRRatioSoFar: 
