@@ -54,21 +54,26 @@ radDEC = [ (dec*np.pi)/180. for dec in data['DEC'] ]
 sigmas = data['ExpPrecision']*1.E-6
 
 # get the new times
-shuffleFile = '../scalingRelations/halfTimeShuffle/shuffle_3.dat'
+#shuffleFile = '../scalingRelations/halfTimeShuffle/shuffle_3.dat'
+#shuffleFile = '../../runs/shuffle/quarterTimeShuffle/times/shuffle_165.dat'
+shuffleFile = '../../runs/shuffle/quarterTimeShuffleDPHD/times/shuffle_87.dat'
 shuffleNames = np.genfromtxt(shuffleFile,usecols=0,dtype=str)
 shuffleTobs = np.genfromtxt(shuffleFile,usecols=1)
 # put in dictionary
 shuffleTimes = {}
 for ipsr,time in zip(shuffleNames, shuffleTobs):    
-    shuffleTimes[ipsr] = shuffleTobs
+    shuffleTimes[ipsr] = time
 
 # work out the new sigmas
 sigmaShuffle = np.zeros(len(psrNames))
-for ipsr in psrNames:
-    sigmaShuffle = psrObsConstants[ipsr] / np.sqrt(shuffleTimes[ipsr])
-
 print(sigmaShuffle)
+for i,ipsr in enumerate(psrNames):
+    sigmaShuffle[i] = psrObsConstants[ipsr] / np.sqrt(shuffleTimes[ipsr])
 
+print((sigmaShuffle-sigmas))
+print(sum(sigmaShuffle-sigmas))
+print('original', sigmas)
+print('shuffle', sigmaShuffle)
 
 
 # for plotting 
@@ -86,6 +91,7 @@ plt.loglog(freqs,scGWBShuffle.h_c,label='shuffle',ls=':')
 plt.xlabel('Frequency [Hz]')
 plt.ylabel('Characteristic Strain, $h_c$')
 plt.legend()
+plt.savefig('hasasia_shuffle_with_dipole_hd_diff.png')
 plt.show()
 
 
