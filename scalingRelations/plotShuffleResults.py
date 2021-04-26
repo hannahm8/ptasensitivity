@@ -120,9 +120,13 @@ plt.show()
 
 
 # compare the old and new times for each pulsar & how each changed
-startTime shuffleTime = timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes)
+startTime, shuffleTime = timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes)
+obsConstants = [ psrObsConstants[ipsr] for ipsr in psrNames]
 
 plt.clf()
-plt.plot(psrObsConstants,(shuffleTime-startTime)/startT)
+plt.scatter(obsConstants,(shuffleTime-startTime)/startTime)
+plt.xlabel('tobs-sigma constant')
+plt.ylabel('(new time - old time) / old time')
+plt.savefig('fractionalTimeDifferenceVObsConstant.png')
 plt.show()
 
