@@ -79,7 +79,7 @@ def readDataIntoDicts_dphdDiff(psrDataFile):
                 angle = snrFunctions.h2(rai,raj,deci,decj)
                 hd = snrFunctions.hellings_downs(angle)
                 dp = snrFunctions.dipole(angle)
-                diff = dp-hd
+                diff = dp-(2.*hd) # normalise both to 1 
             onePSRAng[jpsr] = angle
             onePSRDiffs[jpsr] = diff
         angles[ipsr] = onePSRAng
