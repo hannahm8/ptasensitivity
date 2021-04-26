@@ -4,9 +4,12 @@ import readInData
 
 import snrFunctions
 
+import time
+
+
 def wPSD(sigma,c):  
     deltat = 1./c
-    return 2.*sigma*deltat
+    return 2.*sigma*sigma*deltat
 
 def rPSD(f,redAmp,gamma,fref):
     nSecondsInYear = 365.25*24.*60.*60.
@@ -20,31 +23,6 @@ def gwPSD(f,A,alpha,beta,fref):
 
 
 
-def integrand(f,c,fref,sigmaI,redAI,gammaI,sigmaJ,redAJ,gammaJ,A,alpha,beta):
-    # white noise
-    deltat = 1./c 
-    wI = 2.*sigmaI*deltat
-    wJ = 2.*sigmaJ*deltat
-    
-    # red noise
-    nSecondsInYear = 365.25*24.*60.*60.
-    aI = (redAI*redAI) / (12.*np.pi*np.pi) * nSecondsInYear**3.
-    rI = aI * (f/fref)**-gammaI
-    aJ = (redAJ*redAJ) / (12.*np.pi*np.pi) * nSecondsInYear**3.
-    rJ = aJ * (f/fref)**-gammaJ
-    
-    # gw signal
-    b = snrFunctions.get_b(A,fref,alpha)
-    gw = b*f**-beta
-
-    # overall 
-    I = (gw*gw) / ((wI+rI+gw)*(wJ+rJ+gw))
-    return I
-
-def integrandEqualSigma(f,sig,deltat,beta,A,fref,alpha):  
-    b = snrFunctions.get_b(A,fref,alpha)
-    I = 1./(1.+(sig*sig*deltat)/(b*f**-beta))**2.
-    return I 
 
 
 psrDataFile = '../data/psrDetails.dat'
@@ -60,9 +38,10 @@ angCorrValues = readInData.readDataIntoDicts(psrDataFile)
 
 redAmps = psrObsConstants.copy()
 # update
-for ipsr in psrNames:
-   redAmps[ipsr] = 0
-
+for i,ipsr in enumerate(psrNames):    
+    if (i % 2)==0:
+        redAmps[ipsr] = 0
+    else: redAmps[ipsr] = 0
 gammas = psrObsConstants.copy()
 for ipsr in psrNames: 
     gammas[ipsr] = 1
@@ -81,24 +60,44 @@ fref = 1./oneYearInSeconds
 
 c = 26./oneYearInSeconds
 
-
-#def get_integral_with_red_noise(c,fref,sigI,rAI,gamI,sigJ,rAJ,gamJ,A,alpha):
-
-
-avPSD  = snrFunctions.avePTASNR(psrNames,psrObsConstants,angCorrValues,psrStartingObsTimes,A,alpha,beta,fref,TInSeconds,c)
-
-
-avPSDR = snrFunctions.avePSD_incRedNoise(psrNames,psrObsConstants,angCorrValues,psrStartingObsTimes,\
-                            redAmps,gammas,A,alpha,beta,fref,TInSeconds,c)
-
-print('w only', avPSD)
-print('w+r', avPSDR)
-
-exit()
-
 fL=1./TInSeconds
 fH=0.5*c
 deltat = 1./c
+freqs = np.linspace(fL,fH,100)
+
+#def get_integral_with_red_noise(c,fref,sigI,rAI,gamI,sigJ,rAJ,gamJ,A,alpha):
+
+start_time = time.time()
+
+Ts = np.linspace(1,12,10)
+avPSD, avPSDR = np.zeros(len(Ts)), np.zeros(len(Ts))
+for i,Ti in enumerate(Ts):
+
+    TInSeconds = Ti * oneYearInSeconds
+    avPSD[i]  = snrFunctions.avePTASNR(psrNames,psrObsConstants,angCorrValues,psrStartingObsTimes,A,alpha,beta,fref,TInSeconds,c)
+
+
+    avPSDR[i] = snrFunctions.avePTASNR_incRedNoise(psrNames,psrObsConstants,angCorrValues,psrStartingObsTimes,\
+                            redAmps,gammas,A,alpha,beta,fref,TInSeconds,c)
+
+
+
+end_time = time.time()
+
+print('time was ', end_time-start_time)
+
+print('plotting')
+plt.plot(Ts,avPSD,color='b',label='original')
+plt.plot(Ts,avPSDR,color='r',label='withred')
+plt.legend()
+plt.show()
+plt.clf()
+print('w only', avPSD)
+print('w+r', avPSDR)
+
+
+
+"""
 
 
 freqs = np.linspace(fL,fH,100)
@@ -110,7 +109,7 @@ sigmaI,redAI,gammaI = 1E-6, 0, 4.
 sigmaJ,redAJ,gammaJ = 1E-6, 0, 2.
 
 sig=1E-6
-redA=1E-12
+redA=1E-14
 gamma = 3.
 
 for i,f in enumerate(freqs):
@@ -128,4 +127,5 @@ plt.yscale('log')
 plt.xscale('log')
 plt.legend()
 plt.show()
+"""
 
