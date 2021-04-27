@@ -40,13 +40,13 @@ def plotResult(newTimes,angCorrValues,psrObsConstants,\
 
 
 
-#psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/psrDetails.dat'
-psrDataFile = '/home/hannahm/repositories/ptasensitivity/data/trialPSRDataShort.dat'
+psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/psrDetails.dat'
+#psrDataFile = '/home/hannahm/repositories/ptasensitivity/data/trialPSRDataShort.dat'
 dataOriginalFormat = np.genfromtxt(psrDataFile, names=True)
 
 
 
-redNoisePath='/home/hannahm/repositories/ptasensitivity/data/redNoise.dat'
+#redNoisePath='/home/hannahm/repositories/ptasensitivity/data/redNoise.dat'
 """
 We are using the dp-hd value here!
 For shuffling to avoid losing pulsars at larger angular separation
