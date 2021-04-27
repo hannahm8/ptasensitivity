@@ -5,12 +5,20 @@
 \usepackage[paperwidth=210mm,paperheight=297mm,centering,hmargin=1.9cm,vmargin=1.9cm]{geometry}
 \usepackage{amsmath}
 \usepackage{float}
+\usepackage{comment}
 
+
+\newcommand{\apjs}{Ap. J. Supplement}
+\newcommand{\mnras}{MNRAS}
 
 \newcommand{\han}{\textcolor{orange}}
 \newcommand{\fref}{f_{\rm ref}}
 \newcommand{\ARed}{A_{\rm red}}
 \newcommand{\gammaRed}{\gamma_{\rm red}}
+\newcommand{\Pg}{P_{\rm g}}
+\newcommand{\PI}{P_I}
+\newcommand{\PJ}{P_J}
+\newcommand{\Psn}{P_{\rm sn}}
 
 \begin{document}
 
@@ -22,17 +30,18 @@
 Following the method in Ref.~\cite{SiemensEtAl:2013}. 
 The gravitational wave sepctrum is given by 
 \begin{equation}
-P_{\rm g} (f) = \frac{A*2}{24 \pi^2} \left(\frac{f}{\fref}\right)^{2\alpha} f^{-3}\,,
+\Pg (f) = \frac{A^2}{24 \pi^2} \left(\frac{f}{\fref}\right)^{2\alpha} f^{-3}\,,
 \label{eqn:Pgw}
 % equation 16 in SiemansEtAl:2013
 \end{equation}
 where $f$ is the gravitational wave frequency, $A$ is the amplitude of the background, $\alpha$ is the slope of the spectrum, and $\fref$ is a reference frequency chosen as $1\,{\rm yr}^{-1}$. 
 For a gravitatoinal wave background signal and a given pulsar timing array with timespan $T$, the average signal to noise ratio (SNR) is given by
 \begin{equation}
-\left< \rho \right> = \left( 2 T \sum_{IJ} \chi_{IJ} 
+\left< \rho \right> = \left( 2 T \sum_{IJ} \chi_{IJ}^2 
                              \int_{f_L}^{f_H} {\rm d}f  
-                             \frac{P^2_{\rm g} (f)}{P_I(f)P_J(f)}
+                             \frac{\Pg^2 (f)}{\PI(f)\PJ(f)}
                             \right)^{1/2} \,,
+\label{eqn:snrPIPJPg}
 \end{equation}
 where $\sum_{IJ}$ is the sum over all pulsar pairs ($I \neq J$) and $P_I$ is the pwer spectrum of the $I{\rm th}$ pulsar. 
 The integration limits are given by $f_L=1/T$ and $f_H=c/2$ where $c$ is the cadence of observations (assumed to be the same for all pulsars). 
@@ -45,10 +54,41 @@ The Hellings and Downs coefficients $\chi_{IJ}$ for pulsars separated by angle $
 \end{equation}
 If we assume evenly sampled data and that there is only white noise in the pulsars then
 \begin{equation}
-P_{I}(f) = p_{\rm g} + 2 \sigma_I^2 \Delta t\,,
+\PI (f) = \Pg (f) + 2 \sigma_I^2 \Delta t\,,
 \end{equation}
 where $c=1/\Delta t$ and $\sigma_I$ is the timing precision for the $I{\rm th}$ pulsar. 
+Equation~\ref{eqn:snrPIPJPg} is then
+\begin{equation}
+\left< \rho \right> = \left( 2 T \sum_{IJ} \chi_{IJ}^2
+                             \int_{f_L}^{f_H} {\rm d}f  
+                             \frac{\Pg^2 (f)}
+                                  {(\Pg (f) + 2\sigma_I^2\Delta t)
+                                   (\Pg (f) + 2\sigma_J^2\Delta t)} 
+                            \right)^{1/2} \,,
+\label{eqn:snrWhiteNoiseOnly}
+\end{equation}
 
+Some pulsars also contain spin noise or red noise. 
+The power spectral density of spin noise is given by 
+\begin{equation}
+% from Goncharov 2021 eqn 5
+\Psn (f) = \frac{\ARed^2}{12 \pi^2} 
+           \left( \frac{f}{\fref} \right)^{-\gammaRed} {\rm yr}^3\,,
+\end{equation}
+where $\ARed$ and $\gammaRed$ are the amplitude and slope of the power law and ${\rm yr}$ is the number of seconds in a year. 
+Equation~\ref{sqn:snrWhiteNoiseOnly} then becomes
+\begin{equation}
+\left< \rho \right> = \left( 2 T \sum_{IJ} \chi_{IJ}^2
+                             \int_{f_L}^{f_H} {\rm d}f  
+                             \frac{\Pg^2 (f)}
+                                  {[\Pg (f) + 2\sigma_I^2\Delta t + \Psn (f)]
+                                   [\Pg (f) + 2\sigma_J^2\Delta t + \Psn (f)]} 
+                            \right)^{1/2} \,.
+\label{eqn:snrWhiteNoiseOnly}
+\end{equation}
+
+
+\section{Data}
 
 MeerTime is timing $82$ pulsars~\cite{MeerTimeSpreadsheet} targetting a precision of $1\times 10^{-6}\,{\rm s}$ for each with a $c=26$ per year.
 From Ref.~\cite{MeerTimeSpreadsheet} we have an estimated precision and the integration time required to achieve it. 
@@ -56,18 +96,17 @@ Precision $\sigma$ scales with observation $T_{\rm obs}$ time like
 \begin{equation}
 \sigma = \delta / \sqrt{T_{\rm obs}}\,,
 \end{equation}
- where $\delta$ is a constant of proportionality which depends on the individual pulsar. 
+where $\delta$ is a constant of proportionality which depends on the individual pulsar. 
 
+Currently we don't have enough data to make an estimate for the red noise parameters with MeerTime. 
+Some pulsars are also part of the PPTA and NANOGrav and have estimated $\ARed$ and $\gammaRed$. 
+We take red noise parameters from Refs.~\cite{GoncharovEtAl:2021} (sixth and seventh column in Table 1) and ~\cite{NANOGrav12.5yr:2021} (tenth and eleventh column in Table 5). 
+Where a value is listed in both papers, we choose the Ref.~\cite{GoncharovEtAl:2021} value. 
+[Notes: In NANOGrav paper, $A_{\rm SN}$ is in units of ${\rm \mu s} {\rm yr}^{1/2}$. 
+Convert to $\log_{10} A_{\rm SN} [{\rm yr}^{3/2}] $ ]
+Table~\ref{tab:redNoise} shows the red noise parameters for $13$ of our $82$ pulsars. 
+We set $\Ared=0$ for all other pulsars. 
 
-The total observation time currently used every $2$ weeks for the MeerTime pulsars is \han{to do xx}. 
-
-
-
-\section{Red Noise Notes}
-Getting red noise parameters from Refs.~\cite{GoncharovEtAl2021} (sixth and seventh column in Table 1) and ~\cite{NANOGrav12.5yr:2021} (tenth and eleventh column in Table 5). 
-Where a value is listed in both papers, we choose the Ref.~\cite{GoncharovEtAl2021} value. 
-In NANOGrav paper, $A_{\rm SN}$ is in units of ${\rm \mu s} {\rm yr}^{1/2}$. 
-Convert to $\log_{10} A_{\rm SN} [{\rm yr}^{3/2}] $ 
 % value from NANOGRav table is An
 % An  = 0.006 \mu s yr^{1/2} 
 % An -> 0.006 * 3.17E-14 yr^{3/2}
@@ -77,22 +116,30 @@ Convert to $\log_{10} A_{\rm SN} [{\rm yr}^{3/2}] $
 Pulsar     & $\ARed$ & $\gammaRed$ & Ref.\\
 \hline
 J0030+0451 & $-15.72$ & $5.3$   &  \cite{NANOGrav12.5yr:2021}\\
-J0437-4715 & $-14.56$ & $2.99$  &  \cite{GoncharovEtAl2021}\\
-J0613-0200 & $-14.26$ & $4.17$  &  \cite{GoncharovEtAl2021}\\
-J0711-6830 & $-13.04$ & $1.09$  &  \cite{GoncharovEtAl2021}\\
-J1024-0719 & $-14.62$ & $6.39$  &  \cite{GoncharovEtAl2021}\\
-J1600-3053 & $-14.34$ & $3.81$  &  \cite{GoncharovEtAl2021}\\
-J1643-1224 & $-12.85$ & $0.98$  &  \cite{GoncharovEtAl2021}\\
+J0437-4715 & $-14.56$ & $2.99$  &  \cite{GoncharovEtAl:2021}\\
+J0613-0200 & $-14.26$ & $4.17$  &  \cite{GoncharovEtAl:2021}\\
+J0711-6830 & $-13.04$ & $1.09$  &  \cite{GoncharovEtAl:2021}\\
+J1024-0719 & $-14.62$ & $6.39$  &  \cite{GoncharovEtAl:2021}\\
+J1600-3053 & $-14.34$ & $3.81$  &  \cite{GoncharovEtAl:2021}\\
+J1643-1224 & $-12.85$ & $0.98$  &  \cite{GoncharovEtAl:2021}\\
 J1713+0747 & $-15.16$ & $1.6$   &  \cite{NANOGrav12.5yr:2021}\\
 J1744-1134 & $-14.16$ & $1.7$   &  \cite{NANOGrav12.5yr:2021}\\
 J1747-4036 & $-13.78$ & $3.8$   &  \cite{NANOGrav12.5yr:2021}\\
-J1909-3744 & $-14.74$ & $4.05$  &  \cite{GoncharovEtAl2021}\\
+J1909-3744 & $-14.74$ & $4.05$  &  \cite{GoncharovEtAl:2021}\\
 J2145-0750 & $-13.86$ & $1.6$   &  \cite{NANOGrav12.5yr:2021}\\
 J2317+1439 & $-16.50$ & $6.0$   &  \cite{NANOGrav12.5yr:2021}\\
 \hline
 \end{tabular}
 \end{table}
 
+
+
+The total observation time currently used every $2$ weeks for the MeerTime pulsars is $42592\,{\rm s} = 11\,{\rm hrs}$.
+
+\begin{comment}
+Things we have/will use
+OzSTAR, hasasia, numpy, scipy, astropy(?)
+\end{comment}
 
 \bibliographystyle{myunsrt}
 \bibliography{ptabib}
