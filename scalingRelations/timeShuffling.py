@@ -45,9 +45,9 @@ psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/psrDetails.dat'
 dataOriginalFormat = np.genfromtxt(psrDataFile, names=True)
 
 
-
+redNoisePath='/fred/oz005/users/hmiddlet/ptasensitivity/data/redNoise.dat'
 #redNoisePath='/home/hannahm/repositories/ptasensitivity/data/redNoise.dat'
-redNoisePath=None
+#redNoisePath=None
 """
 We are using the dp-hd value here!
 For shuffling to avoid losing pulsars at larger angular separation
