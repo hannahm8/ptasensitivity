@@ -2,7 +2,34 @@ import numpy as np
 import snrFunctions
 
 
-def readDataIntoDicts(psrDataFile):
+def readRedNoise(fileName,allPSRNames):
+    
+    redPSRNames = np.genfromtxt(fileName,usecols=0,dtype=str)
+    redData = np.genfromtxt(fileName,names=True)
+    
+    As     = {}
+    gammas = {}
+    for rpsr, a, g in zip(redPSRNames,redData['ASN'],redData['gammaSN']):
+        As[rpsr]     = a
+        gammas[rpsr] = g
+    
+    ARed = {}
+    gRed = {}
+    for psr in allPSRNames: 
+        try: 
+            ARed[psr] = As[psr] 
+            gRed[psr] = gammas[psr]
+        except:
+            ARed[psr] = 0.
+            gRed[psr] = 1.
+
+    return ARed, gRed
+
+
+
+
+
+def readDataIntoDicts(psrDataFile,redNoiseFile=None):
 
     psrNames = np.genfromtxt(psrDataFile,usecols=0,dtype=str)
     psrData = np.genfromtxt(psrDataFile,names=True)
@@ -38,12 +65,27 @@ def readDataIntoDicts(psrDataFile):
         angles[ipsr]   = onePSRAng
         hdValues[ipsr] = onePSRHDs
 
-    return psrNames, psrObsConstants, psrStartingObsTimes, angles, hdValues
+    if redNoiseFile!=None:
+        ampRed, gammaRed = readRedNoise(redNoiseFile,psrNames)
+    else: 
+        ampRed,gammaRed = {}, {}
+        for psr in psrNames:
+            ampRed[psr] = 0
+            gammaRed[psr] = 1
+
+
+
+    return psrNames, \
+           psrObsConstants, \
+           psrStartingObsTimes, \
+           angles, \
+           hdValues, \
+           ampRed, gammaRed 
 
 
 
 
-def readDataIntoDicts_dphdDiff(psrDataFile):
+def readDataIntoDicts_dphdDiff(psrDataFile,redNoiseFile=None):
 
     """
     Same as above but this will return difference between dipole and hd     
@@ -85,7 +127,21 @@ def readDataIntoDicts_dphdDiff(psrDataFile):
         angles[ipsr] = onePSRAng
         dphdDiffValues[ipsr] = onePSRDiffs
 
-    return psrNames, psrObsConstants, psrStartingObsTimes, angles, dphdDiffValues
+    if redNoiseFile!=None:
+        ampRed, gammaRed = readRedNoise(redNoiseFile,psrNames)
+    else: 
+        ampRed,gammaRed = {}, {}
+        for psr in psrNames:
+            ampRed[psr] = 0
+            gammaRed[psr] = 1
+
+    
+    return psrNames, \
+           psrObsConstants, \
+           psrStartingObsTimes, \
+           angles, \
+           dphdDiffValues, \
+           ampRed, gammaRed 
 
 
 
