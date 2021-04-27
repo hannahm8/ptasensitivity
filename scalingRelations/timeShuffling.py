@@ -47,6 +47,7 @@ dataOriginalFormat = np.genfromtxt(psrDataFile, names=True)
 
 
 #redNoisePath='/home/hannahm/repositories/ptasensitivity/data/redNoise.dat'
+redNoisePath=None
 """
 We are using the dp-hd value here!
 For shuffling to avoid losing pulsars at larger angular separation
@@ -59,6 +60,8 @@ angCorrValues, \
 redAmps, \
 redGammas = readInData.readDataIntoDicts_dphdDiff(psrDataFile,\
                                                   redNoiseFile=redNoisePath)
+
+
 
 
 totalTime=0

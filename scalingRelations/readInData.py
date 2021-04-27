@@ -17,7 +17,7 @@ def readRedNoise(fileName,allPSRNames):
     gRed = {}
     for psr in allPSRNames: 
         try: 
-            ARed[psr] = As[psr] 
+            ARed[psr] = 10.**As[psr] 
             gRed[psr] = gammas[psr]
         except:
             ARed[psr] = 0.

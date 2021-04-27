@@ -254,6 +254,7 @@ def get_integral_with_red_noise(c,fref,sigI,rAI,gamI,sigJ,rAJ,gamJ,A,alpha,beta,
     return value[0]
 
 
+
 def avePTASNR_incRedNoise(psrNames,psrConstants,angCorrelationValues,obsTimes,rAs,gammas,\
                        A,alpha,beta,fref,T,c):
 
