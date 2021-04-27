@@ -29,22 +29,22 @@ psrDataFile = '../data/psrDetails.dat'
 #psrDataFile = '/home/hannahm/repositories/ptasensitivity/data/trialPSRData.dat'
 dataOriginalFormat = np.genfromtxt(psrDataFile, names=True)
 
+# path to red noise file
+redNoiseData = '../data/redNoise.dat'
+
 psrNames, \
 psrObsConstants, \
 psrStartingObsTimes, \
 angles, \
-angCorrValues = readInData.readDataIntoDicts(psrDataFile)
+angCorrValues, \
+redAmps, redGammas = readInData.readDataIntoDicts(psrDataFile,redNoiseFile=redNoiseData)
 
 
-redAmps = psrObsConstants.copy()
-# update
-for i,ipsr in enumerate(psrNames):    
-    if (i % 2)==0:
-        redAmps[ipsr] = 0
-    else: redAmps[ipsr] = 0
-gammas = psrObsConstants.copy()
-for ipsr in psrNames: 
-    gammas[ipsr] = 1
+#redAmps = psrObsConstants.copy()
+
+
+###### read in red noise 
+
 
 
 
@@ -78,7 +78,7 @@ for i,Ti in enumerate(Ts):
 
 
     avPSDR[i] = snrFunctions.avePTASNR_incRedNoise(psrNames,psrObsConstants,angCorrValues,psrStartingObsTimes,\
-                            redAmps,gammas,A,alpha,beta,fref,TInSeconds,c)
+                            redAmps,redGammas,A,alpha,beta,fref,TInSeconds,c)
 
 
 
