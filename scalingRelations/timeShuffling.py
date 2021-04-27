@@ -4,7 +4,9 @@ import snrFunctions
 import readInData
 
 
-def plotResult(newTimes,angCorrValues,psrObsConstants,shuffleNumber,resultsDir):
+def plotResult(newTimes,angCorrValues,psrObsConstants,\
+               shuffleNumber,resultsDir,redAs,redGs):
+
 
     oneYearInSeconds = (365.25*24.*60.*60.)
 
@@ -22,10 +24,11 @@ def plotResult(newTimes,angCorrValues,psrObsConstants,shuffleNumber,resultsDir):
     snr = np.zeros(len(T))
     for i, Ti in enumerate(TInSeconds):
 
-        snr[i] = snrFunctions.avePTASNR(psrNames,\
+        snr[i] = snrFunctions.avePTASNR_incRedNoise(psrNames,\
                                   psrObsConstants,\
                                   angCorrValues,\
                                   newTimes,\
+                                  redAs, redGs, \
                                   A,alpha,beta,fref,Ti,c)
     plt.plot(T,snr,label='shuffle {}'.format(shuffleNumber))
 
@@ -37,24 +40,25 @@ def plotResult(newTimes,angCorrValues,psrObsConstants,shuffleNumber,resultsDir):
 
 
 
-psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/psrDetails.dat'
-#psrDataFile = '/home/hannahm/repositories/ptasensitivity/data/trialPSRData.dat'
+#psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/psrDetails.dat'
+psrDataFile = '/home/hannahm/repositories/ptasensitivity/data/trialPSRDataShort.dat'
 dataOriginalFormat = np.genfromtxt(psrDataFile, names=True)
-"""
-psrNames, \
-psrObsConstants, \
-psrStartingObsTimes, \
-angles, \
-angCorrValues = readInData.readDataIntoDicts(psrDataFile)
-"""
+
+
+
+redNoisePath='/home/hannahm/repositories/ptasensitivity/data/redNoise.dat'
 """
 We are using the dp-hd value here!
+For shuffling to avoid losing pulsars at larger angular separation
 """
 psrNames, \
 psrObsConstants, \
 psrStartingObsTimes, \
 angles, \
-angCorrValues = readInData.readDataIntoDicts_dphdDiff(psrDataFile)
+angCorrValues, \
+redAmps, \
+redGammas = readInData.readDataIntoDicts_dphdDiff(psrDataFile,\
+                                                  redNoiseFile=redNoisePath)
 
 
 totalTime=0
@@ -74,22 +78,14 @@ fref = 1./oneYearInSeconds
 
 c = 26./oneYearInSeconds
 
-startSNR = snrFunctions.avePTASNR(psrNames,\
-                                  psrObsConstants,\
-                                  angCorrValues,\
-                                  psrStartingObsTimes,\
-                                  A,alpha,beta,fref,TInSeconds,c)
+startSNR = snrFunctions.avePTASNR_incRedNoise(psrNames,\
+                                              psrObsConstants,\
+                                              angCorrValues,\
+                                              psrStartingObsTimes,\
+                                              redAmps, redGammas, \
+                                              A,alpha,beta,fref,TInSeconds,c)
 
-#print(psrStartingObsTimes.values)
-#print(sum(psrStartingObsTimes.values()))
-#exit()
-redAmps, gammas = {}, {}
-for ipsr in psrNames:
-   redAmps[ipsr] = 0
 
-gammas = psrObsConstants.copy()
-for ipsr in psrNames: 
-    gammas[ipsr] = 1
 
 
 #orderedPSRList = sorted(zip(psrObsConstants.values(),psrObsConstants.keys()),reverse=True)
@@ -112,7 +108,7 @@ logFile.close()
 
 while improvement==True:
 
-    print(count)    
+    #print(count)    
     check=0
     
     for ipsr in psrNames:
@@ -128,7 +124,7 @@ while improvement==True:
                                                      psrObsConstants,\
                                                      angCorrValues,\
                                                      editedTimes,\
-                                                     redAmps, gammas, \
+                                                     redAmps,redGammas, \
                                                      A,alpha,beta,fref,TInSeconds,c)
             currentRatio = snr/startSNR
             #print(currentRatio)
@@ -183,7 +179,7 @@ while improvement==True:
     count+=1
 
 
-plotResult(psrTimeShuffle,angCorrValues,psrObsConstants,count,resultsDir)
+plotResult(psrTimeShuffle,angCorrValues,psrObsConstants,count,resultsDir,redAmps,redGammas)
        
 
 """
