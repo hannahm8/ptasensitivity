@@ -13,12 +13,16 @@
 
 \newcommand{\han}{\textcolor{orange}}
 \newcommand{\fref}{f_{\rm ref}}
-\newcommand{\ARed}{A_{\rm red}}
-\newcommand{\gammaRed}{\gamma_{\rm red}}
+\newcommand{\ARed}{A_{\rm sn}}
+\newcommand{\gammaRed}{\gamma_{\rm sn}}
+\newcommand{\ARedI}{A_{{\rm sn},I}}
+\newcommand{\ARedJ}{A_{{\rm sn},J}}
+\newcommand{\gammaRedI}{\gamma_{{\rm sn},I}}
+\newcommand{\gammaRedJ}{\gamma_{{\rm sn},J}}
 \newcommand{\Pg}{P_{\rm g}}
 \newcommand{\PI}{P_I}
 \newcommand{\PJ}{P_J}
-\newcommand{\Psn}{P_{\rm sn}}
+\newcommand{\PsnI}{P_{{\rm sn},I}}
 
 \begin{document}
 
@@ -52,31 +56,28 @@ The Hellings and Downs coefficients $\chi_{IJ}$ for pulsars separated by angle $
             + \frac{3}{2} \left(\frac{1 - \cos(\zeta)}{2}\right) 
             \log \left( \frac{1 - \cos(\zeta)}{2} \right)\,.
 \end{equation}
-If we assume evenly sampled data and that there is only white noise in the pulsars then
+If we assume evenly sampled data and that there is only white noise in the pulsars then $\PI$ is the sum of Eqn.~\ref{eqn:Pgw} and the white noise, 
 \begin{equation}
-\PI (f) = \Pg (f) + 2 \sigma_I^2 \Delta t\,,
+\PI (f) = \frac{A^2}{24 \pi^2} \left(\frac{f}{\fref}\right)^{2\alpha} f^{-3} 
+          + 2 \sigma_I^2 \Delta t\,,
 \end{equation}
 where $c=1/\Delta t$ and $\sigma_I$ is the timing precision for the $I{\rm th}$ pulsar. 
-Equation~\ref{eqn:snrPIPJPg} is then
-\begin{equation}
-\left< \rho \right> = \left( 2 T \sum_{IJ} \chi_{IJ}^2
-                             \int_{f_L}^{f_H} {\rm d}f  
-                             \frac{\Pg^2 (f)}
-                                  {(\Pg (f) + 2\sigma_I^2\Delta t)
-                                   (\Pg (f) + 2\sigma_J^2\Delta t)} 
-                            \right)^{1/2} \,,
-\label{eqn:snrWhiteNoiseOnly}
-\end{equation}
-
-Some pulsars also contain spin noise or red noise. 
-The power spectral density of spin noise is given by 
+Pulsars may also contain spin noise or red noise. 
+The power spectral density of spin noise for the $I{\rm th}$ pulsar is given by 
 \begin{equation}
 % from Goncharov 2021 eqn 5
-\Psn (f) = \frac{\ARed^2}{12 \pi^2} 
-           \left( \frac{f}{\fref} \right)^{-\gammaRed} {\rm yr}^3\,,
+\PsnI (f) = \frac{\ARedI^2}{12 \pi^2} 
+            \left( \frac{f}{\fref} \right)^{-\gammaRedI} {\rm yr}^3\,,
 \end{equation}
-where $\ARed$ and $\gammaRed$ are the amplitude and slope of the power law and ${\rm yr}$ is the number of seconds in a year. 
-Equation~\ref{sqn:snrWhiteNoiseOnly} then becomes
+where $\ARedI$ and $\gammaRedI$ are the amplitude and slope of the power law for the $I$th pulsar and ${\rm yr}$ is the number of seconds in a year. 
+$\PI(f)$ is then 
+\begin{equation}
+\PI (f) = \frac{A^2}{24 \pi^2} \left(\frac{f}{\fref}\right)^{2\alpha} f^{-3} 
+          ~+~ 2 \sigma_I^2 \Delta t 
+          ~+~ \frac{\ARedI^2}{12 \pi^2} 
+            \left( \frac{f}{\fref} \right)^{-\gammaRedI} {\rm yr}^3\,.
+\end{equation}
+\begin{comment}
 \begin{equation}
 \left< \rho \right> = \left( 2 T \sum_{IJ} \chi_{IJ}^2
                              \int_{f_L}^{f_H} {\rm d}f  
@@ -86,6 +87,7 @@ Equation~\ref{sqn:snrWhiteNoiseOnly} then becomes
                             \right)^{1/2} \,.
 \label{eqn:snrWhiteNoiseOnly}
 \end{equation}
+\end{comment}
 
 
 \section{Data}
@@ -96,16 +98,15 @@ Precision $\sigma$ scales with observation $T_{\rm obs}$ time like
 \begin{equation}
 \sigma = \delta / \sqrt{T_{\rm obs}}\,,
 \end{equation}
-where $\delta$ is a constant of proportionality which depends on the individual pulsar. 
+where $\delta$ is a constant of proportionality which depends on the pulsar. 
 
+
+Some pulsars have a previous noise analysis by the PPTA and NANOGrave. 
 Currently we don't have enough data to make an estimate for the red noise parameters with MeerTime. 
-Some pulsars are also part of the PPTA and NANOGrav and have estimated $\ARed$ and $\gammaRed$. 
-We take red noise parameters from Refs.~\cite{GoncharovEtAl:2021} (sixth and seventh column in Table 1) and ~\cite{NANOGrav12.5yr:2021} (tenth and eleventh column in Table 5). 
+We take $\ARed$ and $\gammaRed$ values from Refs.~\cite{GoncharovEtAl:2021} (sixth and seventh column in Table 1) and ~\cite{NANOGrav12.5yr:2021} (tenth and eleventh column in Table 5). 
 Where a value is listed in both papers, we choose the Ref.~\cite{GoncharovEtAl:2021} value. 
-[Notes: In NANOGrav paper, $A_{\rm SN}$ is in units of ${\rm \mu s} {\rm yr}^{1/2}$. 
-Convert to $\log_{10} A_{\rm SN} [{\rm yr}^{3/2}] $ ]
 Table~\ref{tab:redNoise} shows the red noise parameters for $13$ of our $82$ pulsars. 
-We set $\Ared=0$ for all other pulsars. 
+We set $\ARed=0$ for all other pulsars. 
 
 % value from NANOGRav table is An
 % An  = 0.006 \mu s yr^{1/2} 
@@ -130,11 +131,34 @@ J2145-0750 & $-13.86$ & $1.6$   &  \cite{NANOGrav12.5yr:2021}\\
 J2317+1439 & $-16.50$ & $6.0$   &  \cite{NANOGrav12.5yr:2021}\\
 \hline
 \end{tabular}
+\caption{\label{tab:redNoise}
+Spin noise parameters for $13$ pulsars. 
+[Notes: Values from Ref.~\cite{GoncharovEtAl:2021} are taken directly form their Table 1. 
+Values from Ref.~\cite{NANOGrav12.5yr:2021} are converted from units of ${\rm \mu s \,yr}^{1/2}$ to $\log_{10} \ARed[{\rm yr}^{3/2}]$.]
+}
 \end{table}
 
+MeerTime pulsars are observed with a cadence of once every two weeks. 
+The total observation time used in each $2$ week observing time is $42592\,{\rm s} = 11\,{\rm hrs}$, which is divided between the MeerTime pulsars. 
 
 
-The total observation time currently used every $2$ weeks for the MeerTime pulsars is $42592\,{\rm s} = 11\,{\rm hrs}$.
+\section{Time Shuffle}
+
+
+
+\begin{table}
+\begin{tabular}
+Paramter & value & unit \\ 
+\hline\hline
+GW amplitude, $A$   & $2\times 10 ^{-15}$   &
+GW slope, $\alpha$  &                       &
+Cadence, $c$        & $2$                   &
+\end{tabular}
+\caption{\label{tab:shuffleParameters}
+}
+\end{table}
+
+To avoid biasing against pulsars not in the galactic center, we use.... 
 
 \begin{comment}
 Things we have/will use
