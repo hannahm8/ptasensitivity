@@ -1,11 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import argparse
 import snrFunctions
 import readInData
 
 
-def plotResult(newTimes,angCorrValues,psrObsConstants,\
-               shuffleNumber,resultsDir,redAs,redGs):
+def plotResult(newTimes,originalTimes, \
+               angCorrValues,corrFunc,psrObsConstants,\
+               shuffleNumber,resultsDir,redAs,redGs,jitters):
 
 
     oneYearInSeconds = (365.25*24.*60.*60.)
@@ -21,17 +23,32 @@ def plotResult(newTimes,angCorrValues,psrObsConstants,\
 
     c = 26./oneYearInSeconds
 
-    snr = np.zeros(len(T))
+    snr  = np.zeros(len(T))
+    snrO = np.zeros(len(T))
     for i, Ti in enumerate(TInSeconds):
 
-        snr[i] = snrFunctions.avePTASNR_incRedNoise(psrNames,\
-                                  psrObsConstants,\
-                                  angCorrValues,\
-                                  newTimes,\
-                                  redAs, redGs, \
-                                  jitters, \
-                                  A,alpha,beta,fref,Ti,c)
-    plt.plot(T,snr,label='shuffle {}'.format(shuffleNumber))
+        snr[i] = snrFunctions.avePTASNR(psrNames,\
+                                        psrObsConstants,\
+                                        angCorrValues,\
+                                        newTimes,\
+                                        redAs, redGs, \
+                                        jitters, \
+                                        A,alpha,beta,fref,Ti,c)
+
+        snrO[i] = snrFunctions.avePTASNR(psrNames,\
+                                         psrObsConstants,\
+                                         angCorrValues,\
+                                         originalTimes,\
+                                         redAs, redGs, \
+                                         jitters, \
+                                         A,alpha,beta,fref,Ti,c)
+
+
+    plt.title('this plot uses correlation function for analysis ({})'.format(corrFunc))
+    plt.plot(T,snrO,label='original times')
+    plt.plot(T,snr, label='shuffle {}'.format(shuffleNumber))
+    plt.legend()
+    plt.tight_layout()
 
     plt.savefig('{}/shuffleSNR_{}.png'.format(resultsDir,shuffleNumber))
     plt.close()
@@ -41,6 +58,43 @@ def plotResult(newTimes,angCorrValues,psrObsConstants,\
 
 
 
+def get_arguments():
+
+    
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--psrDataFile', '-d', dest='psrDataFile', 
+                        required=True, type=str,
+                        help='psr data path (PSR RA DEC IntTime ExpPrecision)')
+    parser.add_argument('--redNoiseFile', '-r', dest='psrRedNoiseFile', default=None,
+                        required=False, type=str,
+                        help='red noise data path (PSR ASN gammaSN Ref)')
+    parser.add_argument('--jitterNoiseFile', '-j', dest='psrJitterNoiseFile',
+                        required=False, type=str, default=None,
+                        help='jitter noise data path (PSR jitter error)')
+    parser.add_argument('--whichCorrelation', '-c', dest='whichCorrFunc',
+                        required=True, type=str,
+                        help='choose correlation function (HD, DPHD, EQUAL)')
+    args = parser.parse_args()
+
+    return args
+    
+
+
+
+args = get_arguments()
+psrDataFile     = args.psrDataFile
+chooseCorrFunc  = args.whichCorrFunc
+redNoisePath    = args.psrRedNoiseFile
+jitterNoisePath = args.psrJitterNoiseFile
+
+print("""
+data {}
+corr {}
+redn {}
+jitn {}
+""".format(psrDataFile, chooseCorrFunc, redNoisePath, jitterNoisePath))
+"""
 #psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/psrDetails.dat'
 psrDataFile = '/home/hannahm/repositories/ptasensitivity/data/trialPSRDataShort.dat'
 dataOriginalFormat = np.genfromtxt(psrDataFile, names=True)
@@ -52,7 +106,7 @@ redNoisePath='/home/hannahm/repositories/ptasensitivity/data/redNoise.dat'
 
 #jitterPath='/fred/oz005/users/hmiddlet/ptasensitivity/data/jitterNoise.dat'
 jitterPath='/home/hannahm/repositories/ptasensitivity/data/jitterNoise.dat'
-
+"""
 """
 We are using the dp-hd value here!
 For shuffling to avoid losing pulsars at larger angular separation
@@ -70,7 +124,7 @@ redGammas = readInData.readDataIntoDicts_dphdDiff(psrDataFile,\
 """
 
 
-chooseCorrelationFunction = 'HD'
+
 
 
 psrNames, \
@@ -81,14 +135,10 @@ angCorrValues, \
 redAmps, \
 redGammas, \
 jitters = readInData.readDataIntoDicts(psrDataFile,\
-                                       chooseCorrelationFunction,\
+                                       chooseCorrFunc,\
                                        redNoiseFile=redNoisePath,\
-                                       jitterNoiseFile=jitterPath)
+                                       jitterNoiseFile=jitterNoisePath)
 
-print(redAmps)
-
-print(jitters)
-exit()
 
 totalTime=0
 for ipsr in psrNames:
@@ -107,13 +157,13 @@ fref = 1./oneYearInSeconds
 
 c = 26./oneYearInSeconds
 
-startSNR = snrFunctions.avePTASNR_incRedNoise(psrNames,\
-                                              psrObsConstants,\
-                                              angCorrValues,\
-                                              psrStartingObsTimes,\
-                                              redAmps, redGammas, \
-                                              jitters, \
-                                              A,alpha,beta,fref,TInSeconds,c)
+startSNR = snrFunctions.avePTASNR(psrNames,\
+                                  psrObsConstants,\
+                                  angCorrValues,\
+                                  psrStartingObsTimes,\
+                                  redAmps, redGammas, \
+                                  jitters, \
+                                  A,alpha,beta,fref,TInSeconds,c)
 
 
 
@@ -138,7 +188,7 @@ logFile.close()
 
 while improvement==True:
 
-    #print(count)    
+    print('shuffle: ',count)    
     check=0
     
     for ipsr in psrNames:
@@ -150,13 +200,13 @@ while improvement==True:
             editedTimes[ipsr] -= timeToShift
             editedTimes[jpsr] += timeToShift
 
-            snr = snrFunctions.avePTASNR_incRedNoise(psrNames,\
-                                                     psrObsConstants,\
-                                                     angCorrValues,\
-                                                     editedTimes,\
-                                                     redAmps,redGammas, \
-                                                     jitters, \
-                                                     A,alpha,beta,fref,TInSeconds,c)
+            snr = snrFunctions.avePTASNR(psrNames,\
+                                         psrObsConstants,\
+                                         angCorrValues,\
+                                         editedTimes,\
+                                         redAmps,redGammas, \
+                                         jitters, \
+                                         A,alpha,beta,fref,TInSeconds,c)
             currentRatio = snr/startSNR
             #print(currentRatio)
             if currentRatio > 1 and currentRatio>bestSNRRatioSoFar: 
@@ -210,7 +260,9 @@ while improvement==True:
     count+=1
 
 
-plotResult(psrTimeShuffle,angCorrValues,psrObsConstants,count,resultsDir,redAmps,redGammas)
+plotResult(psrTimeShuffle,psrStartingObsTimes,
+           angCorrValues,chooseCorrFunc,psrObsConstants,
+           count,resultsDir,redAmps,redGammas,jitters)
        
 
 """
