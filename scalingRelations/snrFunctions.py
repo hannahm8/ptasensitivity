@@ -138,42 +138,6 @@ def dipole(angle):
 
 
 
-#def avePTASNR(sigmaIs,sigmaJs,angles,A,alpha,beta,fref,T,c):
-def avePTASNR(psrNames,psrConstants,hdValues,obsTimes,A,alpha,beta,fref,T,c):
-
-    """ 
-    This is from equation 17 of: Siemens+2013
-    """
-    fL=1./T
-    fH=0.5*c #1./c #check
-    deltat = 1./c 
-
-    b=get_b(A,fref,alpha)
-    total=0
-   
-    for i,ipsr in enumerate(psrNames):
-      for j,jpsr in enumerate(psrNames):
-        if (i>j):  # no double counting
-
-          #hd = hellings_downs(angle[ipsr][jpsr])
-          hd = hdValues[ipsr][jpsr]
-
-          if obsTimes[ipsr]==0 or obsTimes[jpsr]==0:
-            #sigI, sigJ=0.0, 0.0
-            pass
-          else:
-            sigI = psrConstants[ipsr] / np.sqrt(obsTimes[ipsr])
-            sigJ = psrConstants[jpsr] / np.sqrt(obsTimes[jpsr])
-
-            integral = get_integral(sigI,sigJ,deltat, b, fL, fH, beta)
-  
-            aveSNRSinglePulsarPair = 2.*T*hd*hd*integral 
-            total+=aveSNRSinglePulsarPair
-            if aveSNRSinglePulsarPair<0: 
-              print('problem',sigI,sigJ, integral)
-    return np.sqrt(total)
-
-
 """
 
     for sigI,sigJ,ang in zip(sigmaIs,sigmaJs,angles): 
@@ -269,9 +233,9 @@ def get_integral_rnoise_jitter(c,fref,sigI,rAI,gamI,jitI,sigJ,rAJ,gamJ,jitJ,A,al
 
 
 
-def avePTASNR_incRedNoise(psrNames,psrConstants,angCorrelationValues, \
-                          obsTimes,rAs,gammas,jitters,\
-                          A,alpha,beta,fref,T,c):
+def avePTASNR(psrNames,psrConstants,angCorrelationValues, \
+              obsTimes,rAs,gammas,jitters,\
+              A,alpha,beta,fref,T,c):
 
     fL=1./T
     fH=0.5*c 
