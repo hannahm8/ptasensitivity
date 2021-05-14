@@ -29,6 +29,7 @@ def plotResult(newTimes,angCorrValues,psrObsConstants,\
                                   angCorrValues,\
                                   newTimes,\
                                   redAs, redGs, \
+                                  jitters, \
                                   A,alpha,beta,fref,Ti,c)
     plt.plot(T,snr,label='shuffle {}'.format(shuffleNumber))
 
@@ -48,6 +49,9 @@ dataOriginalFormat = np.genfromtxt(psrDataFile, names=True)
 redNoisePath='/fred/oz005/users/hmiddlet/ptasensitivity/data/redNoise.dat'
 #redNoisePath='/home/hannahm/repositories/ptasensitivity/data/redNoise.dat'
 #redNoisePath=None
+
+jitterPath='/fred/oz005/users/hmiddlet/ptasensitivity/data/jitterNoise.dat'
+
 """
 We are using the dp-hd value here!
 For shuffling to avoid losing pulsars at larger angular separation
@@ -63,7 +67,11 @@ redAmps, \
 redGammas = readInData.readDataIntoDicts_dphdDiff(psrDataFile,\
                                                   redNoiseFile=redNoisePath)
 """
-# HD version 
+
+
+chooseCorrelationFunction = .....
+
+
 psrNames, \
 psrObsConstants, \
 psrStartingObsTimes, \
@@ -71,7 +79,9 @@ angles, \
 angCorrValues, \
 redAmps, \
 redGammas = readInData.readDataIntoDicts(psrDataFile,\
-                                         redNoiseFile=redNoisePath)
+                                         chooseCorrelationFuntion,\
+                                         redNoiseFile=redNoisePath,\
+                                         jitterNoiseFile=jitterPath)
 
 
 

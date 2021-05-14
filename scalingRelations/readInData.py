@@ -23,29 +23,40 @@ def readRedNoise(fileName,allPSRNames):
             ARed[psr] = 0.
             gRed[psr] = 1.
 
-    return ARed, gRed
+    return ARed, gRed 
 
 
 
 
 
-def readDataIntoDicts(psrDataFile,redNoiseFile=None):
+def readJitterNoise(fileName,allPSRNames):
 
-    psrNames = np.genfromtxt(psrDataFile,usecols=0,dtype=str)
-    psrData = np.genfromtxt(psrDataFile,names=True)
+    jitterPSRNames = np.genfromtxt(fileName,usecols==,dtype=str)
+    jitterData = np.genfromtxt(fileName,names=True)
 
-    # compute obs constants 
-    obsConstants = [ sig * np.sqrt(intT) for sig, intT in \
-                                         zip (psrData['ExpPrecision']*1.E-6, \
-                                              psrData['IntTime'])]
-    psrObsConstants = {}
-    psrStartingObsTimes = {}
-    for psr, oc, st in zip(psrNames, obsConstants, psrData['IntTime']):
-        psrObsConstants[psr] = float(oc)
-        psrStartingObsTimes[psr] = float(st)
+    jitters = {}
+    for jpsr, j in zip(jitterPSRNames, jitterData['jitter']):
+        jitters[rpsr] = j
+
+    jit = {}
+    for psr in allPSRNames:
+        try: 
+            jit[psr] = jitters[psr] check units
+        except:     
+            jit[psr] = 0.
+    
+    return jit
 
 
-    # work out angles and hd values ahead of time
+
+
+
+
+def HDCorrs(psrNames,psrData):
+
+    """
+    Computes the HD correlation for each pulsar pair. 
+    """
     angles = {}
     hdValues = {}
     for i, ipsr in enumerate(psrNames):
@@ -65,6 +76,92 @@ def readDataIntoDicts(psrDataFile,redNoiseFile=None):
         angles[ipsr]   = onePSRAng
         hdValues[ipsr] = onePSRHDs
 
+    return angles, hdValues
+
+
+
+
+def DPHRDiffCorrs(psrNames,psrData):
+
+    """
+    Computes the difference between the HD and dipole correlation for each
+    pulsar pair. 
+    Reduces preference for the galactic centre pulsars.
+    """
+    angles = {}
+    dphdDiffValues = {}
+    for i, ipsr in enumerate(psrNames):
+        onePSRAng = {}
+        onePSRDiffs = {}
+        for j, jpsr in enumerate(psrNames):
+            if jpsr==ipsr:
+                angle = 0
+                diff = None
+            else: 
+                rai, deci = psrData['RA'][i], psrData['DEC'][i]
+                raj, decj = psrData['RA'][j], psrData['DEC'][j]
+                angle = snrFunctions.h2(rai,raj,deci,decj)
+                hd = snrFunctions.hellings_downs(angle)
+                dp = snrFunctions.dipole(angle)
+                diff = dp-(2.*hd) # normalise both to 1 
+            onePSRAng[jpsr] = angle
+            onePSRDiffs[jpsr] = diff
+        angles[ipsr] = onePSRAng
+        dphdDiffValues[ipsr] = onePSRDiffs
+
+    return angles, dphdDiffValues
+
+
+
+
+
+
+def readDataIntoDicts(psrDataFile,\
+                      whichCorrelationFunction,\
+                      redNoiseFile=None,\
+                      jitterNoiseFile=None):
+
+
+    # get the pulsar names and the data 
+    psrNames = np.genfromtxt(psrDataFile,usecols=0,dtype=str)
+    psrData = np.genfromtxt(psrDataFile,names=True)
+
+
+    """
+    compute constants for each pulsar from the observation times and precision.
+    """
+    obsConstants = [ sig * np.sqrt(intT) for sig, intT in \
+                                         zip (psrData['ExpPrecision']*1.E-6, \
+                                              psrData['IntTime'])]
+    psrObsConstants = {}
+    psrStartingObsTimes = {}
+    for psr, oc, st in zip(psrNames, obsConstants, psrData['IntTime']):
+        psrObsConstants[psr] = float(oc)
+        psrStartingObsTimes[psr] = float(st)
+
+
+
+    """
+    work out angles and correlation values -> only needs to be computed once 
+    before the shuffle
+    """
+    if whichCorrelationFunction=='HD':
+        angles, correlationValues = HDCorrs(psrNames,psrData)
+    elif whichCorrelationFunction=='DPHDDiff':
+        angles, correlationValues = DPHDDiffCorrs(psrNames,psrData)
+    elif whichCorrelationFunction=='EQUAL':
+        angles, correlationValues = equalCorrs(psrNames) # does not exist yet
+    else: 
+        print('Error: you have not chosen an available correlation option')
+        exit()
+
+
+    """
+    read in the red noise parameters if available. Returns: 
+        ampRed = 0 
+        gammaRed = 1 
+    if not available
+    """
     if redNoiseFile!=None:
         ampRed, gammaRed = readRedNoise(redNoiseFile,psrNames)
     else: 
@@ -74,6 +171,20 @@ def readDataIntoDicts(psrDataFile,redNoiseFile=None):
             gammaRed[psr] = 1
 
 
+    """
+    read in the jitter noise values if available. Returns
+        jitter = 0
+    for all if not available
+    """
+    if jitterNoiseFile!=None: 
+        jitterNoise = readJitterNoise(jitterNoiseFile,psrNames)
+    else: 
+        jitterNoise = {}
+        for psr in psrNames:    
+            jitterNoise[psr] = 0
+
+
+    
 
     return psrNames, \
            psrObsConstants, \
@@ -85,7 +196,12 @@ def readDataIntoDicts(psrDataFile,redNoiseFile=None):
 
 
 
-def readDataIntoDicts_dphdDiff(psrDataFile,redNoiseFile=None):
+
+'''
+this will be replaced by single function above
+def readDataIntoDicts_dphdDiff(psrDataFile,\
+                               redNoiseFile=None,\
+                               jitterNoiseFile=None):
 
     """
     Same as above but this will return difference between dipole and hd     
@@ -143,5 +259,5 @@ def readDataIntoDicts_dphdDiff(psrDataFile,redNoiseFile=None):
            dphdDiffValues, \
            ampRed, gammaRed 
 
-
+'''
 

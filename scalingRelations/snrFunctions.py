@@ -173,6 +173,7 @@ def avePTASNR(psrNames,psrConstants,hdValues,obsTimes,A,alpha,beta,fref,T,c):
               print('problem',sigI,sigJ, integral)
     return np.sqrt(total)
 
+
 """
 
     for sigI,sigJ,ang in zip(sigmaIs,sigmaJs,angles): 
@@ -212,9 +213,12 @@ def integrand(f, c,fref,sigI,rAI,gammaI,sigJ,rAJ,gammaJ,A,alpha):
 """  
 
 
-def get_integral_with_red_noise(c,fref,sigI,rAI,gamI,sigJ,rAJ,gamJ,A,alpha,beta,T):
+def get_integral_rnoise_jitter(c,fref,sigI,rAI,gamI,jitI,sigJ,rAJ,gamJ,jitJ,A,alpha,beta,T):
 
-    def wrg_integrand(f,c,fref,sigmaI,redAI,gammaI,sigmaJ,redAJ,gammaJ,A,alpha,beta):
+    def wrg_integrand(f,c,fref,\
+                      sigmaI,redAI,gammaI,jitterI,\
+                      sigmaJ,redAJ,gammaJ,jitterJ,\
+                      A,alpha,beta):
         # white noise
         deltat = 1./c 
       
@@ -230,9 +234,18 @@ def get_integral_with_red_noise(c,fref,sigI,rAI,gamI,sigJ,rAJ,gamJ,A,alpha,beta,
         # overall 
         #I = (gw*gw) / ((wI+rI+gw)*(wJ+rJ+gw))
 
+        # measurement and jitter noise
+        sigmaSquaredI = (sigI*sigI + jitI*jitI)
+        sigmaSquaredJ = (sigJ*sigJ + jitJ*jitJ)
+
         I = ((b**2.)*(f**-(2.*beta))) \
-            / (  (b*(f**-beta) + 2.*sigI*sigI*deltat + aI*(f/fref)**-gammaI) \
-               * (b*(f**-beta) + 2.*sigJ*sigJ*deltat + aJ*(f/fref)**-gammaJ) ) 
+            / (  (b*(f**-beta) + 2.*sigmaSquaredI*deltat + aI*(f/fref)**-gammaI) \
+               * (b*(f**-beta) + 2.*sigmaSquaredJ*deltat + aJ*(f/fref)**-gammaJ) ) 
+
+
+        #I = ((b**2.)*(f**-(2.*beta))) \
+        #    / (  (b*(f**-beta) + 2.*sigI*sigI*deltat + aI*(f/fref)**-gammaI) \
+        #       * (b*(f**-beta) + 2.*sigJ*sigJ*deltat + aJ*(f/fref)**-gammaJ) ) 
 
         return I
         
@@ -240,8 +253,8 @@ def get_integral_with_red_noise(c,fref,sigI,rAI,gamI,sigJ,rAJ,gamJ,A,alpha,beta,
     fH=0.5*c 
 
     value = quad(wrg_integrand, fL, fH, args=(c,fref,\
-                                          sigI,rAI,gamI,\
-                                          sigJ,rAJ,gamJ,\
+                                          sigI,rAI,gamI,jitI,\
+                                          sigJ,rAJ,gamJ,jitJ,\
                                           A,alpha,beta))
 
     # test with trapz rule
@@ -255,8 +268,10 @@ def get_integral_with_red_noise(c,fref,sigI,rAI,gamI,sigJ,rAJ,gamJ,A,alpha,beta,
 
 
 
-def avePTASNR_incRedNoise(psrNames,psrConstants,angCorrelationValues,obsTimes,rAs,gammas,\
-                       A,alpha,beta,fref,T,c):
+
+def avePTASNR_incRedNoise(psrNames,psrConstants,angCorrelationValues, \
+                          obsTimes,rAs,gammas,jitters, \
+                          A,alpha,beta,fref,T,c):
 
     fL=1./T
     fH=0.5*c 
@@ -268,6 +283,49 @@ def avePTASNR_incRedNoise(psrNames,psrConstants,angCorrelationValues,obsTimes,rA
     for i,ipsr in enumerate(psrNames):
       for j,jpsr in enumerate(psrNames):
         if (i>j):  # no double counting
+
+          #hd = hellings_downs(angle[ipsr][jpsr])
+          corr = angCorrelationValues[ipsr][jpsr]
+
+          if obsTimes[ipsr]==0 or obsTimes[jpsr]==0:
+            sigI, sigJ = 0,0
+            pass # skip if either are not observed 
+          else:
+            # get the sigmas for these times. 
+            sigI = psrConstants[ipsr] / np.sqrt(obsTimes[ipsr])
+            sigJ = psrConstants[jpsr] / np.sqrt(obsTimes[jpsr])
+            
+            integral = get_integral_rnoise_jitter(c,fref,\
+                                                  sigI,rAs[ipsr],gammas[ipsr],jitters[ipsr],\
+                                                  sigJ,rAs[jpsr],gammas[jpsr],jitters[jpsr],\
+                                                  A,alpha,beta,T)
+  
+            aveSNRSinglePulsarPair = 2.*T*corr*corr*integral 
+            total+=aveSNRSinglePulsarPair
+            #if aveSNRSinglePulsarPair<0: 
+            #  print(sigI,sigJ, integral)
+    
+    #print(T,total)
+    return np.sqrt(total)
+
+
+
+
+def psrContribution_incRedNoise(choosenPSR,psrNames,psrConstants,\
+                                angCorrelationValues,obsTimes,rAs,gammas,\
+                                A,alpha,beta,fref,T,c):
+
+    fL=1./T
+    fH=0.5*c 
+
+    #b=get_b(A,fref,alpha)
+
+    total=0
+
+    ipsr = choosenPSR    
+
+    for j,jpsr in enumerate(psrNames):
+        if (jpsr!=ipsr): 
 
           #hd = hellings_downs(angle[ipsr][jpsr])
           corr = angCorrelationValues[ipsr][jpsr]
@@ -292,9 +350,6 @@ def avePTASNR_incRedNoise(psrNames,psrConstants,angCorrelationValues,obsTimes,rA
     
     #print(T,total)
     return np.sqrt(total)
-
-
-
 
 
 # think about whether to use these: 
