@@ -41,7 +41,7 @@ def readJitterNoise(fileName,allPSRNames):
     jit = {}
     for psr in allPSRNames:
         try: 
-            jit[psr] = jitters[psr]*1.E-9 #check units
+            jit[psr] = jitters[psr]*1.E-9
         except:     
             jit[psr] = 0.
     
@@ -81,7 +81,7 @@ def HDCorrs(psrNames,psrData):
 
 
 
-def DPHRDiffCorrs(psrNames,psrData):
+def DPHDDiffCorrs(psrNames,psrData):
 
     """
     Computes the difference between the HD and dipole correlation for each
@@ -112,6 +112,36 @@ def DPHRDiffCorrs(psrNames,psrData):
     return angles, dphdDiffValues
 
 
+
+
+def equalCorrs(psrNames,psrData):
+    """ 
+    This returns equal correlation values for all pulsar pairs.
+    The idea is to remove the sky posistion bias from the shuffle.
+    """
+    
+    value = 1./float(len(psrNames))
+
+    angles = {}
+    equalCorrValues = {}
+    for i, ipsr in enumerate(psrNames):
+        onePSRAng = {}
+        onePSREqual = {}
+        for j, jpsr in enumerate(psrNames):
+            if jpsr==ipsr:
+                angle = 0
+                equal = None
+            else: 
+                rai, deci = psrData['RA'][i], psrData['DEC'][i]
+                raj, decj = psrData['RA'][j], psrData['DEC'][j]
+                angle = snrFunctions.h2(rai,raj,deci,decj)
+                equal = value
+            onePSRAng[jpsr] = angle
+            onePSREqual[jpsr] = equal
+        angles[ipsr] = onePSRAng
+        equalCorrValues[ipsr] = onePSREqual
+
+    return angles, equalCorrValues
 
 
 
@@ -150,7 +180,7 @@ def readDataIntoDicts(psrDataFile,\
     elif whichCorrelationFunction=='DPHDDiff':
         angles, correlationValues = DPHDDiffCorrs(psrNames,psrData)
     elif whichCorrelationFunction=='EQUAL':
-        angles, correlationValues = equalCorrs(psrNames) # does not exist yet
+        angles, correlationValues = equalCorrs(psrNames,psrData) # does not exist yet
     else: 
         print('Error: you have not chosen an available correlation option')
         exit()
