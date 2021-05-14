@@ -41,16 +41,17 @@ def plotResult(newTimes,angCorrValues,psrObsConstants,\
 
 
 
-psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/psrDetails.dat'
-#psrDataFile = '/home/hannahm/repositories/ptasensitivity/data/trialPSRDataShort.dat'
+#psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/psrDetails.dat'
+psrDataFile = '/home/hannahm/repositories/ptasensitivity/data/trialPSRDataShort.dat'
 dataOriginalFormat = np.genfromtxt(psrDataFile, names=True)
 
 
-redNoisePath='/fred/oz005/users/hmiddlet/ptasensitivity/data/redNoise.dat'
-#redNoisePath='/home/hannahm/repositories/ptasensitivity/data/redNoise.dat'
+#redNoisePath='/fred/oz005/users/hmiddlet/ptasensitivity/data/redNoise.dat'
+redNoisePath='/home/hannahm/repositories/ptasensitivity/data/redNoise.dat'
 #redNoisePath=None
 
-jitterPath='/fred/oz005/users/hmiddlet/ptasensitivity/data/jitterNoise.dat'
+#jitterPath='/fred/oz005/users/hmiddlet/ptasensitivity/data/jitterNoise.dat'
+jitterPath='/home/hannahm/repositories/ptasensitivity/data/jitterNoise.dat'
 
 """
 We are using the dp-hd value here!
@@ -69,7 +70,7 @@ redGammas = readInData.readDataIntoDicts_dphdDiff(psrDataFile,\
 """
 
 
-chooseCorrelationFunction = .....
+chooseCorrelationFunction = 'HD'
 
 
 psrNames, \
@@ -78,12 +79,16 @@ psrStartingObsTimes, \
 angles, \
 angCorrValues, \
 redAmps, \
-redGammas = readInData.readDataIntoDicts(psrDataFile,\
-                                         chooseCorrelationFuntion,\
-                                         redNoiseFile=redNoisePath,\
-                                         jitterNoiseFile=jitterPath)
+redGammas, \
+jitters = readInData.readDataIntoDicts(psrDataFile,\
+                                       chooseCorrelationFunction,\
+                                       redNoiseFile=redNoisePath,\
+                                       jitterNoiseFile=jitterPath)
 
+print(redAmps)
 
+print(jitters)
+exit()
 
 totalTime=0
 for ipsr in psrNames:
@@ -107,6 +112,7 @@ startSNR = snrFunctions.avePTASNR_incRedNoise(psrNames,\
                                               angCorrValues,\
                                               psrStartingObsTimes,\
                                               redAmps, redGammas, \
+                                              jitters, \
                                               A,alpha,beta,fref,TInSeconds,c)
 
 
@@ -149,6 +155,7 @@ while improvement==True:
                                                      angCorrValues,\
                                                      editedTimes,\
                                                      redAmps,redGammas, \
+                                                     jitters, \
                                                      A,alpha,beta,fref,TInSeconds,c)
             currentRatio = snr/startSNR
             #print(currentRatio)
@@ -179,7 +186,7 @@ while improvement==True:
     #print(psrNames,len(psrNames))
     #psrNames.remove(psrToGive)
 
-    print(psrNames,len(psrNames))
+    #print(psrNames,len(psrNames))
     logFile=open('shuffleLog.dat'.format(resultsDir),'a')
     logFile.write("""
     Shuffle {}

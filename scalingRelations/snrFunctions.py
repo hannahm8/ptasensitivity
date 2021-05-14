@@ -270,7 +270,7 @@ def get_integral_rnoise_jitter(c,fref,sigI,rAI,gamI,jitI,sigJ,rAJ,gamJ,jitJ,A,al
 
 
 def avePTASNR_incRedNoise(psrNames,psrConstants,angCorrelationValues, \
-                          obsTimes,rAs,gammas,jitters, \
+                          obsTimes,rAs,gammas,jitters,\
                           A,alpha,beta,fref,T,c):
 
     fL=1./T

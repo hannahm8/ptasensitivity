@@ -31,17 +31,17 @@ def readRedNoise(fileName,allPSRNames):
 
 def readJitterNoise(fileName,allPSRNames):
 
-    jitterPSRNames = np.genfromtxt(fileName,usecols==,dtype=str)
+    jitterPSRNames = np.genfromtxt(fileName,usecols=0,dtype=str)
     jitterData = np.genfromtxt(fileName,names=True)
 
     jitters = {}
     for jpsr, j in zip(jitterPSRNames, jitterData['jitter']):
-        jitters[rpsr] = j
+        jitters[jpsr] = j
 
     jit = {}
     for psr in allPSRNames:
         try: 
-            jit[psr] = jitters[psr] check units
+            jit[psr] = jitters[psr]*1.E-9 #check units
         except:     
             jit[psr] = 0.
     
@@ -190,8 +190,9 @@ def readDataIntoDicts(psrDataFile,\
            psrObsConstants, \
            psrStartingObsTimes, \
            angles, \
-           hdValues, \
-           ampRed, gammaRed 
+           correlationValues, \
+           ampRed, gammaRed, \
+           jitterNoise 
 
 
 
