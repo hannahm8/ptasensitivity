@@ -52,6 +52,8 @@ redNoisePath='/fred/oz005/users/hmiddlet/ptasensitivity/data/redNoise.dat'
 We are using the dp-hd value here!
 For shuffling to avoid losing pulsars at larger angular separation
 """
+
+""" DPHD version 
 psrNames, \
 psrObsConstants, \
 psrStartingObsTimes, \
@@ -60,7 +62,16 @@ angCorrValues, \
 redAmps, \
 redGammas = readInData.readDataIntoDicts_dphdDiff(psrDataFile,\
                                                   redNoiseFile=redNoisePath)
-
+"""
+# HD version 
+psrNames, \
+psrObsConstants, \
+psrStartingObsTimes, \
+angles, \
+angCorrValues, \
+redAmps, \
+redGammas = readInData.readDataIntoDicts(psrDataFile,\
+                                         redNoiseFile=redNoisePath)
 
 
 
