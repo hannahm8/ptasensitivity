@@ -6,7 +6,8 @@ import snrFunctions
 import readInData
 
 
-def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,label): 
+def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
+                        redAs,redGammas,jitters,label): 
 
     # general stuff 
     oneYearInSeconds = (365.25*24.*60.*60.)
@@ -27,6 +28,7 @@ def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,label):
                                         psrObsConstants,\
                                         hdValues,\
                                         psrTimes,\
+                                        redAs, redGammas,jitters, \
                                         A,alpha,beta,fref,Ti,c)
     plt.plot(T,snr,label=label)
     return None
@@ -48,7 +50,7 @@ def timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes):
     plt.ylim(0,timeLim)
     plt.xlabel('original obs. time (s)')
     plt.ylabel('new obs. time (s)') 
-    plt.savefig('newTVoldT.png')
+    plt.savefig('{}/newTVoldT.png'.format(outputDir))
     plt.show()
 
     plt.clf()
@@ -58,8 +60,9 @@ def timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes):
     plt.scatter(fracChange, psrNames)   
     plt.axvline(0)
     plt.tight_layout()
+    plt.legend()
     plt.xlabel('(new tobs - old tobs) / old tobs')
-    plt.savefig('timeDiffPerPSR.png')
+    plt.savefig('{}/timeDiffPerPSR.png'.format(outputDir))
     plt.show()
 
     plt.clf()
@@ -68,12 +71,15 @@ def timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes):
     plt.scatter(shuffleT,psrNames, label='new')
     plt.xlabel('tobs (s)')
     plt.tight_layout()
-    plt.savefig('obsTimes.png')
+    plt.legend()
+    plt.savefig('{}/obsTimes.png'.format(outputDir))
     plt.show()
     
     return startT,shuffleT
 
 
+# run this like this:
+#python ../plotShuffleResults.py ../../data/psrDetails.dat original ./shuffle_3.dat shuffle /path/to/rednoise/file.dat tmp  
 
 # command line arguments
 originalFile  = sys.argv[1]
@@ -82,22 +88,37 @@ originalLabel = sys.argv[2]
 shuffleFile   = sys.argv[3]
 shuffleLabel  = sys.argv[4]
 
-output = sys.argv[5]
+redNoiseFile  = sys.argv[5]
+
+jitterNoiseFile = sys.argv[6]
+
+outputDir = sys.argv[7]
 
 # data file
 #psrDataFile = '../data/psrDetails.dat'
 
 # original data 
 # read in data and compute angles etc
+
+whichCorrelationFunction='HD'
+
 psrNames, \
 psrObsConstants, \
 psrStartingObsTimes, \
 angles, \
-hdValues = readInData.readDataIntoDicts(originalFile)
+hdValues, \
+ampRed, \
+gammaRed, \
+jitterNoise = readInData.readDataIntoDicts(originalFile, \
+                                        whichCorrelationFunction, \
+                                        redNoiseFile=redNoiseFile, \
+                                        jitterNoiseFile=jitterNoiseFile)
+
 
 # shuffled times 
 #psrTimeShuffleDataNames = np.genfromtxt('oneToOneShuffle/shuffle_14.dat',usecols=0,dtype=str)
 #psrTimeShuffleDataTimes = np.genfromtxt('oneToOneShuffle/shuffle_14.dat',usecols=1)
+print('plotting snr')
 psrTimeShuffleDataNames = np.genfromtxt(shuffleFile,usecols=0,dtype=str)
 psrTimeShuffleDataTimes = np.genfromtxt(shuffleFile,usecols=1)
 
@@ -107,14 +128,31 @@ for psrName, psrTime in zip(psrTimeShuffleDataNames, psrTimeShuffleDataTimes):
     psrShuffleTimes[psrName] = psrTime
 
 
+
 # plotting the SNR vs Time
-plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrStartingObsTimes,originalLabel)
-plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrShuffleTimes,shuffleLabel)
+plotSNRVTimeCompare(psrNames, \
+                    psrObsConstants, \
+                    hdValues, \
+                    psrStartingObsTimes, \
+                    ampRed, \
+                    gammaRed, \
+                    jitterNoise, \
+                    originalLabel)
+
+plotSNRVTimeCompare(psrNames, \
+                    psrObsConstants, \
+                    hdValues, \
+                    psrShuffleTimes, \
+                    ampRed, \
+                    gammaRed, \
+                    jitterNoise, \
+                    shuffleLabel)
+
 
 plt.xlabel('Time (years)')
 plt.ylabel('SNR')
 plt.legend()
-plt.savefig('{}_SNRVTime.png'.format(output))
+plt.savefig('{}/SNRVTime.png'.format(outputDir))
 plt.show()
 
 
@@ -127,6 +165,6 @@ plt.clf()
 plt.scatter(obsConstants,(shuffleTime-startTime)/startTime)
 plt.xlabel('tobs-sigma constant')
 plt.ylabel('(new time - old time) / old time')
-plt.savefig('fractionalTimeDifferenceVObsConstant.png')
+plt.savefig('{}/fractionalTimeDifferenceVObsConstant.png'.format(outputDir))
 plt.show()
 
