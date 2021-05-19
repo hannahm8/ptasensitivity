@@ -260,16 +260,60 @@ def avePTASNR(psrNames,psrConstants,angCorrelationValues, \
             sigJ = psrConstants[jpsr] / np.sqrt(obsTimes[jpsr])
             
             integral = get_integral_rnoise_jitter(c,fref,\
-                                                  sigI,rAs[ipsr],gammas[ipsr],jitters[ipsr],\
-                                                  sigJ,rAs[jpsr],gammas[jpsr],jitters[jpsr],\
+                                                  sigI, \
+                                                  rAs[ipsr],gammas[ipsr], \
+                                                  jitters[ipsr],\
+                                                  sigJ, \
+                                                  rAs[jpsr],gammas[jpsr], \
+                                                  jitters[jpsr],\
                                                   A,alpha,beta,T)
   
             aveSNRSinglePulsarPair = 2.*T*corr*corr*integral 
             total+=aveSNRSinglePulsarPair
-            #if aveSNRSinglePulsarPair<0: 
-            #  print(sigI,sigJ, integral)
+
+
+    return np.sqrt(total)
+
+
+
+
+def avePTASNR_from_sigmas(psrNames,sigmas, \
+                          angCorrelationValues, \
+                          rAs,gammas,jitters,\
+                          A,alpha,beta,fref,T,c):
+
+    """
+    This is the same as avePTASNR() above, but it takes the precisions
+    directly (rather than integration times)
+    """
+
+    fL=1./T
+    fH=0.5*c 
+
+    #b=get_b(A,fref,alpha)
+
+    total=0
     
-    #print(T,total)
+    for i,ipsr in enumerate(psrNames):
+      for j,jpsr in enumerate(psrNames):
+        if (i>j):  # no double counting
+
+          #hd = hellings_downs(angle[ipsr][jpsr])
+          corr = angCorrelationValues[ipsr][jpsr]
+
+          integral = get_integral_rnoise_jitter(c,fref,\
+                                                sigmas[ipsr], \
+                                                rAs[ipsr],gammas[ipsr], \
+                                                jitters[ipsr],\
+                                                sigmas[jpsr], \
+                                                rAs[jpsr],gammas[jpsr], \
+                                                jitters[jpsr],\
+                                                A,alpha,beta,T)
+
+          aveSNRSinglePulsarPair = 2.*T*corr*corr*integral 
+          total+=aveSNRSinglePulsarPair
+
+
     return np.sqrt(total)
 
 
