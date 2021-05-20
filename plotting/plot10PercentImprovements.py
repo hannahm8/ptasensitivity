@@ -10,7 +10,7 @@ import snrFunctions
 import readInData
 
 
-def plotSNRVTime(psrNames,sigmas,angCorrValues,redAs,redGammas,jitters,pltLabel):
+def plotSNRVTime(psrNames,sigmas,angCorrValues,redAs,redGammas,jitters,pltLabel,ls='-'):
 
     oneYearInSeconds = (365.25*24.*60.*60.)
 
@@ -34,7 +34,7 @@ def plotSNRVTime(psrNames,sigmas,angCorrValues,redAs,redGammas,jitters,pltLabel)
                                                     A,alpha,beta,fref,Ti,c)
 
         
-    plt.plot(T,snr,label=pltLabel)  
+    plt.plot(T,snr,label=pltLabel,ls=ls)  
     print(snr[-1])
     return None
 
@@ -85,7 +85,7 @@ sigmaJ1909 = sigmasOriginal['J1909-3744']
 sigmasJ1909Improvement = sigmasOriginal.copy()
 sigmasJ1909Improvement['J1909-3744'] = sigmaJ1909*0.9
 plotSNRVTime(psrNames,sigmasJ1909Improvement,hdValues, \
-             ampRed,gammaRed,jitterNoise,'J1909 10% improvement')
+             ampRed,gammaRed,jitterNoise,'J1909 10% improvement',ls='--')
 
 #### update everyone with 10% improvement
 sigmasAllImprovement = sigmasOriginal.copy()
@@ -95,6 +95,8 @@ plotSNRVTime(psrNames,sigmasAllImprovement,hdValues, \
              ampRed,gammaRed,jitterNoise,'All 10% improvement')
 
 plt.legend()
+plt.ylabel('PTA SNR')
+plt.xlabel('Time (years)')
 plt.show()
 
 
