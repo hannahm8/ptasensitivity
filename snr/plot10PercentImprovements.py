@@ -39,9 +39,8 @@ def plotSNRVTime(psrNames,sigmas,angCorrValues,redAs,redGammas,jitters,pltLabel,
     return None
 
 
-# we want to take in the original values, improve them by 10% and plot
 
-
+# data files to use 
 orginalFile     = '../data/psrDetails.dat'
 redNoiseFile    = '../data/redNoise.dat'
 jitterNoiseFile = '../data/jitterNoise.dat'
@@ -58,8 +57,8 @@ ampRed, \
 gammaRed, \
 jitterNoise = readInData.readDataIntoDicts(orginalFile, \
                                            whichCorrelationFunction, \
-                                           redNoiseFile=None, \
-                                           jitterNoiseFile=None)
+                                           redNoiseFile=redNoiseFile, \
+                                           jitterNoiseFile=jitterNoiseFile)
 
 
 # get sigmas from file directly 
@@ -87,6 +86,18 @@ sigmasJ1909Improvement['J1909-3744'] = sigmaJ1909*0.9
 plotSNRVTime(psrNames,sigmasJ1909Improvement,hdValues, \
              ampRed,gammaRed,jitterNoise,'J1909 10% improvement',ls='--')
 
+
+
+#### update improver list with 10% improvement
+improvers = np.genfromtxt('../data/improvedPSRsFromMatt.dat',dtype=str)
+sigmasSelectedImprovement = sigmasOriginal.copy()
+for psrI in improvers:
+    print(psrI)
+    if psrI=='J1804-2717': pass
+    else: sigmasSelectedImprovement[psrI] = sigmasOriginal[psrI]*.9
+plotSNRVTime(psrNames,sigmasSelectedImprovement,hdValues, \
+             ampRed,gammaRed,jitterNoise,'Selected 10% improvement')
+
 #### update everyone with 10% improvement
 sigmasAllImprovement = sigmasOriginal.copy()
 for psr in psrNames:
@@ -97,6 +108,7 @@ plotSNRVTime(psrNames,sigmasAllImprovement,hdValues, \
 plt.legend()
 plt.ylabel('PTA SNR')
 plt.xlabel('Time (years)')
+plt.savefig('snr-improvement.png')
 plt.show()
 
 

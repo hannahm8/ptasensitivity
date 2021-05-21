@@ -7,7 +7,7 @@ import readInData
 
 
 def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
-                        redAs,redGammas,jitters,label): 
+                        redAs,redGammas,jitters,label,linestyle='solid'): 
 
     # general stuff 
     oneYearInSeconds = (365.25*24.*60.*60.)
@@ -30,7 +30,7 @@ def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
                                         psrTimes,\
                                         redAs, redGammas,jitters, \
                                         A,alpha,beta,fref,Ti,c)
-    plt.plot(T,snr,label=label)
+    plt.plot(T,snr,label=label,ls=linestyle)
     return None
 
 
@@ -85,14 +85,20 @@ def timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes):
 originalFile  = sys.argv[1]
 originalLabel = sys.argv[2]
 
-shuffleFile   = sys.argv[3]
-shuffleLabel  = sys.argv[4]
+shuffleFile1   = sys.argv[3]
+shuffleLabel1  = sys.argv[4]
 
-redNoiseFile  = sys.argv[5]
+shuffleFile2   = sys.argv[5]
+shuffleLabel2  = sys.argv[6]
 
-jitterNoiseFile = sys.argv[6]
+shuffleFile3   = sys.argv[7]
+shuffleLabel3  = sys.argv[8]
 
-outputDir = sys.argv[7]
+redNoiseFile  = sys.argv[9]
+
+jitterNoiseFile = sys.argv[10]
+
+outputDir = sys.argv[11]
 
 # data file
 #psrDataFile = '../data/psrDetails.dat'
@@ -118,6 +124,52 @@ jitterNoise = readInData.readDataIntoDicts(originalFile, \
 # shuffled times 
 #psrTimeShuffleDataNames = np.genfromtxt('oneToOneShuffle/shuffle_14.dat',usecols=0,dtype=str)
 #psrTimeShuffleDataTimes = np.genfromtxt('oneToOneShuffle/shuffle_14.dat',usecols=1)
+
+if shuffleFile2!=None and shuffleFile3!=None:
+    
+
+    plotSNRVTimeCompare(psrNames, \
+                        psrObsConstants, \
+                        hdValues, \
+                        psrStartingObsTimes, \
+                        ampRed, \
+                        gammaRed, \
+                        jitterNoise, \
+                        originalLabel)
+
+
+    shuffleFiles = [shuffleFile1,shuffleFile2,shuffleFile3]
+    shuffleNames = [shuffleLabel1,shuffleLabel2,shuffleLabel3]
+    linestyles   = ['dotted','dashed','dashdot']
+
+    for shuffleFile, shuffleLabel, ls in zip(shuffleFiles,shuffleNames,linestyles):
+
+        psrTimeShuffleDataNames = np.genfromtxt(shuffleFile,usecols=0,dtype=str)
+        psrTimeShuffleDataTimes = np.genfromtxt(shuffleFile,usecols=1)
+
+        psrShuffleTimes = {}
+        for psrName, psrTime in zip(psrTimeShuffleDataNames, psrTimeShuffleDataTimes):
+            psrShuffleTimes[psrName] = psrTime
+
+
+        plotSNRVTimeCompare(psrNames, \
+                            psrObsConstants, \
+                            hdValues, \
+                            psrShuffleTimes, \
+                            ampRed, \
+                            gammaRed, \
+                            jitterNoise, \
+                            shuffleLabel,\
+                            linestyle=ls)
+plt.legend()
+plt.xlabel('Time (years)')
+plt.ylabel('SNR')
+plt.savefig('compareSNRVTime.png')
+plt.show()
+
+exit()
+
+
 print('plotting snr')
 psrTimeShuffleDataNames = np.genfromtxt(shuffleFile,usecols=0,dtype=str)
 psrTimeShuffleDataTimes = np.genfromtxt(shuffleFile,usecols=1)
