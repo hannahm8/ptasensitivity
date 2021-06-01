@@ -1,15 +1,66 @@
-\documentclass[prd,superscriptaddress,nopreprintnumbers,floatfix,nofootinbib]{revtex4}
-\usepackage[utf8]{inputenc}
-\usepackage{xcolor}
-\usepackage{hyperref}
-\usepackage[paperwidth=210mm,paperheight=297mm,centering,hmargin=1.9cm,vmargin=1.9cm]{geometry}
-\usepackage{amsmath}
-\usepackage{float}
+% mnras_template.tex 
+%
+% LaTeX template for creating an MNRAS paper
+%
+% v3.0 released 14 May 2015
+% (version numbers match those of mnras.cls)
+%
+% Copyright (C) Royal Astronomical Society 2015
+% Authors:
+% Keith T. Smith (Royal Astronomical Society)
+
+% Change log
+%
+% v3.0 May 2015
+%    Renamed to match the new package name
+%    Version number matches mnras.cls
+%    A few minor tweaks to wording
+% v1.0 September 2013
+%    Beta testing only - never publicly released
+%    First version: a simple (ish) template for creating an MNRAS paper
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Basic setup. Most papers should leave these options alone.
+\documentclass[fleqn,usenatbib]{mnras}
+
+% MNRAS is set in Times font. If you don't have this installed (most LaTeX
+% installations will be fine) or prefer the old Computer Modern fonts, comment
+% out the following line
+%\usepackage{newtxtext,newtxmath}
+% Depending on your LaTeX fonts installation, you might get better results with one of these:
+%\usepackage{mathptmx}
+%\usepackage{txfonts}
+
+% Use vector fonts, so it zooms properly in on-screen viewing software
+% Don't change these lines unless you know what you are doing
+\usepackage[T1]{fontenc}
+
+% Allow "Thomas van Noord" and "Simon de Laguarde" and alike to be sorted by "N" and "L" etc. in the bibliography.
+% Write the name in the bibliography as "\VAN{Noord}{Van}{van} Noord, Thomas"
+\DeclareRobustCommand{\VAN}[3]{#2}
+\let\VANthebibliography\thebibliography
+\def\thebibliography{\DeclareRobustCommand{\VAN}[3]{##3}\VANthebibliography}
+
+
+%%%%% AUTHORS - PLACE YOUR OWN PACKAGES HERE %%%%%
+
+% Only include extra packages if you really need them. Common packages are:
+\usepackage{graphicx}	% Including figure files
+\usepackage{amsmath}	% Advanced maths commands
+\usepackage{amssymb}	% Extra maths symbols
+
+\usepackage{tabularx}
 \usepackage{comment}
+\usepackage{float}
+\usepackage{xcolor}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newcommand{\apjs}{Ap. J. Supplement}
-\newcommand{\mnras}{MNRAS}
+%%%%% AUTHORS - PLACE YOUR OWN COMMANDS HERE %%%%%
+
+% Please keep new commands to a minimum, and use \newcommand not \def to avoid
+% overwriting existing commands. Example:
+%\newcommand{\pcm}{\,cm$^{-2}$}	% per cm-squared
 
 \newcommand{\han}{\textcolor{orange}}
 \newcommand{\fref}{f_{\rm ref}}
@@ -23,25 +74,77 @@
 \newcommand{\PI}{P_I}
 \newcommand{\PJ}{P_J}
 \newcommand{\PsnI}{P_{{\rm sn},I}}
+\newcommand{\chiIJhd}{\chi_{IJ}}
+\newcommand{\chiIJdip}{\chi_{IJ}^{\rm dip}}
+\newcommand{\sigJitter}{\sigma_{\rm jit}}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%% TITLE PAGE %%%%%%%%%%%%%%%%%%%
+
+% Title of the paper, and the short title which is used in the headers.
+% Keep the title short and informative.
+\title[Short title, max. 45 characters]{MNRAS \LaTeXe\ template -- title goes here}
+
+% The list of authors, and the short list which is used in the headers.
+% If you need two or more lines of authors, add an extra line using \newauthor
+\author[K. T. Smith et al.]{
+Keith T. Smith,$^{1}$\thanks{E-mail: mn@ras.org.uk (KTS)}
+A. N. Other,$^{2}$
+Third Author$^{2,3}$
+and Fourth Author$^{3}$
+\\
+% List of institutions
+$^{1}$Royal Astronomical Society, Burlington House, Piccadilly, London W1J 0BQ, UK\\
+$^{2}$Department, Institution, Street Address, City Postal Code, Country\\
+$^{3}$Another Department, Different Institution, Street Address, City Postal Code, Country
+}
+
+% These dates will be filled out by the publisher
+\date{Accepted XXX. Received YYY; in original form ZZZ}
+
+% Enter the current year, for the copyright statements etc.
+\pubyear{2015}
+
+% Don't change these lines
 \begin{document}
-
-
-\title{Optimising Meertime for PTA}
-
+\label{firstpage}
+\pagerange{\pageref{firstpage}--\pageref{lastpage}}
 \maketitle
 
+% Abstract of the paper
+\begin{abstract}
+This is a simple template for authors to write new MNRAS papers.
+The abstract should briefly describe the aims, methods, and main results of the paper.
+It should be a single paragraph not more than 250 words (200 words for Letters).
+No references should appear in the abstract.
+\end{abstract}
+
+% Select between one and six entries from the list of approved keywords.
+% Don't make up new ones.
+\begin{keywords}
+keyword1 -- keyword2 -- keyword3
+\end{keywords}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%% BODY OF PAPER %%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+\section{Method}
+
 Following the method in Ref.~\cite{SiemensEtAl:2013}. 
-The gravitational wave sepctrum is given by 
+The gravitational wave spectrum is given by 
 \begin{equation}
 \Pg (f) = \frac{A^2}{24 \pi^2} \left(\frac{f}{\fref}\right)^{2\alpha} f^{-3}\,,
 \label{eqn:Pgw}
 % equation 16 in SiemansEtAl:2013
 \end{equation}
-where $f$ is the gravitational wave frequency, $A$ is the amplitude of the background, $\alpha$ is the slope of the spectrum, and $\fref$ is a reference frequency chosen as $1\,{\rm yr}^{-1}$. 
-For a gravitatoinal wave background signal and a given pulsar timing array with timespan $T$, the average signal to noise ratio (SNR) is given by
+where $f$ is the gravitational wave frequency, $\fref$ is a reference frequency chosen as $1\,{\rm yr}^{-1}$, $A$ is the amplitude of the background at $f=\fref$, $\alpha$ is the slope of the spectrum, and $\fref$ is a reference frequency chosen as $1\,{\rm yr}^{-1}$. 
+For a gravitational wave background signal and a given pulsar timing array with timespan $T$, the average signal to noise ratio (SNR) is given by
 \begin{equation}
-\left< \rho \right> = \left( 2 T \sum_{IJ} \chi_{IJ}^2 
+\left< \rho \right> = \left( 2 T \sum_{IJ} \chiIJhd^2 
                              \int_{f_L}^{f_H} {\rm d}f  
                              \frac{\Pg^2 (f)}{\PI(f)\PJ(f)}
                             \right)^{1/2} \,,
@@ -51,10 +154,11 @@ where $\sum_{IJ}$ is the sum over all pulsar pairs ($I \neq J$) and $P_I$ is the
 The integration limits are given by $f_L=1/T$ and $f_H=c/2$ where $c$ is the cadence of observations (assumed to be the same for all pulsars). 
 The Hellings and Downs coefficients $\chi_{IJ}$ for pulsars separated by angle $\zeta$ are given by
 \begin{equation}
-\chi_{IJ} = \frac{1}{2} 
-            - \frac{1}{4} \left(\frac{1 - \cos(\zeta)}{2}\right)
-            + \frac{3}{2} \left(\frac{1 - \cos(\zeta)}{2}\right) 
-            \log \left( \frac{1 - \cos(\zeta)}{2} \right)\,.
+\chiIJhd = \frac{1}{2} 
+           - \frac{1}{4} \left(\frac{1 - \cos(\zeta)}{2}\right)
+           + \frac{3}{2} \left(\frac{1 - \cos(\zeta)}{2}\right) 
+           \log \left( \frac{1 - \cos(\zeta)}{2} \right)\,.
+\label{eqn:hd}
 \end{equation}
 If we assume evenly sampled data and that there is only white noise in the pulsars then $\PI$ is the sum of Eqn.~\ref{eqn:Pgw} and the white noise, 
 \begin{equation}
@@ -70,12 +174,17 @@ The power spectral density of spin noise for the $I{\rm th}$ pulsar is given by
             \left( \frac{f}{\fref} \right)^{-\gammaRedI} {\rm yr}^3\,,
 \end{equation}
 where $\ARedI$ and $\gammaRedI$ are the amplitude and slope of the power law for the $I$th pulsar and ${\rm yr}$ is the number of seconds in a year. 
-$\PI(f)$ is then 
+
+Jitter noise $\sigJitter$ has also been measured in several of the pulsars. 
+This modifies the white noise part of the spectrum. 
+
+Including red noise and jitter noise, $\PI(f)$ is then 
 \begin{equation}
 \PI (f) = \frac{A^2}{24 \pi^2} \left(\frac{f}{\fref}\right)^{2\alpha} f^{-3} 
-          ~+~ 2 \sigma_I^2 \Delta t 
+          ~+~ 2 \left( \sigma_I^2 + \sigma_{{\rm jit}, I}^2 \right) \Delta t 
           ~+~ \frac{\ARedI^2}{12 \pi^2} 
             \left( \frac{f}{\fref} \right)^{-\gammaRedI} {\rm yr}^3\,.
+\label{eqn:PIGWWR}
 \end{equation}
 \begin{comment}
 \begin{equation}
@@ -100,14 +209,49 @@ Precision $\sigma$ scales with observation $T_{\rm obs}$ time like
 \end{equation}
 where $\delta$ is a constant of proportionality which depends on the pulsar. 
 
+In this work we also consider spin noise and jitter noise for the pulsars as described in the following sections. 
 
-Some pulsars have a previous noise analysis by the PPTA and NANOGrave. 
-Currently we don't have enough data to make an estimate for the red noise parameters with MeerTime. 
-We take $\ARed$ and $\gammaRed$ values from Refs.~\cite{GoncharovEtAl:2021} (sixth and seventh column in Table 1) and ~\cite{NANOGrav12.5yr:2021} (tenth and eleventh column in Table 5). 
+
+\subsection{Spin noise}
+Red noise in pulsars is .....
+Refer to equatoins
+
+MeerTime observations are not currently long enough to estimate spin noise in each of the pulsars. 
+However we can use prior measurements for $13$ of the pulsars from PPTA and NANOGRav analyses. 
+We take $\ARed$ and $\gammaRed$ values from Refs.~\cite{GoncharovEtAl:2021} (sixth and seventh column in Table 1) and ~\cite{NANOGrav12p5yr:2021} (tenth and eleventh column in Table 5). 
 Where a value is listed in both papers, we choose the Ref.~\cite{GoncharovEtAl:2021} value. 
 Table~\ref{tab:redNoise} shows the red noise parameters for $13$ of our $82$ pulsars. 
-We set $\ARed=0$ for all other pulsars. 
 
+\begin{table}
+\begin{center}
+\begin{tabular}{llll}
+\hline \hline
+Pulsar     & $\ARed$  & $\gammaRed$ & Ref. \\
+\hline
+J0030+0451 & $-15.72$ & $5.3$   &  \cite{NANOGrav12p5yr:2021}\\
+J0437-4715 & $-14.56$ & $2.99$  &  \cite{GoncharovEtAl:2021}\\
+J0613-0200 & $-14.26$ & $4.17$  &  \cite{GoncharovEtAl:2021}\\
+J0711-6830 & $-13.04$ & $1.09$  &  \cite{GoncharovEtAl:2021}\\
+J1024-0719 & $-14.62$ & $6.39$  &  \cite{GoncharovEtAl:2021}\\
+J1600-3053 & $-14.34$ & $3.81$  &  \cite{GoncharovEtAl:2021}\\
+J1643-1224 & $-12.85$ & $0.98$  &  \cite{GoncharovEtAl:2021}\\
+J1713+0747 & $-15.16$ & $1.6$   &  \cite{NANOGrav12p5yr:2021}\\
+J1744-1134 & $-14.16$ & $1.7$   &  \cite{NANOGrav12p5yr:2021}\\
+J1747-4036 & $-13.78$ & $3.8$   &  \cite{NANOGrav12p5yr:2021}\\
+J1909-3744 & $-14.74$ & $4.05$  &  \cite{GoncharovEtAl:2021}\\
+J2145-0750 & $-13.86$ & $1.6$   &  \cite{NANOGrav12p5yr:2021}\\
+J2317+1439 & $-16.50$ & $6.0$   &  \cite{NANOGrav12p5yr:2021}\\
+\hline\hline
+\end{tabular}
+\end{center}
+\caption{\label{tab:redNoise}
+Captions here
+}
+\end{table}
+
+% pulsar reference - jitter, white nooise, red noies, position
+
+\begin{comment}
 % value from NANOGRav table is An
 % An  = 0.006 \mu s yr^{1/2} 
 % An -> 0.006 * 3.17E-14 yr^{3/2}
@@ -116,55 +260,240 @@ We set $\ARed=0$ for all other pulsars.
 \hline\hline
 Pulsar     & $\ARed$ & $\gammaRed$ & Ref.\\
 \hline
-J0030+0451 & $-15.72$ & $5.3$   &  \cite{NANOGrav12.5yr:2021}\\
+J0030+0451 & $-15.72$ & $5.3$   &  \cite{NANOGrav12p5yr:2021}\\
 J0437-4715 & $-14.56$ & $2.99$  &  \cite{GoncharovEtAl:2021}\\
 J0613-0200 & $-14.26$ & $4.17$  &  \cite{GoncharovEtAl:2021}\\
 J0711-6830 & $-13.04$ & $1.09$  &  \cite{GoncharovEtAl:2021}\\
 J1024-0719 & $-14.62$ & $6.39$  &  \cite{GoncharovEtAl:2021}\\
 J1600-3053 & $-14.34$ & $3.81$  &  \cite{GoncharovEtAl:2021}\\
 J1643-1224 & $-12.85$ & $0.98$  &  \cite{GoncharovEtAl:2021}\\
-J1713+0747 & $-15.16$ & $1.6$   &  \cite{NANOGrav12.5yr:2021}\\
-J1744-1134 & $-14.16$ & $1.7$   &  \cite{NANOGrav12.5yr:2021}\\
-J1747-4036 & $-13.78$ & $3.8$   &  \cite{NANOGrav12.5yr:2021}\\
+J1713+0747 & $-15.16$ & $1.6$   &  \cite{NANOGrav12p5yr:2021}\\
+J1744-1134 & $-14.16$ & $1.7$   &  \cite{NANOGrav12p5yr:2021}\\
+J1747-4036 & $-13.78$ & $3.8$   &  \cite{NANOGrav12p5yr:2021}\\
 J1909-3744 & $-14.74$ & $4.05$  &  \cite{GoncharovEtAl:2021}\\
-J2145-0750 & $-13.86$ & $1.6$   &  \cite{NANOGrav12.5yr:2021}\\
-J2317+1439 & $-16.50$ & $6.0$   &  \cite{NANOGrav12.5yr:2021}\\
+J2145-0750 & $-13.86$ & $1.6$   &  \cite{NANOGrav12p5yr:2021}\\
+J2317+1439 & $-16.50$ & $6.0$   &  \cite{NANOGrav12p5yr:2021}\\
 \hline
 \end{tabular}
 \caption{\label{tab:redNoise}
 Spin noise parameters for $13$ pulsars. 
 [Notes: Values from Ref.~\cite{GoncharovEtAl:2021} are taken directly form their Table 1. 
-Values from Ref.~\cite{NANOGrav12.5yr:2021} are converted from units of ${\rm \mu s \,yr}^{1/2}$ to $\log_{10} \ARed[{\rm yr}^{3/2}]$.]
+%Values from Ref.~\cite{NANOGrav12p5yr:2021} are converted from units of ${\rm \mu s \,yr}^{1/2}$ to $\log_{10} \ARed[{\rm yr}^{3/2}]$.]
 }
 \end{table}
+\end{comment}
 
-MeerTime pulsars are observed with a cadence of once every two weeks. 
-The total observation time used in each $2$ week observing time is $42592\,{\rm s} = 11\,{\rm hrs}$, which is divided between the MeerTime pulsars. 
+%# estimating the oterh red noise values. 
+Spin noise parameters for the remaining pulsars can be estimated using the scaling relation formalism in Shannon and Cordes. 
+The spin noise RMS value is given by 
+\begin{equation}
+\sigma_{\rm SN} = C_2 \mu^{\alpha} | {\dot \mu}_{-15} |^{\beta} t_{\rm yr}^{\gamma}
+\end{equation}
+where $\mu$
 
+\subsection{JitterNoies}
 
-\section{Time Shuffle}
-
+Some pulsars also have jitter noise measurements
 
 
 \begin{table}
-\begin{tabular}
-Paramter & value & unit \\ 
+\begin{center}
+\begin{tabular}{ll}
+\hline \hline
+Pulsar     & $\sigJitter$ \\
+\hline
+J0125-2327 & $48  \pm 13$   \\
+J0437-4715 & $50  \pm 10$   \\
+J0636-3044 & $100 \pm 30$   \\
+J0711-6830 & $60  \pm 20$   \\
+J1022+1001 & $120 \pm 20$   \\
+J1045-4509 & $130 \pm 75$   \\
+J1603-7202 & $180 \pm 40$   \\
+J1730-2304 & $80  \pm 45$   \\
+J1744-1134 & $30  \pm  6$   \\
+J1757-5322 & $130 \pm 45$   \\
+J1909-3744 & $9   \pm  3$   \\
+J2145-0750 & $200 \pm 20$   \\
+J2241-5236 & $3.8 \pm  0.8$ \\
 \hline\hline
-GW amplitude, $A$   & $2\times 10 ^{-15}$   &
-GW slope, $\alpha$  &                       &
-Cadence, $c$        & $2$                   &
 \end{tabular}
-\caption{\label{tab:shuffleParameters}
+\end{center}
+\caption{\label{tab:jitter}
+Jitter noise measurements
 }
 \end{table}
-
-To avoid biasing against pulsars not in the galactic center, we use.... 
-
 \begin{comment}
-Things we have/will use
-OzSTAR, hasasia, numpy, scipy, astropy(?)
+\begin{table}
+\begin{tabular}{ll}
+\hline\hline
+Pulsar     & $\sigJitter$ (${\rm ns}$) \\ 
+\hline
+J0125-2327 & $48  \pm 13$   \\
+J0437-4715 & $50  \pm 10$   \\
+J0636-3044 & $100 \pm 30$   \\
+J0711-6830 & $60  \pm 20$   \\
+J1022+1001 & $120 \pm 20$   \\
+J1045-4509 & $130 \pm 75$   \\
+J1603-7202 & $180 \pm 40$   \\
+J1730-2304 & $80  \pm 45$   \\
+J1744-1134 & $30  \pm  6$   \\
+J1757-5322 & $130 \pm 45$   \\
+J1909-3744 & $9   \pm  3$   \\
+J2145-0750 & $200 \pm 20$   \\
+J2241-5236 & $3.8 \pm  0.8$ \\
+\hline\hline
+\end{tabular}
+\caption{\label{tab:jitter}
+Jitter noise measurements from Ref.~\cite{ParthasarathyEtAl:2021}.
+}
+\end{table}
 \end{comment}
 
-\bibliographystyle{myunsrt}
-\bibliography{ptabib}
-\end{document} 
+MeerTime pulsars are observed with a cadence of once every two weeks. 
+The total observation time used in each $2$ week observing time is $42592\,{\rm s} = 11\,{\rm hrs}$, which is divided between the MeerTime pulsars. 
+The targeted precision for each pulsar is $\sigma = 1 {\rm \mu\, s}$. 
+We assume a gravitational wave signal with $A = 2\times 10^{-15}$ and $\alpha = -2/3$.
+Using Eqns.~\ref{eqn:snrPIPJPg} and ~\ref{eqn:PIGWWR}, the average SNR for the MeerTime PTA after a timespan $T=10\,{\rm yr}$ is XXXX
+
+
+
+\section{Time Shuffle}
+\begin{figure}
+\includegraphics[width=0.8\textwidth]{../snr/correlationFunctions.png}
+\caption{\label{fig:correlations}
+Correlation functions. 
+We are using the green function for the shuffle at the moment.
+}
+\end{figure}
+
+Can we re-organise how the available time is split between pulsars to increase the SNR at$10\,{\rm yr}$?
+Shuffle time between pulsar:
+\begin{itemize}
+\item Choose a pulsar to be the donor pulsar. Subtract $1/4$ of its integration time. 
+\item Give time to each other pulsar in turn and compute whether there is an SNR improvement.
+\item Repeat for next donor pulsar. 
+\end{itemize}
+
+Eqn.~\ref{eqn:hd} has highest values for pulsars that have small angular separations.
+But we want good sky coverage to confirm a Hellings-Downs correlation for detection. 
+To prevent the time-shuffle algorithm favouring pulsars in the galactic centre, we replace the Hellings and Downs correlation $\chiIJhd$ with a modified angular correlation function $\chi_{IJ}^{\rm mod}$ which corresponds to the difference between a dipole $\chiIJdip$ and the HD correlation
+\begin{equation}
+\chi_{IJ}^{\rm mod} = \chiIJdip - 2 \chiIJhd
+\label{eqn:chimod}
+\end{equation}
+and $\chiIJdip$ is given by~\cite{AnholmEtAl:2009}
+\begin{equation}
+\chiIJdip = -\frac{3}{2}
+            \left[ \cos \zeta - \frac{4}{3} - 4 \tan^2 \frac{\zeta}{2} 
+                   \ln \left( \sin \frac{\zeta}{2} \right) \right]\,.
+\end{equation}
+The correlation functions are shown in Fig.~\ref{fig:correlations}.
+
+
+
+
+\section{Results}
+Two runs using Eqn.~\ref{eqn:chimod} have these results so far: 
+\begin{itemize}
+\item With red noise (shuffle SNR)/(original SNR): 1.143
+\item Without red noise (shuffle SNR)/(original SNR): 1.136
+\end{itemize}
+
+
+\begin{figure}
+\includegraphics[width=0.8\textwidth]{../local/integral/quarterTimeShuffleDPHDRed/plots/SNRVTime.png}
+\includegraphics[width=0.8\textwidth]{../local/integral/quarterTimeShuffleDPHD/plots/SNRVTime.png}
+\caption{\label{fig:SNRVTime}
+SNR against PTA lifetime.
+The result for the original timings is shown in blue and the shuffle timings in orange.
+Top: using red noise parameters in Table~\ref{tab:redNoise}.
+Bottom: all red noise parameters set to zero. 
+}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.32\textwidth]{../local/integral/quarterTimeShuffleDPHDRed/plots/obsTimes.png}
+\includegraphics[width=0.32\textwidth]{../local/integral/quarterTimeShuffleDPHD/plots/obsTimes.png}
+\caption{\label{fig:obsTimes}
+Original (blue) and shuffled (orange) observation times for each pulsar.
+Left: using red noise parameters in Table~\ref{tab:redNoise}. 
+Right: setting all red noise amplitudes to zero.
+}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.9\textwidth]{../local/integral/quarterTimeShuffleDPHDRed/plots/skymapTimeDiff.png}
+\includegraphics[width=0.9\textwidth]{../local/integral/quarterTimeShuffleDPHD/plots/skymapTimeDiff.png}
+\caption{\label{fig:skymap}
+Sky map of shuffle results. 
+Orange corresponds to pulsars which gained time and blue to pulsars that lost time. 
+The size of the marker is proportional to the amount of time gained/lost. 
+The crosses show all pulsar positions. 
+Top: with red noise. 
+Bottom: zero red noise. 
+}
+\end{figure}
+
+
+
+\section{Conclusions}
+
+The last numbered section should briefly summarise what has been done, and describe
+the final conclusions which the authors draw from their work.
+
+\section*{Acknowledgements}
+
+The Acknowledgements section is not numbered. Here you can thank helpful
+colleagues, acknowledge funding agencies, telescopes and facilities used etc.
+Try to keep it short.
+\begin{comment}
+Things we have/will use
+OzSTAR, hasasia, numpy, scipy, astropy(?), matplotlib
+\end{comment}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Data Availability}
+
+ 
+The inclusion of a Data Availability Statement is a requirement for articles published in MNRAS. Data Availability Statements provide a standardised format for readers to understand the availability of data underlying the research results described in the article. The statement may refer to original data generated in the course of the study or to third-party data analysed in the article. The statement should describe and provide means of access, where possible, by linking to the data or providing the required accession numbers for the relevant databases or DOIs.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%% REFERENCES %%%%%%%%%%%%%%%%%%
+
+% The best way to enter references is to use BibTeX:
+
+\bibliographystyle{mnras}
+\bibliography{ptabib} % if your bibtex file is called example.bib
+
+
+% Alternatively you could enter them by hand, like this:
+% This method is tedious and prone to error if you have lots of references
+%\begin{thebibliography}{99}
+%\bibitem[\protect\citeauthoryear{Author}{2012}]{Author2012}
+%Author A.~N., 2013, Journal of Improbable Astronomy, 1, 1
+%\bibitem[\protect\citeauthoryear{Others}{2013}]{Others2013}
+%Others S., 2012, Journal of Interesting Stuff, 17, 198
+%\end{thebibliography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%% APPENDICES %%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+
+\section{Some extra material}
+
+If you want to present additional material which would interrupt the flow of the main paper,
+it can be placed in an Appendix which appears after the list of references.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Don't change these lines
+\bsp	% typesetting comment
+\label{lastpage}
+\end{document}
+
+% End of mnras_template.tex

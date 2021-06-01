@@ -100,6 +100,10 @@ jitterNoiseFile = sys.argv[10]
 
 outputDir = sys.argv[11]
 
+
+print(shuffleFile2,shuffleFile3)
+
+
 # data file
 #psrDataFile = '../data/psrDetails.dat'
 
@@ -125,7 +129,7 @@ jitterNoise = readInData.readDataIntoDicts(originalFile, \
 #psrTimeShuffleDataNames = np.genfromtxt('oneToOneShuffle/shuffle_14.dat',usecols=0,dtype=str)
 #psrTimeShuffleDataTimes = np.genfromtxt('oneToOneShuffle/shuffle_14.dat',usecols=1)
 
-if shuffleFile2!=None and shuffleFile3!=None:
+if shuffleFile2!='None' and shuffleFile3!='None':
     
 
     plotSNRVTimeCompare(psrNames, \
@@ -161,13 +165,18 @@ if shuffleFile2!=None and shuffleFile3!=None:
                             jitterNoise, \
                             shuffleLabel,\
                             linestyle=ls)
-plt.legend()
-plt.xlabel('Time (years)')
-plt.ylabel('SNR')
-plt.savefig('compareSNRVTime.png')
-plt.show()
+    plt.legend()
+    plt.xlabel('Time (years)')
+    plt.ylabel('SNR')
+    plt.savefig('compareSNRVTime.png')
+    plt.show()
 
-exit()
+    exit()
+
+else: 
+    shuffleFile  = shuffleFile1
+    shuffleLabel = shuffleLabel1
+
 
 
 print('plotting snr')
