@@ -1,0 +1,162 @@
+
+MeerTime is timing $82$ pulsars and currently targets a precision of $1\times 10^{-6}\,{\rm s}$ for each with $c=26\,{\rm yr^{-1}}$.
+From observations to date, we have an anticipated $\sigma_I$ and the integration time (for a single pulsar observation) required to achieve it for each pulsar and $\sigma_I$ scales with observation $T_{{\rm obs},I}$ time like 
+\begin{equation}
+\sigma_I = \delta_I / \sqrt{T_{{\rm obs},I}}\,,
+\label{eqn:TobsToSig}
+\end{equation}
+where $\delta_I$ is a constant of proportionality which depends on the pulsar. 
+
+Limited information on the pulsar spin and jitter noise is also available as described in the following sections. 
+
+\subsection{Spin noise}
+MeerTime observations are not currently long enough to estimate spin noise in each of the pulsars. 
+However spin noise measurements already exist for $13$ of the pulsars from PPTA and NANOGrav analysis. 
+We take $\ARed$ and $\gammaRed$ values from ~\cite{GoncharovEtAl:2021} (sixth and seventh column in Table 1) and ~\cite{NANOGrav12p5yr:2021} (tenth and eleventh column in Table 5). 
+Where a value is listed in both papers, we take the~\cite{GoncharovEtAl:2021} value. 
+Table~\ref{tab:redNoise} shows the red noise parameters for $13$ of our $82$ pulsars. 
+Otherwise, we assume zero spin noise. 
+
+\begin{table}
+\begin{center}
+\begin{tabular}{llll}
+\hline \hline
+Pulsar     & $\log_10(\ARed)$  & $\gammaRed$ & Reference \\
+\hline
+J0030+0451 & $-15.72$ & $5.3$   &  \cite{NANOGrav12p5yr:2021}\\
+J0437-4715 & $-14.56$ & $2.99$  &  \cite{GoncharovEtAl:2021}\\
+J0613-0200 & $-14.26$ & $4.17$  &  \cite{GoncharovEtAl:2021}\\
+J0711-6830 & $-13.04$ & $1.09$  &  \cite{GoncharovEtAl:2021}\\
+J1024-0719 & $-14.62$ & $6.39$  &  \cite{GoncharovEtAl:2021}\\
+J1600-3053 & $-14.34$ & $3.81$  &  \cite{GoncharovEtAl:2021}\\
+J1643-1224 & $-12.85$ & $0.98$  &  \cite{GoncharovEtAl:2021}\\
+J1713+0747 & $-15.16$ & $1.6$   &  \cite{NANOGrav12p5yr:2021}\\
+J1744-1134 & $-14.16$ & $1.7$   &  \cite{NANOGrav12p5yr:2021}\\
+J1747-4036 & $-13.78$ & $3.8$   &  \cite{NANOGrav12p5yr:2021}\\
+J1909-3744 & $-14.74$ & $4.05$  &  \cite{GoncharovEtAl:2021}\\
+J2145-0750 & $-13.86$ & $1.6$   &  \cite{NANOGrav12p5yr:2021}\\
+J2317+1439 & $-16.50$ & $6.0$   &  \cite{NANOGrav12p5yr:2021}\\
+\hline\hline
+\end{tabular}
+\end{center}
+\caption{\label{tab:redNoise}
+Spin noise parameters for $13$ pulsars. 
+The second and third columns show the log of the spin noise amplitude and the slope. 
+}
+\end{table}
+
+% pulsar reference - jitter, white nooise, red noies, position
+
+\begin{comment}
+% value from NANOGRav table is An
+% An  = 0.006 \mu s yr^{1/2} 
+% An -> 0.006 * 3.17E-14 yr^{3/2}
+\begin{table}
+\begin{tabular}{llll}
+\hline\hline
+Pulsar     & $\ARed$ & $\gammaRed$ & Ref.\\
+\hline
+J0030+0451 & $-15.72$ & $5.3$   &  \cite{NANOGrav12p5yr:2021}\\
+J0437-4715 & $-14.56$ & $2.99$  &  \cite{GoncharovEtAl:2021}\\
+J0613-0200 & $-14.26$ & $4.17$  &  \cite{GoncharovEtAl:2021}\\
+J0711-6830 & $-13.04$ & $1.09$  &  \cite{GoncharovEtAl:2021}\\
+J1024-0719 & $-14.62$ & $6.39$  &  \cite{GoncharovEtAl:2021}\\
+J1600-3053 & $-14.34$ & $3.81$  &  \cite{GoncharovEtAl:2021}\\
+J1643-1224 & $-12.85$ & $0.98$  &  \cite{GoncharovEtAl:2021}\\
+J1713+0747 & $-15.16$ & $1.6$   &  \cite{NANOGrav12p5yr:2021}\\
+J1744-1134 & $-14.16$ & $1.7$   &  \cite{NANOGrav12p5yr:2021}\\
+J1747-4036 & $-13.78$ & $3.8$   &  \cite{NANOGrav12p5yr:2021}\\
+J1909-3744 & $-14.74$ & $4.05$  &  \cite{GoncharovEtAl:2021}\\
+J2145-0750 & $-13.86$ & $1.6$   &  \cite{NANOGrav12p5yr:2021}\\
+J2317+1439 & $-16.50$ & $6.0$   &  \cite{NANOGrav12p5yr:2021}\\
+\hline
+\end{tabular}
+\caption{\label{tab:redNoise}
+Spin noise parameters for $13$ pulsars. 
+[Notes: Values from Ref.~\cite{GoncharovEtAl:2021} are taken directly form their Table 1. 
+%Values from Ref.~\cite{NANOGrav12p5yr:2021} are converted from units of ${\rm \mu s \,yr}^{1/2}$ to $\log_{10} \ARed[{\rm yr}^{3/2}]$.]
+}
+\end{table}
+\end{comment}
+
+\begin{comment}
+\textbf{estimating spin noise for other pulsars? }
+Spin noise parameters for the remaining pulsars can be estimated using the scaling relation formalism in Shannon and Cordes. 
+The spin noise RMS value is given by 
+\begin{equation}
+\sigma_{\rm SN} = C_2 \mu^{\alpha} | {\dot \mu}_{-15} |^{\beta} t_{\rm yr}^{\gamma}
+\end{equation}
+where $\mu$......
+In this work we use the central fit values for the ${\rm MSP}_{\rm 10,PPTA}$+${\rm NANO}$ ($\{ \ln C_2, \alpha, \beta, \gamma \} = \{-1.2,-0.9,0.8,2.3\}$).
+\end{comment}
+
+
+\subsection{Jitter Noise}
+
+Some of the pulsars have jitter noise estimates. 
+Table~\ref{tab:jitter} shows jitter noise measurements for $13$ MeerTime pulsars from~\cite{ParthasarathyEtAl:2021}.
+We assume the rest of the pulars have zero jitter noise.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{ll}
+\hline \hline
+Pulsar     & $\sigJitter$ \\
+\hline
+J0125-2327 & $48  \pm 13$   \\
+J0437-4715 & $50  \pm 10$   \\
+J0636-3044 & $100 \pm 30$   \\
+J0711-6830 & $60  \pm 20$   \\
+J1022+1001 & $120 \pm 20$   \\
+J1045-4509 & $130 \pm 75$   \\
+J1603-7202 & $180 \pm 40$   \\
+J1730-2304 & $80  \pm 45$   \\
+J1744-1134 & $30  \pm  6$   \\
+J1757-5322 & $130 \pm 45$   \\
+J1909-3744 & $9   \pm  3$   \\
+J2145-0750 & $200 \pm 20$   \\
+J2241-5236 & $3.8 \pm  0.8$ \\
+\hline\hline
+\end{tabular}
+\end{center}
+\caption{\label{tab:jitter}
+Jitter noise measurements.
+}
+\end{table}
+\begin{comment}
+\begin{table}
+\begin{tabular}{ll}
+\hline\hline
+Pulsar     & $\sigJitter$ (${\rm ns}$) \\ 
+\hline
+J0125-2327 & $48  \pm 13$   \\
+J0437-4715 & $50  \pm 10$   \\
+J0636-3044 & $100 \pm 30$   \\
+J0711-6830 & $60  \pm 20$   \\
+J1022+1001 & $120 \pm 20$   \\
+J1045-4509 & $130 \pm 75$   \\
+J1603-7202 & $180 \pm 40$   \\
+J1730-2304 & $80  \pm 45$   \\
+J1744-1134 & $30  \pm  6$   \\
+J1757-5322 & $130 \pm 45$   \\
+J1909-3744 & $9   \pm  3$   \\
+J2145-0750 & $200 \pm 20$   \\
+J2241-5236 & $3.8 \pm  0.8$ \\
+\hline\hline
+\end{tabular}
+\caption{\label{tab:jitter}
+Jitter noise measurements from Ref.~\cite{ParthasarathyEtAl:2021}.
+}
+\end{table}
+\end{comment}
+
+\subsection{Current observation strategy}
+MeerTime pulsars are observed with a cadence of once every two weeks. 
+The total observation time used in each $2$ week observing time is $42592\,{\rm s} = 11\,{\rm hrs}$, which is divided between the MeerTime pulsars. 
+The targeted precision for each pulsar is $\sigma = 1 {\rm \mu\, s}$. 
+
+Using the current observation strategy and assuming a GWB signal with $A = 2\times 10^{-15}$ and $\alpha = -2/3$, we can estimate the predicted average SNR for MeerTime from Eqn.~\ref{eqn:snrPIPJPg}. 
+After a timespan of $T=10\,{\rm yrs}$, the average SNR is $\approx 11.0$.
+Can we improve this by reallocating the observing time? 
+
+
