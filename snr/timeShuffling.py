@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import argparse
 import snrFunctions
 import readInData
+import datetime
 
 
 def plotResult(newTimes,originalTimes, \
@@ -80,7 +81,7 @@ def get_arguments():
     return args
     
 
-
+start = datetime.datetime.now()
 
 args = get_arguments()
 psrDataFile     = args.psrDataFile
@@ -160,7 +161,7 @@ psrNames = list(psrNames)
 # clear log file
 logFile=open('shuffleLog.dat'.format(resultsDir),'w')
 logFile.close()
-
+print(startSNR)
 while improvement==True:
 
     print('shuffle: ',count)    
@@ -210,11 +211,11 @@ while improvement==True:
     #print(psrToGive)
     #print(psrNames,len(psrNames))
     #psrNames.remove(psrToGive)
-
+    print(bestSNR,psrToGive,psrToTake)
     #print(psrNames,len(psrNames))
     logFile=open('shuffleLog.dat'.format(resultsDir),'a')
     logFile.write("""
-    Shuffle {}
+    Shuffle {}v
     NPSRs {}
     Best outcome:
     give {} time to {}
@@ -235,9 +236,17 @@ while improvement==True:
     count+=1
 
 
-plotResult(psrTimeShuffle,psrStartingObsTimes,
-           angCorrValues,chooseCorrFunc,psrObsConstants,
-           count,resultsDir,redAmps,redGammas,jitters)
+
+
+
+end = datetime.datetime.now()
+
+
+print('time: ', end-start)
+
+#plotResult(psrTimeShuffle,psrStartingObsTimes,
+#           angCorrValues,chooseCorrFunc,psrObsConstants,
+#           count,resultsDir,redAmps,redGammas,jitters)
        
 
 """
