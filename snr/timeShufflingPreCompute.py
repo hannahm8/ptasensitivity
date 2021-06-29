@@ -196,6 +196,10 @@ intContribShuffle = intContributions.copy()
 logFile=open('shuffleLog.dat'.format(resultsDir),'w')
 logFile.close()
 
+shuffleHowMuch=4. # fourth
+
+minimumTime = 256.
+minTimeCondition = minimumTime + (minimumTime/(shuffleHowMuch-1.))
 
 while improvement==True: 
 
@@ -204,12 +208,13 @@ while improvement==True:
 
     for ipsr in psrNames: 
         for jpsr in psrNames: 
-            if (ipsr!=jpsr):
+            # this will make the minimum time 256 seconds (342 - 341/4)
+            if (ipsr!=jpsr) and psrTimeShuffle[ipsr]>minTimeCondition: 
                 #print(ipsr,jpsr)
                 # updating the times for the trial run 
 
                 editedTimes = psrTimeShuffle.copy()
-                timeToShift = editedTimes[ipsr]/4.
+                timeToShift = editedTimes[ipsr]/shuffleHowMuch
                 editedTimes[ipsr] -= timeToShift
                 editedTimes[jpsr] += timeToShift
                 
@@ -236,13 +241,13 @@ while improvement==True:
                     pass
 
     if check==0:
-        logFile=open('shuffle.dat','a') 
+        logFile=open('shuffleLog.dat','a') 
         logFile.write('\n\nno improvement found\n\n')
         logFile.close()
         break # there is not more to be gained with this method
 
     # if improvement has been made, update the times and the intergrals
-    timeToShift = psrTimeShuffle[psrToGive]/4
+    timeToShift = psrTimeShuffle[psrToGive]/shuffleHowMuch
     psrTimeShuffle[psrToGive] -= timeToShift    
     psrTimeShuffle[psrToTake] += timeToShift
     
