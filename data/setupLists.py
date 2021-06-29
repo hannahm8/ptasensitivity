@@ -11,7 +11,7 @@ decs  = [ float(catalog[i,5]) for i in range(len(catalog[:,5])) ]
 
 
 
-meertimePSRs = np.genfromtxt('meerTimePSRs.dat',dtype=str,skip_header=2)
+meertimePSRs = np.genfromtxt('meerTimePSRsv2.dat',dtype=str,skip_header=2)
 
 
 
