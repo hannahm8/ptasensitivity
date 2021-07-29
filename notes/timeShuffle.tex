@@ -1,20 +1,27 @@
 
 
-This is an initial approach to see if we can gain SNR by reorganising how observation time is split between the pulsars. 
-We shuffle time between pulsars keeping the total available time to MeerTime constant. 
-We assume that the observation cadence is unchanged $c=26\,{\rm yr}^{-1}$ and compute the SNR after $10\,{\rm yr}$. 
-The constraint is that we have a total observing time of 
-\begin{equation}
-\sum_{I} T_{{\rm obs},I} = 42\,592\,{\rm s}\,,
-\end{equation}
-available for the $82$ pulsars every two weeks. 
-This then feeds into the precision achieved in Eqn.~\ref{eqn:TobsToSig} and the resulting SNR of the array in Eqn.~\ref{eqn:snrPIPJPg}.
+In this work we take a greedy algorithm approach to search for SNR improvements. 
+The approach has its limitations in that it will always take the locally optimal step, and can miss the global optimal solution. 
+However, it has a reasonably low computational cost and can still achieve SNR improvement. 
 
 
-As a first pass we trial reallocating time in $1/4 T_{{\rm obs},I}$ units. 
-We trial subtracting $1/4 T_{{\rm obs},I}$ from pulsar $I$ and adding that time to pulsar $J$ for $I\neq J$.
-Having tried all possible combinations, we save the best set of $T_{\rm obs}$ (the one that gives the highest value of Eqn.~\ref{eqn:snrPIPJPg}) and repeat.  
+The method we use focuses on reorganising the time allocation between pulsars. 
+We use the initial integration times as a starting point (see Section~\ref{sec:data}).
+The total observation time available to MeerTime is constant ($\sum_{I} T_{{\rm obs},I} \TwoWkObsTimeS\,{\rm s}$) and the cadence is fixed at $c=26\,{\rm yr}^{-1}$.
+Integration time is shuffled between pulsars to find an SNR improvement. 
+At each step, a fraction $f$ of integration time is subtracted from a pulsar and reallocated to another pulsar so that 
+\begin{eqnarray}
+T_{{\rm obs},I} &\rightarrow& T_{{\rm obs},I} - f T_{{\rm obs},I}\,, \nonumber\\
+T_{{\rm obs},J} &\rightarrow& T_{{\rm obs},J} + f T_{{\rm obs},I}\,, \nonmumber
+\end{eqnarray}
+where we choose $f=1/8$. 
+Every possible combination of time shuffles between pulsars is trialled.
+The combination which gives the biggest SNR increase at $10\,{\rm yrs}$ is chosen, providing an updated list of $T_{{\rm obs},I}$.
+The new time allocations become the starting point for the next time shuffle. 
+The process is repeated until the algorithm cannot find further gains in SNR. 
 
+The shape of the Hellings-Downs function (equation~\ref{}) means that pulsars pairs with small angular separations have higher contributions to the SNR in equation~\ref{eqn:snrPIPJPg}. 
+This leads to pulsars in the galactic centre being favoured in the time shuffle due to a higher number of small angular separations 
 
 \subsection{Angular correlation functions}
 We also try using three different functions for $\chiIJhd$ for the time reallocation as maximising equation~\ref{eqn:snrPIPJPg} may not totally capture a desired observing strategy for PTAs. 
