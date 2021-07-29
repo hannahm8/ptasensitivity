@@ -20,7 +20,7 @@ for ipsr in psrNames:
 
 oneYearInSeconds = (365.25*24.*60.*60.)
 
-Ts = np.linspace(0,15,10)
+Ts = np.linspace(1,15,10)
 TInSeconds = Ts * oneYearInSeconds
 
 A = 2.E-15
@@ -34,6 +34,8 @@ c = 26./oneYearInSeconds
 
 snr = np.zeros(len(Ts))
 for i, Ti in enumerate(TInSeconds):
+
+
     snr[i] = snrFunctions.avePTASNR(psrNames,\
                                     psrObsConstants,\
                                     hdValues,\
@@ -52,7 +54,8 @@ psrB, psrBName = min(zip(psrObsConstants.values(), psrObsConstants.keys()))
 
 # update
 psrStartingObsTimes[psrWName] = 0
-
+snrBestSoFar = 0
+betterCount=0
 for ipsr in psrNames: 
 
     print(ipsr)
@@ -73,6 +76,10 @@ for ipsr in psrNames:
                                             A,alpha,beta,fref,Ti,c)
 
         plt.plot(Ts,snrTrials,color='k',alpha=0.5)
+        if snrTrials[-1]>snrBestSoFar:
+            snrBestSoFar = snrTrials[-1]
+            print('oooo',snrTrials[-1])
+            betterCount+=1
 
 
 

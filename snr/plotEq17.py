@@ -1,26 +1,27 @@
 import numpy as np
-import scalingRelFunctions
+import snrFunctions
 
 import matplotlib.pyplot as plt
 
 
 
-
+no longer works!!!! Do not use!! 
 
 # loop over the T's to plot snr against time
 
 
 # observation time in years
-Ts = np.logspace(0,2.5,100)
+Ts = np.logspace(0,2.5,20)
+Ts = np.linspace(0,15,50)
 TInSeconds = Ts * (365.25*24.*60.*60)
 
 # cadence
-c = 20. / (365.25*24.*60.*60.)
+c = 26. / (365.25*24.*60.*60.)
 
 
 
 # signal details
-A=1.E-15
+A=2.E-15
 beta=13./3
 alpha=(3.-beta)/2.
 fref = 1./(365.25*24.*60.*60.)
@@ -39,12 +40,19 @@ sigmaJs = sigmaJs
 
 snrs = np.zeros(len(Ts))
 
+scaleInt = np.zeros(len(Ts))
+scaleLoud = np.zeros(len(Ts))
+
 for i, Ti in enumerate(TInSeconds):
 
 
-    snrs[i] = scalingRelFunctions.avePTASNR(sigmaIs,sigmaJs,angles,
-                                            A, alpha, beta, fref,Ti,c)
+    snrs[i] = snrFunctions.avePTASNR(sigmaIs,sigmaJs,angles,
+                                            A, alpha, beta,fref,Ti,c)
 
+    scaleInt[i] = snrFunctions.scalingIntermediate(angles,1.E-6,Ti,alpha,beta,fref,c,A)
+
+
+    scaleLoud[i] = snrFunctions.scalingLoud(angles,alpha,beta,1.E-6,Ti,c,fref,A)
 
 # senario 2 -> using 20 'best' observed for four times as long
 howMany2=35
@@ -55,8 +63,9 @@ snrs2 = np.zeros(len(Ts))
 
 for i, Ti in enumerate(TInSeconds):
 
-    snrs2[i] = scalingRelFunctions.avePTASNR(sigmaIs,sigmaJs,angles,
+    snrs2[i] = snrFunctions.avePTASNR(sigmaIs,sigmaJs,angles,
                                             A, alpha, beta, fref,Ti,c)
+
 
 
 # senario 2 -> using 20 'best' observed for four times as long
@@ -68,7 +77,7 @@ snrs3 = np.zeros(len(Ts))
 
 for i, Ti in enumerate(TInSeconds):
 
-    snrs3[i] = scalingRelFunctions.avePTASNR(sigmaIs,sigmaJs,angles,
+    snrs3[i] = snrFunctions.avePTASNR(sigmaIs,sigmaJs,angles,
                                             A, alpha, beta, fref,Ti,c)
 
 
@@ -76,7 +85,7 @@ for i, Ti in enumerate(TInSeconds):
 M=20
 snrI = [ scalingRelFunctions.scalingIntermediate(M,c,A,1E-7,Ti,beta) for Ti in TInSeconds] 
 
-snrL = [ scalingRelFunctions.scalingLoud(M,c,A,1E-7,Ti,beta) for Ti in TInSeconds]
+snrL = [ scalingRelFunctions.scalingLoud(M,c,A,1E-7,Ti,beta ) for Ti in TInSeconds]
 
 
 check='i'
@@ -94,16 +103,28 @@ scaleL = snrL[-1]/snrs[-1]
 #print(transitionTime/(365.25*24.*60.*60), scaleI, scaleL)
 print(snrs)
 
-plt.loglog(Ts,snrs, label='current')
-plt.loglog(Ts,snrs2,label='{} best {}T'.format(howMany2,tf2))
-plt.loglog(Ts,snrs3,label='{} best {}T'.format(howMany3,tf3))
+plt.title('Using cadence = {} per year'.format(int(c*(365.25*24.*60.*60.))))
+#plt.loglog(Ts,snrs, label='Full spreadsheet list (minus ~5 )')
+#plt.loglog(Ts,snrs2,label='{} PSRs observed for {}x as long'.format(howMany2,tf2))
+#plt.loglog(Ts,snrs3,label='{} PSRs observed for {}x as long'.format(howMany3,tf3))
+
+plt.plot(Ts,snrs, label='Full spreadsheet list (minus ~5 )')
+plt.plot(Ts,scaleInt,label='scaling rel intermediate')
+plt.plot(Ts,scaleLoud,label='scaling rel Loud')
+#plt.plot(Ts,snrs2,label='{} PSRs observed for {}x as long'.format(howMany2,tf2))
+#plt.plot(Ts,snrs3,label='{} PSRs observed for {}x as long'.format(howMany3,tf3))
+print(scaleLoud)
 #plt.loglog(Ts,snrL)#/scaleL)
 #plt.loglog(Ts,snrI)#/scaleI)
 #plt.axvline(transitionTime)
 #plt.xlim(1,30)
 #plt.ylim(1E-2,1E2)
+plt.yscale('log')
+plt.xscale('log')
+plt.ylim(0,100)
 plt.ylabel('SNR')
 plt.xlabel('Time (years)')
 plt.grid()
 plt.legend()
+plt.savefig('SNRVTime_2E-15_c{}_15yrs_all.png'.format(int(c*(365.25*24.*60.*60.))))
 plt.show()

@@ -25,6 +25,14 @@ def plotSNRVTime(psrNames,sigmas,angCorrValues,redAs,redGammas,jitters,pltLabel,
     T = np.linspace(1., 11., 20)
     TInSeconds = T * oneYearInSeconds
 
+
+    snr10y = snrFunctions.avePTASNR_from_sigmas(psrNames,sigmas, \
+                                                angCorrValues, \
+                                                redAs,redGammas,jitters,\
+                                                A,alpha,beta,fref,10*oneYearInSeconds,c)
+    print('value after 10 years', pltLabel, snr10y)
+    
+
     snr = np.zeros(len(T))
     for i, Ti in enumerate(TInSeconds):
 
