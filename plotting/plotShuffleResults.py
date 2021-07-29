@@ -2,6 +2,8 @@ import numpy as np
 import sys
 import matplotlib.pyplot as plt
 
+sys.path.append('/home/hannahm/repositories/ptasensitivity/snr/')
+sys.path.append('/fred/oz005/users/hmiddlet/ptasensitivity/snr/')
 import snrFunctions
 import readInData
 

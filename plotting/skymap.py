@@ -6,6 +6,7 @@ from astropy.coordinates import SkyCoord
 from astropy.coordinates import Galactic 
 import sys
 sys.path.append('/home/hannahm/repositories/ptasensitivity/snr/')
+sys.path.append('/fred/oz005/users/hmiddlet/ptasensitivity/snr/')
 
 
 
