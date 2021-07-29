@@ -1,7 +1,8 @@
 """
 Functions for plotting results
 """
-
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 
@@ -38,7 +39,7 @@ def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
 
 
 
-def newOldTimesSteps(psrNames,psrStartingObsTimes,psrShuffleTimes,step):
+def newOldTimesSteps(psrNames,psrStartingObsTimes,psrShuffleTimes,step,snr,snr0):
 
     # scatter plot  
     startT, shuffleT = np.zeros(len(psrNames)), np.zeros(len(psrNames))
@@ -50,8 +51,9 @@ def newOldTimesSteps(psrNames,psrStartingObsTimes,psrShuffleTimes,step):
     plt.clf()
     plt.figure(figsize = (4,18))
     plt.scatter(startT, psrNames, label='original')
-    plt.scatter(shuffleT,psrNames, label='new {}'.format(int(step)))
+    plt.scatter(shuffleT,psrNames, marker='x', label='new {}'.format(int(step)))
     plt.xlabel('tobs (s)')
+    plt.title('SNR:{:.2f}, improvement:{:.2f}%'.format(snr,100*abs(snr-snr0)/snr0))
     plt.tight_layout()
     plt.legend()
 
@@ -59,8 +61,10 @@ def newOldTimesSteps(psrNames,psrStartingObsTimes,psrShuffleTimes,step):
     elif int(step<100): strStep = '0'+str(int(step))
     else: strStep = str(int(step))
 
+    plt.xlim(-20,2800)
     plt.savefig('times-{}.png'.format(strStep))
 
+    plt.close()
     return 
     
 
