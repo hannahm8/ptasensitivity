@@ -196,7 +196,7 @@ intContribShuffle = intContributions.copy()
 logFile=open('shuffleLog.dat'.format(resultsDir),'w')
 logFile.close()
 
-shuffleHowMuch=4. # fourth
+shuffleHowMuch=8. # eighth
 
 minimumTime = 256.
 minTimeCondition = minimumTime + (minimumTime/(shuffleHowMuch-1.))
