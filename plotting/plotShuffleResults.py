@@ -30,6 +30,16 @@ def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
                                         psrTimes,\
                                         redAs, redGammas,jitters, \
                                         A,alpha,beta,fref,Ti,c)
+
+
+    T10Yr = 10.*oneYearInSeconds
+    snr10Year = snrFunctions.avePTASNR(psrNames,\
+                                       psrObsConstants,\
+                                       hdValues,\
+                                       psrTimes,\
+                                       redAs,redGammas,jitters,\
+                                       A,alpha,beta,fref,T10Yr,c)
+    print("\nSNR at 10 years: {} \n".format(snr10Year))
     plt.plot(T,snr,label=label,ls=linestyle)
     return None
 
