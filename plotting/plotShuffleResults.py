@@ -200,27 +200,6 @@ if shuffleFile2!='None' and shuffleFile3!='None':
                             linestyle=ls)
 
 
-
-
-    for shuffleFile, shuffleLabel, ls in zip(shuffleFiles,shuffleNames,linestyles):
-
-        psrTimeShuffleDataNames = np.genfromtxt(shuffleFile,usecols=0,dtype=str)
-        psrTimeShuffleDataTimes = np.genfromtxt(shuffleFile,usecols=1)
-
-        psrShuffleTimes = {}
-        for psrName, psrTime in zip(psrTimeShuffleDataNames, psrTimeShuffleDataTimes):
-            psrShuffleTimes[psrName] = psrTime
-
-
-        plotSNRVTimeCompare(psrNames, \
-                            psrObsConstants, \
-                            hdValues, \
-                            psrShuffleTimes, \
-                            ampRed, \
-                            gammaRed, \
-                            jitterNoise, \
-                            shuffleLabel,\
-                            linestyle=ls)
     plt.legend()
     plt.xlabel('Time (years)')
     plt.ylabel('SNR')
