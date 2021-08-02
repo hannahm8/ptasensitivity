@@ -46,14 +46,14 @@ def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
     return None
 
 
-def obsTime(psrNames,psrObsTimes,label):
+def obsTime(psrNames,psrObsTimes,label,marker='.'):
     
     # move from dict to list
     obsTimes = np.zeros(len(psrNames))
     for i,psr in enumerate(psrNames):
-        obsTimes = psrObsTimes[psr]
-
-    plt.scatter(obsTimes,psrNames,label=label)
+        obsTimes[i] = psrObsTimes[psr]
+    print(len(obsTimes),len(psrNames))
+    plt.scatter(obsTimes,psrNames,label=label,marker=marker)
     return None
   
 
@@ -185,7 +185,8 @@ if shuffleFile2!='None' and shuffleFile3!='None':
     times = [psrStartingObsTimes,shuffleTimes1,shuffleTimes2,shuffleTimes3]
     label = [originalLabel,shuffleLabel1,shuffleLabel2,shuffleLabel3]
     linestyles = ['solid','dotted','dashed','dashdot']
-
+    markers = ['o','x','s','*']
+    """
     for psrTime,runLabel,ls in zip(times,label,linestyles):
 
         plotSNRVTimeCompare(psrNames, \
@@ -204,12 +205,15 @@ if shuffleFile2!='None' and shuffleFile3!='None':
     plt.savefig('compareSNRVTime.png')
     plt.show()
 
-    
+    """ 
     plt.clf()
-    for psrTime,runLabel in zip(times,label):
-
-        obsTime(psrNames,psrTime,runLabel)
-
+    plt.figure(figsize=(4,18))
+    for psrTime,runLabel,mark in zip(times,label,markers):
+        print(len(psrNames),len(psrTime))
+        obsTime(psrNames,psrTime,runLabel,marker=mark)
+    plt.legend()
+    plt.xlabel('Integration time (s)')
+    plt.tight_layout()
     plt.show()
     exit()
 
