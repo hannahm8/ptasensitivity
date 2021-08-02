@@ -188,7 +188,6 @@ if shuffleFile2!='None' and shuffleFile3!='None':
 
     for psrTime,runLabel,ls in zip(times,label,linestyles):
 
-
         plotSNRVTimeCompare(psrNames, \
                             psrObsConstants, \
                             hdValues, \
@@ -199,7 +198,6 @@ if shuffleFile2!='None' and shuffleFile3!='None':
                             runLabel, \
                             linestyle=ls)
 
-
     plt.legend()
     plt.xlabel('Time (years)')
     plt.ylabel('SNR')
@@ -208,10 +206,11 @@ if shuffleFile2!='None' and shuffleFile3!='None':
 
     
     plt.clf()
-    obsTime(psrNames,psrStartingObsTimes,'original')
-    for shuffleFile,shuffleLabel,ls in zip(shuffleFiles, shuffleNames, linestyles):
-        obsTime()
+    for psrTime,runLabel in zip(times,label):
 
+        obsTime(psrNames,psrTime,runLabel)
+
+    plt.show()
     exit()
 
 else: 
