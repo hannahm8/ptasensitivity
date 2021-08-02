@@ -92,13 +92,16 @@ def convert(ra_deg, dec_deg):
 
 
 
-psrDataFile = '/home/hannahm/repositories/ptasensitivity/data/psrDetails.dat'
+psrDataFile = sys.argv[1]
+shuffleFile = sys.argv[2]
+
+#psrDataFile = '/home/hannahm/repositories/ptasensitivity/data/psrDetails.dat'
 data = np.genfromtxt(psrDataFile,names=True)
 startTobs = data['IntTime']
 
 
 # get shuffle times
-shuffleFile = './shuffle_133.dat'
+#shuffleFile = './shuffle_133.dat'
 shuffleTobs = np.genfromtxt(shuffleFile,usecols=1)
 
 nPSRs = len(data['RA'])
@@ -164,45 +167,5 @@ plt.savefig('skymaptest.png')
 plt.show()
 exit()
 
-
-
-
-    
-
-
-
-
-l_rad, b_rad = np.zeros(nPSRs), np.zeros(nPSRs)
-for i in range(nPSRs):
-    print(data['RA'][i],data['DEC'][i])
-    l_rad[i], b_rad[i] = convert(data['RA'][i], data['DEC'][i])
-
-    
-# do size based on change of time
-timeDiff = (shuffleTobs - startTobs)/20
-print(timeDiff)
-
-#ra_rad  = [  (ra*np.pi)/180. for  ra in data['RA']  ]
-#dec_rad = [ (dec*np.pi)/180. for dec in data['DEC'] ]
-
-# colours
-c = []
-for i in range(nPSRs):
-    if timeDiff[i]>=0: c.append('#F5793A')
-    elif timeDiff[i]<0: c.append('#85C8F9')
-print (c)
-
-plt.figure()
-plt.subplot(111, projection="mollweide")
-plt.grid(True)
-#plt.plot(ra_rad, dec_rad, 'o', markersize=2, alpha=0.3)
-plt.scatter(data['RA'],data['DEC'],color='k',marker='x',alpha=0.2)
-
-#plt.scatter(l_rad, b_rad, marker='x', color='k', alpha=0.2)
-#plt.scatter(l_rad, b_rad, s=abs(timeDiff), alpha=0.9,color=c)
-
-#plt.scatter(ra_rad, dec_rad, 'o', alpha=0.3)
-plt.savefig('./skymapTimeDiff.png', dpi=300)
-plt.show()
 
 
