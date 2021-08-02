@@ -19,7 +19,7 @@ def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
     fref = 1./oneYearInSeconds
     c = 26./oneYearInSeconds
 
-    T = np.linspace(1., 11., 50)
+    T = np.linspace(1., 10., 50)
     TInSeconds = T * oneYearInSeconds
 
 
@@ -46,6 +46,32 @@ def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
     return None
 
 
+def obsTime(psrNames,psrObsTimes,label):
+    
+    # move from dict to list
+    obsTimes = np.zeros(len(psrNames))
+    for i,psr in enumerate(psrNames):
+        obsTimes = psrObsTimes[psr]
+
+    plt.scatter(obsTimes,psrNames,label=label)
+    return None
+  
+
+def readShuffle(shuffleFile):
+
+    """
+    reads the shuffle times into a dictionary
+    """
+    psrTimeShuffleDataNames = np.genfromtxt(shuffleFile,usecols=0,dtype=str)
+    psrTimeShuffleDataTimes = np.genfromtxt(shuffleFile,usecols=1)
+
+    psrShuffleTimes = {}
+    for psrName, psrTime in zip(psrTimeShuffleDataNames, psrTimeShuffleDataTimes):
+        psrShuffleTimes[psrName] = psrTime
+    return psrShuffleTimes
+
+
+    
 
 def timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes):
 
@@ -76,6 +102,7 @@ def timeComparison(psrNames,psrStartingObsTimes,psrShuffleTimes):
     plt.xlabel('(new tobs - old tobs) / old tobs')
     plt.savefig('{}/timeDiffPerPSR.png'.format(outputDir))
     plt.show()
+
 
     plt.clf()
     plt.figure(figsize = (4,18))
@@ -141,22 +168,39 @@ jitterNoise = readInData.readDataIntoDicts(originalFile, \
 #psrTimeShuffleDataNames = np.genfromtxt('oneToOneShuffle/shuffle_14.dat',usecols=0,dtype=str)
 #psrTimeShuffleDataTimes = np.genfromtxt('oneToOneShuffle/shuffle_14.dat',usecols=1)
 
+# version with multiple files 
+
 if shuffleFile2!='None' and shuffleFile3!='None':
-    
+    """
+    comparison plot version
+    """
+
+    # read in the data
+    shuffleTimes1 = readShuffle(shuffleFile1)
+    shuffleTimes2 = readShuffle(shuffleFile2)
+    shuffleTimes3 = readShuffle(shuffleFile3)
+
+    # plot the original data
+    # set up for plotting 
+    times = [psrStartingObsTimes,shuffleTimes1,shuffleTimes2,shuffleTimes3]
+    label = [originalLabel,shuffleLabel1,shuffleLabel2,shuffleLabel3]
+    linestyles = ['solid','dotted','dashed','dashdot']
+
+    for psrTime,runLabel,ls in zip(times,label,linestyles):
+
 
     plotSNRVTimeCompare(psrNames, \
                         psrObsConstants, \
                         hdValues, \
-                        psrStartingObsTimes, \
+                        psrTime, \
                         ampRed, \
                         gammaRed, \
                         jitterNoise, \
-                        originalLabel)
+                        runLabel, \
+                        linestyle=ls)
 
 
-    shuffleFiles = [shuffleFile1,shuffleFile2,shuffleFile3]
-    shuffleNames = [shuffleLabel1,shuffleLabel2,shuffleLabel3]
-    linestyles   = ['dotted','dashed','dashdot']
+
 
     for shuffleFile, shuffleLabel, ls in zip(shuffleFiles,shuffleNames,linestyles):
 
@@ -182,6 +226,12 @@ if shuffleFile2!='None' and shuffleFile3!='None':
     plt.ylabel('SNR')
     plt.savefig('compareSNRVTime.png')
     plt.show()
+
+    
+    plt.clf()
+    obsTime(psrNames,psrStartingObsTimes,'original')
+    for shuffleFile,shuffleLabel,ls in zip(shuffleFiles, shuffleNames, linestyles):
+        obsTime()
 
     exit()
 
