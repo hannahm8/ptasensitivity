@@ -189,15 +189,15 @@ if shuffleFile2!='None' and shuffleFile3!='None':
     for psrTime,runLabel,ls in zip(times,label,linestyles):
 
 
-    plotSNRVTimeCompare(psrNames, \
-                        psrObsConstants, \
-                        hdValues, \
-                        psrTime, \
-                        ampRed, \
-                        gammaRed, \
-                        jitterNoise, \
-                        runLabel, \
-                        linestyle=ls)
+        plotSNRVTimeCompare(psrNames, \
+                            psrObsConstants, \
+                            hdValues, \
+                            psrTime, \
+                            ampRed, \
+                            gammaRed, \
+                            jitterNoise, \
+                            runLabel, \
+                            linestyle=ls)
 
 
 
