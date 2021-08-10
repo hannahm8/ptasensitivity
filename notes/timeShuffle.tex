@@ -1,59 +1,47 @@
 
 
-In this work we take a greedy algorithm approach to search for SNR improvements. 
+In this work we take a greedy algorithm approach to find SNR improvements. 
 The approach has its limitations in that it will always take the locally optimal step, and can miss the global optimal solution. 
 However, it has a reasonably low computational cost and can still achieve SNR improvement. 
 
 
 The method we use focuses on reorganising the time allocation between pulsars. 
 We use the initial integration times as a starting point (see Section~\ref{sec:data}).
-The total observation time available to MeerTime is constant ($\sum_{I} T_{{\rm obs},I} \TwoWkObsTimeS\,{\rm s}$) and the cadence is fixed at $c=26\,{\rm yr}^{-1}$.
-Integration time is shuffled between pulsars to find an SNR improvement. 
+The total observation time available to MeerTime is kept constant ($\sum_{I} T_{{\rm obs},I} = \TwoWkObsTimeS\,{\rm s}$) and the cadence is fixed at $c=26\,{\rm yr}^{-1}$, which means only limited changes to the current observing schedule(?).
+We also place the additional constraint of a minimum integration time per pulsar of $256\,{\rm s}$ so that no pulsar is removed entirely.
+Integration time is swapped between pulsars to find an SNR improvement. 
 At each step, a fraction $f$ of integration time is subtracted from a pulsar and reallocated to another pulsar so that 
 \begin{eqnarray}
 T_{{\rm obs},I} &\rightarrow& T_{{\rm obs},I} - f T_{{\rm obs},I}\,, \nonumber\\
-T_{{\rm obs},J} &\rightarrow& T_{{\rm obs},J} + f T_{{\rm obs},I}\,, \nonmumber
+T_{{\rm obs},J} &\rightarrow& T_{{\rm obs},J} + f T_{{\rm obs},I}\,, \nonumber
 \end{eqnarray}
 where we choose $f=1/8$. 
-Every possible combination of time shuffles between pulsars is trialled.
-The combination which gives the biggest SNR increase at $10\,{\rm yrs}$ is chosen, providing an updated list of $T_{{\rm obs},I}$.
+Every possible combination of time swaps between pulsar pairs is trialled.
+The swap which gives the biggest SNR increase at $10\,{\rm yrs}$ is selected and the list of $T_{{\rm obs},I}$ is updated accordingly.
 The new time allocations become the starting point for the next time shuffle. 
 The process is repeated until the algorithm cannot find further gains in SNR. 
 
-The shape of the Hellings-Downs function (equation~\ref{}) means that pulsars pairs with small angular separations have higher contributions to the SNR in equation~\ref{eqn:snrPIPJPg}. 
-This leads to pulsars in the galactic centre being favoured in the time shuffle due to a higher number of small angular separations 
-
-\subsection{Angular correlation functions}
-We also try using three different functions for $\chiIJhd$ for the time reallocation as maximising equation~\ref{eqn:snrPIPJPg} may not totally capture a desired observing strategy for PTAs. 
-
-
-\subsubsection{Hellings-Downs}
-The Hellings-Downs function, Eqn.~\ref{eqn:hd} is how we expect the gravitational wave signal to appear in pulsar pairs. 
-It is shown as the blue line inf Fig.~\ref{fig:correlations}.
-It is important for a PTA to have good coverage of a range of angular separations between pulsar pairs so that a gravitational-wave detection can be confirmed. 
-However, if we use the Hellings-Downs function in our SNR calculation, we find that we favour pulsars in the galactic centre where the angular separations are small and the value of Eqn.~\ref{eqn:hd} is largest. 
-
-\subsubsection{Dipole $-$ Hellings-Downs}
-As we want to keep pulsar pairs with large angular separations we also try maximising a modified Eqn.~\ref{fig:correlations} with a different $\chiIJhd$. 
-One option is to use the difference between Hellings-Downs function and a dipole, 
-%Eqn.~\ref{eqn:hd} has highest values for pulsars that have small angular separations.
-%But we want good sky coverage to confirm a Hellings-Downs correlation for detection. 
-%To prevent the time-shuffle algorithm favouring pulsars in the galactic centre, we replace the Hellings and Downs correlation $\chiIJhd$ with a modified angular correlation function $\chi_{IJ}^{\rm mod}$ which corresponds to the difference between a dipole $\chiIJdip$ and the HD correlation
+The shape of the Hellings-Downs function (equation~\ref{eqn:hd}) means that pulsars pairs with small angular separations have higher contributions to the SNR in equation~\ref{eqn:snrPIPJPg}. 
+The Hellings-Downs curve is shown by the blue line in Fig,~\ref{fig:correlations}.
+This shape leads to pulsars in the galactic centre being favoured in the time shuffle due to a higher number of pulsar pairs with small angular separations.
+It is, however, important for a PTA to have a good coverage of angular separations so that a Helling-Downs gravitational wave signature can be confirmed. 
+We therefore repeat the analysis with two alternative correlation functions.
+The first is a dipole $\chiIJdip$ minus a Hellings-Downs curve
 \begin{equation}
-\chi_{IJ}^{\rm mod} = \chiIJdip - 2 \chiIJhd
+\chi_{IJ}^{\rm mod} = \chiIJdip - 2 \chiIJhd\,,
 \label{eqn:chimod}
 \end{equation}
-where $\chiIJdip$ is given by~\cite{AnholmEtAl:2009}
+where $\chiIJdip$ is given by~\citep{AnholmEtAl:2009},
 \begin{equation}
 \chiIJdip = -\frac{3}{2}
             \left[ \cos \zeta - \frac{4}{3} - 4 \tan^2 \frac{\zeta}{2} 
                    \ln \left( \sin \frac{\zeta}{2} \right) \right]\,.
 \label{eqn:dip}
 \end{equation}
-The resulting function now favours large angular separations between pulsars and is shown as the green line in Fig.~\ref{fig:correlations}. 
-
-\subsubsection{Equal value}
-A third option is to have no preference for any angular separation and set $\chiIJhd$ to a constant value for all pulsar pairs. 
+This instead favours pairs at wider separations, shown by the green line in Fig.~\ref{fig:correlations}.
+The second correlation function sets all values of $\chiIJhd$ to an equal value, removing the sky position bias completely. 
+The alternative correlation functions are only used during the time shuffle analysis. 
+All final SNR comparisons use the Hellings-Downs correlation. 
 
 
 
@@ -67,27 +55,3 @@ The grey markers at the bottom of the plot indicate the angular coverate of the 
 }
 \end{figure}
 
-\subsection{Results}
-
-Results of our time reallocation method are shown in Fig.~\ref{fig:snrCompare}.
-The original observation stragegy is shown by the blue-solid line.
-The results of the three different angular correlation functions are shown.
-The orange-dotted line shows the results of using the Hellings-Downs function. 
-The green-dasshed line shows the result of using the dipole minus Helllings-Downs function. 
-The red-dot-dashed line shows the results of using all equal values for angular correlation. 
-(The different functions are only used for the time reallocatoin algoritm, the plot shows the actual SNR value using the Hellings-Downs function as in Eqn.~\ref{eqn:snrPIPJPg}).
-
-Using the Hellings-Downs function is the best performing, but comes at the cost of losing pulsar pairs at high angular separation.
-The equal-values is the next best and provides and SNR improvement of $\approx 1$ after $10\,{\rm yrs}$.
-
-
-
-\begin{figure}
-\includegraphics[width=0.5\textwidth]{../local/rjNoiseSoFar/compareSNRVTime.png}
-\caption{\label{fig:snrCompare}
-SNR over PTA lifespan ($T$) assuming four different observation time allocations. 
-Blue-solid shows the original MeerTime observing strategy.
-Three time realocation results are shown, which each assume a different function for $\chiIJhd$. 
-`hd' is Hellings-Downs, `dphdDiff' is the difference between dipole and Hellings-Downs, and `equal' is equal value for all pulsar pairs. 
-}
-\end{figure}

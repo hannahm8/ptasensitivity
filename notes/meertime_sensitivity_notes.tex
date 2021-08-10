@@ -137,68 +137,37 @@ keyword1 -- keyword2 -- keyword3
 
 \section{Introduction}
 
+
 \section{PTA average signal to noise ratio}
+\label{sec:snr}
 \input{snr.tex}
 
 
 \section{Data}
+\label{sec:data}
 \input{data.tex}
 
 
 \section{Time Shuffle}
+\label{sec:timeshuffle}
 \input{timeShuffle.tex}
 
+
 \section{Results}
-Two runs using Eqn.~\ref{eqn:chimod} have these results so far: 
-\begin{itemize}
-\item With red noise (shuffle SNR)/(original SNR): 1.143
-\item Without red noise (shuffle SNR)/(original SNR): 1.136
-\end{itemize}
-
-
-\begin{figure*}
-\includegraphics[width=0.8\textwidth]{../local/integral/quarterTimeShuffleDPHDRed/plots/SNRVTime.png}
-%\includegraphics[width=0.8\textwidth]{../local/integral/quarterTimeShuffleDPHD/plots/SNRVTime.png}
-\caption{\label{fig:SNRVTime}
-SNR against PTA lifetime.
-The result for the original timings is shown in blue and the shuffle timings in orange.
-Top: using red noise parameters in Table~\ref{tab:redNoise}.
-Bottom: all red noise parameters set to zero. 
-}
-\end{figure*}
-
-\begin{figure*}
-\includegraphics[width=0.32\textwidth]{../local/integral/quarterTimeShuffleDPHDRed/plots/obsTimes.png}
-\includegraphics[width=0.32\textwidth]{../local/integral/quarterTimeShuffleDPHD/plots/obsTimes.png}
-\caption{\label{fig:obsTimes}
-Original (blue) and shuffled (orange) observation times for each pulsar.
-Left: using red noise parameters in Table~\ref{tab:redNoise}. 
-Right: setting all red noise amplitudes to zero.
-}
-\end{figure*}
-
-\begin{figure*}
-\includegraphics[width=0.9\textwidth]{../local/integral/quarterTimeShuffleDPHDRed/plots/skymapTimeDiff.png}
-\includegraphics[width=0.9\textwidth]{../local/integral/quarterTimeShuffleDPHD/plots/skymapTimeDiff.png}
-\caption{\label{fig:skymap}
-Sky map of shuffle results. 
-Orange corresponds to pulsars which gained time and blue to pulsars that lost time. 
-The size of the marker is proportional to the amount of time gained/lost. 
-The crosses show all pulsar positions. 
-Top: with red noise. 
-Bottom: zero red noise. 
-}
-\end{figure*}
-
+\label{sec:results}
+\input{results.tex}
 
 
 \section{Conclusions}
+\label{sec:conclusions}
+\input{conclusion.tex}
 
-The last numbered section should briefly summarise what has been done, and describe
-the final conclusions which the authors draw from their work.
+%The last numbered section should briefly summarise what has been done, and describe
+%the final conclusions which the authors draw from their work.
 
 \section*{Acknowledgements}
 
+This work was performed on the OzSTAR national facility at Swinburne University of Technology. The OzSTAR program receives funding in part from the Astronomy National Collaborative Research Infrastructure Strategy (NCRIS) allocation provided by the Australian Government.
 %The Acknowledgements section is not numbered. Here you can thank helpful
 %colleagues, acknowledge funding agencies, telescopes and facilities used etc.
 %Try to keep it short.
