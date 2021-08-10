@@ -72,8 +72,8 @@ def convertShuffleData(shuffleFile,psrNames,obsConstants):
 
 
 # original t obs and sigmas 
-psrDataFile = '../data/psrDetails.dat'
-redNoiseFile = '../data/redNoise.dat'
+psrDataFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/psrDetails.dat'
+redNoiseFile = '/fred/oz005/users/hmiddlet/ptasensitivity/data/redNoise.dat'
 
 psrNames, \
 psrObsConstants, \
@@ -106,33 +106,68 @@ for i,ipsr in enumerate(psrNames):
 shuffleFileHD     = './eighthTimeHDMin256/times/shuffle_133.dat'
 sigmaShuffleHD    = convertShuffleData(shuffleFileHD,psrNames,psrObsConstants)
 
-shuffleFileDPHD   = './eighthTimeDPHDMin256/times/shuffle_172.dat'
+shuffleFileDPHD   = './eighthTimeDPHDDiffMin256/times/shuffle_172.dat'
 sigmaShuffleDPHD  = convertShuffleData(shuffleFileDPHD,psrNames,psrObsConstants)
 
-shuffleFileEqual  = './eigthTimeEqual/Min256/times/shuffle_136.dat'
+shuffleFileEqual  = './eighthTimeEqualMin256/times/shuffle_136.dat'
 sigmaShuffleEqual = convertShuffleData(shuffleFileEqual,psrNames,psrObsConstants)
 
 #linestyles = ['solid','dotted','dashed','dashdot']
 # for plotting 
 freqs = np.logspace(np.log10(5e-10),np.log10(5e-7),500)
 
+
+plt.rcParams.update({'font.size': 14})
+fig, ax = plt.subplots(figsize=[10,8])
+
 scGWBOriginal = constructPTA(sigmas, radRA, radDEC, freqs, redNoise=True, redA=rA, redGamma=rG)
-plt.loglog(freqs,scGWBOriginal.h_c,label='original',ls='solid')
+ax.loglog(freqs,scGWBOriginal.h_c,label='original',ls='solid')
 
-scGWBShuffle = constructPTA(sigmaShuffleHD, radRA, radDEC, freqs, redNoise=True, redA=rA, redGamma=rG)
-plt.loglog(freqs,scGWBShuffle.h_c,label='HD',ls='dotted')
+scGWBShuffleHD = constructPTA(sigmaShuffleHD, \
+                              radRA, radDEC, \
+                              freqs, redNoise=True, \
+                              redA=rA, redGamma=rG)
+ax.loglog(freqs,scGWBShuffleHD.h_c,label='HD',ls='dotted')
 
-scGWBShuffle = constructPTA(sigmaShuffleDPHD, radRA, radDEC, freqs, redNoise=True, redA=rA, redGamma=rG)
-plt.loglog(freqs,scGWBShuffle.h_c,label='DP-2HD',ls='dashed')
+scGWBShuffleDPHD = constructPTA(sigmaShuffleDPHD, \
+                                radRA, radDEC, \
+                                freqs, redNoise=True, \
+                                redA=rA, redGamma=rG)
+ax.loglog(freqs,scGWBShuffleDPHD.h_c,label='DP-2HD',ls='dashed')
 
-scGWBShuffle = constructPTA(sigmaShuffleEqual, radRA, radDEC, freqs, redNoise=True, redA=rA, redGamma=rG)
-plt.loglog(freqs,scGWBShuffle.h_c,label='Equal',ls='dashdot')
+scGWBShuffleEqual = constructPTA(sigmaShuffleEqual, \
+                                 radRA, radDEC, \
+                                 freqs, redNoise=True, \
+                                 redA=rA, redGamma=rG)
+ax.loglog(freqs,scGWBShuffleEqual.h_c,label='Equal',ls='dashdot')
 
+
+# inset
+#from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
+from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition,
+                                                  mark_inset)
+
+plt.rcParams.update({'font.size': 12})
+ax2 = plt.axes([0,1,1,1])
+ip = InsetPosition(ax,[0.14,0.4,0.4,0.55])
+ax2.set_axes_locator(ip)
+mark_inset(ax,ax2,loc1=2,loc2=4,fc="none",ec="0.5")
+ax2.loglog(freqs,scGWBOriginal.h_c,ls='solid')
+ax2.loglog(freqs,scGWBShuffleHD.h_c,ls='dotted')
+ax2.loglog(freqs,scGWBShuffleDPHD.h_c,ls='dashed')
+ax2.loglog(freqs,scGWBShuffleEqual.h_c,ls='dashdot')
+ax2.set_xlim(2E-9,7E-9)
+ax2.set_ylim(4E-16,6.5E-16)
+
+
+plt.rcParams.update({'font.size': 14})
 #plt.loglog(spectra[0].freqs,spectra[0].h_c)
-plt.xlabel('Frequency (Hz)')
-plt.ylabel('Characteristic Strain, $h_c$')
-plt.legend()
-#plt.savefig('hasasia_shuffle_with_dipole_hd_diff.png')
+ax.set_xlabel('Frequency (Hz)')
+ax.set_ylabel('Characteristic Strain, $h_c$')
+ax.legend()
+plt.tight_layout()
+plt.savefig('eighthsCompare/hasasiaShuffle.png')
+plt.savefig('eighthsCompare/hasasiaShuffle.pdf')
 plt.show()
 
 
