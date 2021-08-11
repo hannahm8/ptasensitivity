@@ -174,7 +174,8 @@ if shuffleFile2!='None' and shuffleFile3!='None':
     """
     comparison plot version
     """
-
+    
+    plt.rcParams.update({'font.size': 12})
     # read in the data
     shuffleTimes1 = readShuffle(shuffleFile1)
     shuffleTimes2 = readShuffle(shuffleFile2)
@@ -185,8 +186,8 @@ if shuffleFile2!='None' and shuffleFile3!='None':
     times = [psrStartingObsTimes,shuffleTimes1,shuffleTimes2,shuffleTimes3]
     label = [originalLabel,shuffleLabel1,shuffleLabel2,shuffleLabel3]
     linestyles = ['solid','dotted','dashed','dashdot']
-    markers = ['o','x','s','*']
-    """
+    markers = ['o','x','+','*']
+     
     for psrTime,runLabel,ls in zip(times,label,linestyles):
 
         plotSNRVTimeCompare(psrNames, \
@@ -201,20 +202,25 @@ if shuffleFile2!='None' and shuffleFile3!='None':
 
     plt.legend()
     plt.xlabel('Time (years)')
-    plt.ylabel('SNR')
-    plt.savefig('compareSNRVTime.png')
+    plt.ylabel('Average signal-to-noise ratio')
+    plt.savefig('{}/compareSNRVTime.png'.format(outputDir))
+    plt.savefig('{}/compareSNRVTime.pdf'.format(outputDir))
     plt.show()
+    
 
-    """ 
-    plt.clf()
-    plt.figure(figsize=(4,18))
-    for psrTime,runLabel,mark in zip(times,label,markers):
-        print(len(psrNames),len(psrTime))
-        obsTime(psrNames,psrTime,runLabel,marker=mark)
-    plt.legend()
-    plt.xlabel('Integration time (s)')
-    plt.tight_layout()
-    plt.show()
+    psrNamesFirstHalf  = psrNames[:45]
+    psrNamesSecondHalf = psrNames[45:]
+    for i,psrNamesHalf in enumerate([psrNamesFirstHalf,psrNamesSecondHalf]):
+      plt.clf()
+      plt.figure(figsize=(5,10))
+      for psrTime,runLabel,mark in zip(times,label,markers):
+        obsTime(psrNamesHalf,psrTime,runLabel,marker=mark)
+      plt.legend()
+      plt.xlabel('Integration time (s)')
+      plt.tight_layout()
+      plt.savefig('{}/timeComparison-{}.pdf'.format(outputDir,i))
+      plt.savefig('{}/timeComparison-{}.png'.format(outputDir,i))
+      plt.show()
     exit()
 
 else: 

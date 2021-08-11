@@ -29,6 +29,8 @@ def constructPTA(sig,radRA,radDec,freqs,redNoise=False,redA=None,redGamma=None):
     c = 26
     
     if redNoise==True: 
+        print(redA)
+        print(redGamma)
         psrs = hsim.sim_pta(timespan=T,\
                             cad=c,\
                             sigma=sig,\
