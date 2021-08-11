@@ -1,11 +1,13 @@
 
 MeerTime is timing $\NMeerTimePSRs$ pulsars.
-From observations to date, we have an anticipated $\sigma_I$ and the integration time (for a single pulsar observation) required to achieve it for each pulsar and $\sigma_I$ scales with observation $T_{{\rm obs},I}$ time like 
+Using observations to date, an anticipated $\sigma_I$ and integration time (for a single pulsar observation) required to achieve it can be estimated for each pulsar.
+The value of $\sigma_I$ scales with observation $T_{{\rm obs},I}$ time like 
 \begin{equation}
 \sigma_I = \delta_I / \sqrt{T_{{\rm obs},I}}\,,
 \label{eqn:TobsToSig}
 \end{equation}
 where $\delta_I$ is a constant of proportionality which depends on the pulsar. 
+Throughout this work we make the simplifying assumption that $\delta_I$ is a constant for each pulsar throughout the PTA lifespan \han{[maybe add some discussion here about this?]}
 
 \subsection{Spin noise and jitter noise}
 MeerTime observations are not currently long enough to estimate spin noise in every pulsar.
@@ -50,28 +52,28 @@ We assume the rest of the pulars have zero jitter noise.
 
 \begin{table}
 \begin{center}
-\begin{tabular}{ll}
+\begin{tabular}{lll}
 \hline \hline
-Pulsar     & $\sigJitter$ \\
+Pulsar     & $\sigJitter$   & Reference \\
 \hline
-J0125-2327 & $48  \pm 13$   \\
-J0437-4715 & $50  \pm 10$   \\
-J0636-3044 & $100 \pm 30$   \\
-J0711-6830 & $60  \pm 20$   \\
-J1022+1001 & $120 \pm 20$   \\
-J1045-4509 & $130 \pm 75$   \\
-J1603-7202 & $180 \pm 40$   \\
-J1730-2304 & $80  \pm 45$   \\
-J1744-1134 & $30  \pm  6$   \\
-J1757-5322 & $130 \pm 45$   \\
-J1909-3744 & $9   \pm  3$   \\
-J2145-0750 & $200 \pm 20$   \\
-J2241-5236 & $3.8 \pm  0.8$ \\
+J0125-2327 & $48  \pm 13$   & ~\cite{ParthasarathyEtAl:2021}\\
+J0437-4715 & $50  \pm 10$   & ~\cite{ParthasarathyEtAl:2021}\\
+J0636-3044 & $100 \pm 30$   & ~\cite{ParthasarathyEtAl:2021}\\
+J0711-6830 & $60  \pm 20$   & ~\cite{ParthasarathyEtAl:2021}\\
+J1022+1001 & $120 \pm 20$   & ~\cite{ParthasarathyEtAl:2021}\\
+J1045-4509 & $130 \pm 75$   & ~\cite{ParthasarathyEtAl:2021}\\
+J1603-7202 & $180 \pm 40$   & ~\cite{ParthasarathyEtAl:2021}\\
+J1730-2304 & $80  \pm 45$   & ~\cite{ParthasarathyEtAl:2021}\\
+J1744-1134 & $30  \pm  6$   & ~\cite{ParthasarathyEtAl:2021}\\
+J1757-5322 & $130 \pm 45$   & ~\cite{ParthasarathyEtAl:2021}\\
+J1909-3744 & $9   \pm  3$   & ~\cite{ParthasarathyEtAl:2021}\\
+J2145-0750 & $200 \pm 20$   & ~\cite{ParthasarathyEtAl:2021}\\
+J2241-5236 & $3.8 \pm  0.8$ & ~\cite{ParthasarathyEtAl:2021}\\
 \hline\hline
 \end{tabular}
 \end{center}
 \caption{\label{tab:jitter}
-Jitter noise measurements from% \cite{ParthasarathyEtAl:2021}.
+Jitter noise measurements for $13$ pulsars. 
 }
 \end{table}
 
@@ -129,7 +131,7 @@ The total observation time used in each $2$ week observing time is $\TwoWkObsTim
 The targeted precision for each pulsar is $\sigma_I = 1 {\rm \mu\, s}$. 
 
 Using the current observation strategy and assuming a GWB signal with $A = 2\times 10^{-15}$ and $\alpha = -2/3$, we can estimate the predicted average SNR for MeerTime from Eqn.~\ref{eqn:snrPIPJPg}. 
-After a timespan of $T=10\,{\rm yrs}$, the average SNR for the current obseravation stategy is $\approx 11.0$. \textbf{check number}. 
+After a timespan of $T=10\,{\rm yrs}$, the average SNR for the current obseravation stategy is $12.3$.
 Here, we consider whether, or not, the average SNR can be improved by a re-allocation of observing time between pulsars. 
 
 

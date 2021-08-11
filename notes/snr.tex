@@ -6,8 +6,8 @@ The power spectrum for a SGWB is given by
 \label{eqn:Pgw}
 % equation 16 in SiemansEtAl:2013
 \end{equation}
-where $f$ is the gravitational wave frequency, $\fref$ is a reference frequency chosen as $1\,{\rm yr}^{-1}$, $A$ is the amplitude of the background at $f=\fref$, and $\alpha$ is the slope of the spectrum. 
-Throughout this work we assume $a=-2/3$ consistent with a stochastic background from circular massive black hole binaries and $A = 2 \times 10^{-15}$ consistent with recent speculative hints of detection~\cite{GoncharovEtAlPPTA:2021,NANOGrav12.5GWB:2020}.
+where $f$ is the gravitational-wave frequency, $\fref$ is a reference frequency chosen as $1\,{\rm yr}^{-1}$, $A$ is the amplitude of the background at $f=\fref$, and $\alpha$ is the slope of the spectrum. 
+Throughout this work we assume $a=-2/3$ consistent with a stochastic background from circular massive black hole binaries and $A = 2 \times 10^{-15}$ consistent with recent speculative hints of detection~\citep{GoncharovEtAlPPTA:2021,NANOGrav12.5GWB:2020}.
 
 The average SNR for a PTA with total timespan $T$ is given by
 \begin{equation}
@@ -19,8 +19,8 @@ The average SNR for a PTA with total timespan $T$ is given by
 \end{equation}
 where $\sum_{IJ}$ is the sum over all pulsar pairs ($I \neq J$) and $P_I$ is the power spectrum of the $I{\rm th}$ pulsar. 
 We assume that the timespan of observations, $T$ is the same for all pulsars. 
-The integration limits are given by $f_L=1/T$ and $f_H=c/2$ where $c$ is the cadence of observations, which we assume to be the identical for all pulsars in the array. 
-The Hellings and Downs coefficients $\chi_{IJ}$ describe the expected angular correlation produced by the SGWB signal in pairs of pulsars and is given by % [ref]
+The integration limits are given by $f_L=1/T$ and $f_H=c/2$ where $c$ is the cadence of observations, which we also assume to be the identical for all pulsars in the array. 
+The Hellings and Downs coefficients $\chi_{IJ}$ describe the expected angular correlation produced by the SGWB signal in pairs of pulsars and is given by \han{[ref]}
 \begin{eqnarray}
 \chiIJhd &=& \frac{1}{2} 
            - \frac{1}{4} \left(\frac{1 - \cos(\zeta)}{2}\right) \nonumber\\
@@ -29,6 +29,7 @@ The Hellings and Downs coefficients $\chi_{IJ}$ describe the expected angular co
 \label{eqn:hd}
 \end{eqnarray}
 for pulsars separated by angle $\zeta$.
+
 If we assume evenly sampled data and that there is only white noise in the pulsars then $\PI$ is the sum of Eqn.~\ref{eqn:Pgw} plus white noise, 
 \begin{equation}
 \PI (f) = \frac{A^2}{24 \pi^2} \left(\frac{f}{\fref}\right)^{2\alpha} f^{-3} 
@@ -45,7 +46,7 @@ The power spectral density of spin noise for the $I{\rm th}$ pulsar is given by
 \end{equation}
 where $\ARedI$ and $\gammaRedI$ are the amplitude and slope of the power law for the $I$th pulsar and ${\rm yr}$ is the number of seconds in a year. 
 Jitter noise $\sigma_{\rm jit}$ is added in quadrature to the white noise part the the spectrum.
-The resulting power spectrum including GWB, white noise, spin noise, and jitter noise is given by
+The resulting power spectrum is
 \begin{eqnarray}
 \PI (f) &=& \frac{A^2}{24 \pi^2} \left(\frac{f}{\fref}\right)^{2\alpha} f^{-3} \nonumber\\
           & &~+~ 2 \left( \sigma_I^2 + \sigma_{{\rm jit}, I}^2 \right) \Delta t \nonumber\\
@@ -53,6 +54,8 @@ The resulting power spectrum including GWB, white noise, spin noise, and jitter 
           \left( \frac{f}{\fref} \right)^{-\gammaRedI} {\rm yr}^3\,,
 \label{eqn:PIGWWR}
 \end{eqnarray}
+which includes SGWB, white noise, spin noise, and jitter noise.
+Equations~\ref{eqn:snrPIPJPg} and~\ref{eqn:PIGWWR} can therefore be used to compute the average PTA SNR for a given observation strategy and assumed SGWB signal. 
 \begin{comment}
 \begin{equation}
 \left< \rho \right> = \left( 2 T \sum_{IJ} \chi_{IJ}^2
