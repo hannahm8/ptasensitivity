@@ -163,7 +163,10 @@ plt.scatter(-ras, decs, s=abs(timeDiff), alpha=0.9,color=c)
 
 ax.set_xticklabels(['4h','2h','0h','22h','20h','18h','16h','14h','12h','10h','8h'])
 
-plt.savefig('skymaptest.png')
+plt.tight_layout()
+
+plt.savefig('skymap.png')
+plt.savefig('skymap.pdf')
 plt.show()
 exit()
 
