@@ -10,7 +10,7 @@ Currently set to increase integration time by 20%
 psrNames = np.genfromtxt('psrDetails.dat',usecols=0,dtype=str)
 data = np.genfromtxt('psrDetails.dat',names=True)
 
-outFile = 'psrDetailsExtraTime.dat'
+outFile = 'psrDetailsExtraTime1p2.dat'
 extraTimeFile = open(outFile,'w')
 extraTimeFile.write("#PSR\tRA\tDEC\tIntTime\tExpPrecision\n")
 
