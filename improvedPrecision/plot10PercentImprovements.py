@@ -122,7 +122,7 @@ plotSNRVTime(psrNames,
              hdValues,
              ampRed,gammaRed,
              jitterNoise,
-            'J1909+3744 10% precision improvement',
+             r'J1909$-$3744 10% precision improvement',
              ls='dashed')
 
 
