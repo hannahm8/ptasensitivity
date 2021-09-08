@@ -31,7 +31,7 @@ def lnlike(theta, psrNames, psrConstants, angCorrelationValues, rAs, gammas, jit
     snr = snrFunctions.avePTASNR(psrNames,psrConstants,angCorrelationValues, \
                                  obsTimes,rAs,gammas,jitters,\
                                  A,alpha,beta,fref,TInSeconds,c)
-    print(snr)
+
     return snr
 
 
