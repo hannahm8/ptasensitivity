@@ -42,28 +42,28 @@ def lnprior(theta):
     theta = np.atleast_1d(theta)
     maxTotal = 44096.
 
+
     for t in theta:
 
-        if minTime < float(t) < maxTime and sum(theta) <= maxTotal:
-
-            return 0.0
-
-    return -np.inf
+        if float(t)<minTime or float(t)>maxTime or sum(theta)>maxTotal:
+            return -np.inf
+    return 0.0 
 
 
 
 
 def lnprob(theta, psrNames, psrObsConstants, angCorrValues, rAs, gammas, jitters):
-    ll = lnlike(theta,psrNames, psrObsConstants, angCorrValues, rAs, gammas, jitters)
-
 
     lp = lnprior(theta)
+
     if not np.isfinite(lp):
         return -np.inf
+    ll = lnlike(theta,psrNames, psrObsConstants, angCorrValues, rAs, gammas, jitters)
     return lp + ll
 
 
-psrDataFile = '../data/psrDetails.dat'
+#psrDataFile = '../data/psrDetails.dat'
+psrDataFile = '../data/trialPSRDataShort.dat'
 redNoisePath = '../data/redNoise.dat'
 jitterNoisePath = '../data/jitterNoise.dat'
 chooseCorrFunc = 'HD'
@@ -93,16 +93,20 @@ print(lnprob(startingPositions, psrNames, psrObsConstants, angCorrValues, redAmp
 
 
 nPSRs = len(psrNames)
-ndim, nwalkers = nPSRs, 100
 
-pos = [ startingPositions + np.random.rand(ndim) for i in range(nwalkers) ]
+ndim, nwalkers = nPSRs, 20
+
+pos = [ startingPositions + 10*np.random.rand(ndim) for i in range(nwalkers) ]
 
 import emcee
 sampler = emcee.EnsembleSampler(nwalkers, ndim, lnprob, args=(psrNames, psrObsConstants, angCorrValues, redAmps, redGammas, jitters))
 
 sampler.run_mcmc(pos,50)
-
+print(sampler.chain)
+print(len(sampler.chain))
+print(len(sampler.chain[1]))
 samples = sampler.chain[:, 50:, :].reshape((-1, ndim))
+print(samples)
 
 #saving the samples 
 savehere = open('savesamples.dat', 'w')
