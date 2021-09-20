@@ -17,6 +17,11 @@ Where a value is listed in both papers, we take the~\cite{GoncharovEtAl:2021} va
 Table~\ref{tab:redNoise} shows the red noise parameters for $13$ of the $\NMeerTimePSRs$ pulsars. 
 Otherwise, we assume zero spin noise. 
 
+Similarly, some of the pulsars have existing jitter noise estimates. 
+Table~\ref{tab:reNoiseJitterNoise} also shows jitter noise measurements for $13$ MeerTime pulsars from~\cite{ParthasarathyEtAl:2021}.
+We assume the rest of the pulars have zero jitter noise.
+
+\begin{comment}
 \begin{table}
 \begin{center}
 \begin{tabular}{llll}
@@ -44,12 +49,48 @@ Spin noise parameters for $13$ pulsars.
 The second and third columns show the log of the spin noise amplitude and the slope. 
 }
 \end{table}
-
-Some of the pulsars have jitter noise estimates. 
-Table~\ref{tab:jitter} shows jitter noise measurements for $13$ MeerTime pulsars from~\cite{ParthasarathyEtAl:2021}.
-We assume the rest of the pulars have zero jitter noise.
+\end{comment}
 
 
+\begin{table*}
+\caption{\label{tab:redNoiseJitterNoise}
+Spin and jitter noise parameters for pulsars with existing measurements. 
+The second and third columns show the log of the spin noise amplitude ($\log_{10}(\ARed)$) and the slope ($\gammaRed$). 
+The third column shows the jitter noise measurements ($\sigJitter$). 
+Where there is no existing spin or jitter noise measurement, we assume it to be zero. 
+}
+\begin{center}
+\begin{tabular}{lllll}
+\hline\hline
+Pulsar     & $\log_{10}(\ARed)$  & $\gammaRed$ & $\sigJitter$ &  Reference \\
+\hline
+J0030+0451 & $-15.72$ & $5.3$  & -              & ~\cite{NANOGrav12p5yr:2021}\\
+J0125-2327 & -        & -      & $48  \pm 13$   & ~\cite{ParthasarathyEtAl:2021}\\ 
+J0437-4715 & $-14.56$ & $2.99$ & $50  \pm 10$   & ~\cite{GoncharovEtAl:2021,ParthasarathyEtAl:2021}\\
+J0613-0200 & $-14.26$ & $4.17$ & -              & ~\cite{GoncharovEtAl:2021}\\
+J0636-3044 & -        & -      & $100 \pm 30$   & ~\cite{ParthasarathyEtAl:2021}\\
+J0711-6830 & $-13.04$ & $1.09$ &  $60 \pm 20$   & ~\cite{GoncharovEtAl:2021,ParthasarathyEtAl:2021}\\ 
+J1022+1001 & -        & -      & $120 \pm 20$   & ~\cite{ParthasarathyEtAl:2021}\\
+J1024-0719 & $-14.62$ & $6.39$ & -              & ~\cite{GoncharovEtAl:2021}\\
+J1045-4509 & -        & -      & $130 \pm 75$   & ~\cite{ParthasarathyEtAl:2021}\\
+J1600-3053 & $-14.34$ & $3.81$ & -              & ~\cite{GoncharovEtAl:2021}\\
+J1603-7202 &          &        & $180 \pm 40$   & ~\cite{ParthasarathyEtAl:2021}\\
+J1643-1224 & $-12.85$ & $0.98$ & -              & ~\cite{GoncharovEtAl:2021}\\
+J1713+0747 & $-15.16$ & $1.6$  & -              & ~\cite{NANOGrav12p5yr:2021}\\
+J1730-2304 & -        & -      & $80  \pm 45$   & ~\cite{ParthasarathyEtAl:2021}\\
+J1744-1134 & $-14.16$ & $1.7$  & $30  \pm  6$   & ~\cite{NANOGrav12p5yr:2021,ParthasarathyEtAl:2021}\\  
+J1747-4036 & $-13.78$ & $3.8$  & -              & ~\cite{NANOGrav12p5yr:2021}\\
+J1757-5322 & -        & -      & $130 \pm 45$   & ~\cite{ParthasarathyEtAl:2021}\\
+J1909-3744 & $-14.74$ & $4.05$ &   $9 \pm  3$   & ~\cite{GoncharovEtAl:2021,ParthasarathyEtAl:2021}\\ 
+J2145-0750 & $-13.86$ & $1.6$  & $200 \pm 20$   & ~\cite{NANOGrav12p5yr:2021,ParthasarathyEtAl:2021}\\ 
+J2317+1439 & $-16.50$ & $6.0$  & -              & ~\cite{NANOGrav12p5yr:2021}\\
+J2241-5236 & -        & -      & $3.8 \pm  0.8$ & ~\cite{ParthasarathyEtAl:2021}\\
+\hline\hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+\begin{comment}
 \begin{table}
 \begin{center}
 \begin{tabular}{lll}
@@ -76,6 +117,7 @@ J2241-5236 & $3.8 \pm  0.8$ & ~\cite{ParthasarathyEtAl:2021}\\
 Jitter noise measurements for $13$ pulsars. 
 }
 \end{table}
+\end{comment}
 
 % pulsar reference - jitter, white nooise, red noies, position
 
