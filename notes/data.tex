@@ -1,5 +1,5 @@
 
-MeerTime is timing $\NMeerTimePSRs$ pulsars.
+The MeerTime PTA is timing $\NMeerTimePSRs$ pulsars.
 Using observations to date, an anticipated $\sigma_I$ and integration time (for a single pulsar observation) required to achieve it can be estimated for each pulsar.
 The value of $\sigma_I$ scales with observation $T_{{\rm obs},I}$ time like 
 \begin{equation}
@@ -7,18 +7,18 @@ The value of $\sigma_I$ scales with observation $T_{{\rm obs},I}$ time like
 \label{eqn:TobsToSig}
 \end{equation}
 where $\delta_I$ is a constant of proportionality which depends on the pulsar. 
-Throughout this work we make the simplifying assumption that $\delta_I$ is a constant for each pulsar throughout the PTA lifespan \han{[maybe add some discussion here about this?]}
+Throughout this work we make the simplifying assumption that $\delta_I$ is a constant for each pulsar throughout the PTA lifespan.
+% \han{[maybe add some discussion here about this?]}
 
-\subsection{Spin noise and jitter noise}
-MeerTime observations are not currently long enough to estimate spin noise in every pulsar.
+As shown in Eqn.~\ref{eqn:PIGWWR}, the average PTA S/N depends on the spin and jitter noise of each pulsar in the array.
+Current MeerTime observations are not long enough to estimate spin and jitter noise for every pulsar.
 However spin noise measurements already exist for $13$ of the pulsars from PPTA and NANOGrav analysis. 
-We take $\ARed$ and $\gammaRed$ values from ~\cite{GoncharovEtAl:2021} (sixth and seventh column in Table 1) and ~\cite{NANOGrav12p5yr:2021} (tenth and eleventh column in Table 5). 
+We take $\ARed$ and $\gammaRed$ values from~\cite{GoncharovEtAl:2021} (sixth and seventh column in Table 1) and ~\cite{NANOGrav12p5yr:2021} (tenth and eleventh column in Table 5). 
 Where a value is listed in both papers, we take the~\cite{GoncharovEtAl:2021} value. 
-Table~\ref{tab:redNoise} shows the red noise parameters for $13$ of the $\NMeerTimePSRs$ pulsars. 
+Table~\ref{tab:redNoiseJitterNoise} shows the spin noise parameters for $13$ of the $\NMeerTimePSRs$ pulsars. 
 Otherwise, we assume zero spin noise. 
-
-Similarly, some of the pulsars have existing jitter noise estimates. 
-Table~\ref{tab:reNoiseJitterNoise} also shows jitter noise measurements for $13$ MeerTime pulsars from~\cite{ParthasarathyEtAl:2021}.
+Similarly, $13$ of the pulsars have existing jitter noise estimates. 
+Table~\ref{tab:redNoiseJitterNoise} also shows jitter noise measurements for $13$ MeerTime pulsars from~\cite{ParthasarathyEtAl:2021}.
 We assume the rest of the pulars have zero jitter noise.
 
 \begin{comment}
@@ -167,15 +167,12 @@ In this work we use the central fit values for the ${\rm MSP}_{\rm 10,PPTA}$+${\
 
 
 
-\subsection{Current observation strategy}
-MeerTime pulsars are observed with a cadence of once every two weeks ($c=26\,{\rm yr}^{-1})$. 
+The current MeerTime observation strategy is to target a precision of $\sigma_I = 1 {\rm \mu\, s}$ for every pulsar with a candence of one observation every two weeks ($c=26\,{\rm yr}^{-1})$.  
 The total observation time used in each $2$ week observing time is $\TwoWkObsTimeS\,{\rm s} = \TwoWkObsTimeHrs\,{\rm hrs}$, which is divided between the MeerTime pulsars. 
-The targeted precision for each pulsar is $\sigma_I = 1 {\rm \mu\, s}$. 
 
-Using the current observation strategy and assuming a GWB signal with $A = 2\times 10^{-15}$ and $\alpha = -2/3$, we can estimate the predicted average SNR for MeerTime from Eqn.~\ref{eqn:snrPIPJPg}. 
+Assuming a SGWB signal with $A = 2\times 10^{-15}$ and $\alpha = -2/3$, we can estimate the predicted average SNR for MeerTime from Eqn.~\ref{eqn:snrPIPJPg}. 
 After a timespan of $T=10\,{\rm yrs}$, the average SNR for the current obseravation stategy is $12.3$.
-Here, we consider whether, or not, the average SNR can be improved by a re-allocation of observing time between pulsars. 
-
+In the following sections we consider whether the average S/N can be improved by minor changes to the integration time allocated to each pulsar. 
 
 
 
