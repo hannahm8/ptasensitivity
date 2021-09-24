@@ -162,7 +162,7 @@ ax2.set_xlim(2E-9,7E-9)
 ax2.set_ylim(4E-16,6.5E-16)
 
 
-plt.rcParams.update({'font.size': 14})
+plt.rcParams.update({'font.size': 15})
 #plt.loglog(spectra[0].freqs,spectra[0].h_c)
 ax.set_xlabel('Frequency (Hz)')
 ax.set_ylabel('Characteristic Strain, $h_c$')
