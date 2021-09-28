@@ -1,39 +1,4 @@
 
-
-Results of the time reallocation method are shown in Fig.~\ref{fig:snrCompare} and Fig.~\ref{fig:obsTimes}.
-In Fig.~\ref{fig:snrCompare}, the average SNR over a $10\,{\rm yr}$ PTA lifespan is shown. 
-The original observation stragegy is shown by the blue-solid line.
-The results of time shuffling with three different correlation functions are shown: Hellings-Downs (orange-dot), dipole minus Hellings-Downs (green-dash), and equal (red-dot-dash).
-We note that these alternative correlations functions are only used during the time-reallocation calculation, and Fig.~\ref{fig:snrCompare} shows the SNR value computed using the Hellings-Downs function as in Eqn.~\ref{eqn:snrPIPJPg}).
-The gains are all less than X\% at $10\,{\rm yr}$, indicating that the current observation strategey of timing all pulsars to $1\,{\rm \mu s}$ precision is already performing well. 
-
-
-Figure~\ref{fig:obsTimes} shows the corresponding integration times for the PTAs configurations shown in Fig.~\ref{fig:snrCompare}.
-The different correlation function does make a difference in which pulsars gain and lose time, however we do see that it can be advantageous to reduce integration time allocated to pulsars which require more than $1500\,{\rm s}$ to achieve $1\,{\rm \mu s}$ precision. 
-
-
-We see from Fig.~\ref{fig:snrCompare}, that using the Hellings-Downs function for time-reallocation provides the largest improvement in SNR (\% at 10 yr). 
-However, as discussed in Section~\ref{sec:timeshuffle}, it comes at the cost of reducing the integration time for pulsar pairs with high angular separations, which could make confirming a Hellings-Downs correlation more challenging. 
-This effect is clear fromt eh sky map shown in Fig.~\ref{fig:skyHD}. 
-Cross markers represent each pulsar and changes in integratoin time (compared to the original strategy) are shown by circles. 
-Pulsars that gain integration time are shown in orange and those that lose it in blue. 
-The size of the circle is proportional to the amount of time gained or lost. 
-The general trend we see is that pulsars close to the galactic centre gain time and those away from it lose time. 
-
-The other two correlation functions we use are shown in Figs.~\ref{fig:skyDPHDDiff} and~\ref{fig:skyEqual} for dipole minus Hellings-Downs and equal correlation functions, respectively. 
-In both cases, we observe less of a bias towards pulsars in the galactic centre than is seen in Fig.~\ref{fig:skyHD}.
-
-Therefore, although using a Hellings-Downs correlation function provides the largest SNR increase in Fig.~\ref{fig:snrCompare}, we recommend replacing it with an equal-calued correlation function for the time reallocatoin calculation to prevent preference for pulsar pairs with small angular separations. 
-
-We can also compute PTA sensitivity curves for the four configurations using \texttt{hasasia}[add ref]. 
-Figure~\ref{fig:hasasia} shows the characteristic strain sensitivity for the PTAs against frequency for a $10\, {\rm yr}$ PTA using a constant cadence $c=26\,{\rm yr}^{-1}$. 
-The curves include spin noise, but not jitter noise. 
-A small increase in sensitivity can be seen in comparison to the original observing strategy, however the difference is minimal with $\approx 0.5 \times 10^{-16}$ difference at the most sensitive frequency (shown by the zoom inset). 
- 
-
-
-
-
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{./images/compareSNRVTime.pdf}
 \caption{\label{fig:snrCompare}
@@ -43,6 +8,54 @@ Three time realocation results are shown, which each assume a different function
 `hd' is Hellings-Downs, `dphdDiff' is the difference between dipole and Hellings-Downs, and `equal' is equal value for all pulsar pairs. 
 }
 \end{figure}
+
+Results of the time swap analysis are shown in Fig.~\ref{fig:snrCompare} in which the average S/N over a $10\,{\rm yr}$ PTA lifespan is shown. 
+The original observation stragegy is shown by the blue-solid line.
+The results of time shuffling with three different correlation functions are shown: Hellings-Downs (orange-dot), dipole minus Hellings-Downs (green-dash), and equal (red-dot-dash).
+We note that these alternative correlations functions are only used during the time-reallocation calculation, and Fig.~\ref{fig:snrCompare} shows the S/N value computed using the Hellings-Downs function as in Eqn.~\ref{eqn:snrPIPJPg}.
+
+The biggest S/N gain is $approx 11\%$ from using the Hellings-Downs curve (although at the cost of disfavouring pulsars at large angular separations). 
+The next best S/N gain is $\approx 6/9\%$ from using the equal correlation function. 
+
+%The gains are all less than X\% at $10\,{\rm yr}$, indicating that the current observation strategey of timing all pulsars to $1\,{\rm \mu s}$ precision is already performing well. 
+
+
+The biggest S/N gain is achieved using the Hellings-Downs function for the time-swap analysis. 
+The S/N gain at $T=10\,{\rm yrs}$ is $\approx 11\%$ over the original observation strategy.
+However, as discussing in Section\ref{sec:timeshuffle}, it comes at the cost of reducing the integration time for pulsar pairs with high angular separations, which could make confirming a Hellings-Downs correlation more challenging. 
+
+
+
+\begin{figure}
+\includegraphics[trim={0cm 1cm 0cm 2cm},clip,width=0.48\textwidth]{./images/skymapHD.pdf}
+\includegraphics[trim={0cm 1cm 0cm 2cm},clip,width=0.48\textwidth]{./images/skymapDPHDDiff.pdf}
+\includegraphics[trim={0cm 1cm 0cm 2cm},clip,width=0.48\textwidth]{./images/skymapEqual.pdf}
+\caption{\label{fig:skymaps}
+Sky map showing changes to the integration times for each pulsar after the time-swap method. 
+Each cross marker indicates the position of a MeerTime pulsar. 
+Orange and blue circles indicate pulsars that have gained and lost integration time, respectively. 
+The size of the circle is proportional to the change in integration time. 
+The yellow star and grey band indicate the galactic centre and galactic plane, respectively. 
+Top: results using the Hellings-Downs correlation function in the time swap show that pulsars in the galactic centre are favoured, gaining more time. 
+Centre: results using a correlation function that favours wide angular separations between pulsars (Eqn.~\ref{eqn:chimod}). 
+Bottom: results using an equal correlation function. 
+In the centre and bottom maps, pulsars in the galactic centre are no longer favoured. 
+}
+\end{figure}
+
+This effect is clear from the sky maps shown in Fig.~\ref{fig:skymaps}. 
+Cross markers represent each pulsar and changes in integration time (compared to the original strategy) are shown by circles. 
+Pulsars that gain integration time are shown in orange and those that lose it in blue. 
+The size of the circle is proportional to the amount of time gained or lost. 
+The top panel in Fig.~\ref{fig:skymaps} shows the result of using the Hellings-Downs correlation in the time swap. 
+The general trend we see is that pulsars close to the galactic centre gain time and those away from it lose time. 
+The other two correlation function are shown in the centre and bottom panel in Fig.~\ref{fig:skymaps}. 
+In both cases, we see less of a bias towards pulsars in the galactic centre than that seen in the top panel. 
+
+Returning to Fig.~\ref{fig:snrCompare}, we see that the next-largest S/N gain is from using the equal-valued correlation function in the time swap, giving an increase in S/N of $\approx 6.9\%$. 
+Finally, using the DP-2HD correlation function provides an increase of $\approx 2.7\%$. 
+Although using a Hellings-Downs correlation function provides the largest S/N increase in Fig.~\ref{fig:snrCompare}, we recommend replacing it with an equal-valued correlation function for the time swap calculation to prevent preference for pulsar pairs with small angular separations. 
+
 
 \begin{figure*}
 \includegraphics[width=0.49\textwidth]{./images/timeComparison-0.pdf}
@@ -55,6 +68,36 @@ The other markers show integration times computed using different correlation fu
 }
 \end{figure*}
 
+Figure~\ref{fig:obsTimes} shows the corresponding integration times for the PTAs configurations shown in Fig.~\ref{fig:snrCompare}.
+The different correlation functions does make a difference to which pulsars gain and lose time, however we see that it can be advantageous in all cases to reduce integration time allocated to pulsars which require more than $1500\,{\rm s}$ to achieve $1\,{\rm \mu s}$ precision. 
+
+
+\begin{figure*}
+\includegraphics[width=0.8\textwidth]{images/hasasiaShuffle.pdf}
+\caption{\label{fig:hasasiaShuffle}
+PTA sensitivity curves for reallocation results using \texttt{hasasia}.
+The original observing schedule is shown by the blue-solid line. 
+Timing reallocation results using HD, DPHD, and Equal correlation functions are shown by the orange-dot, green-dash, and red-dot-dash lines, respetively. 
+The inset show a zoom of the most sensitive frequencies. 
+}
+\end{figure*}
+
+
+We can also compute PTA sensitivity curves for the four configurations using \texttt{hasasia}~\citep{Hazboun2019Hasasia,HazbounEtAl:2019}. 
+Figure~\ref{fig:hasasia} shows the characteristic strain sensitivity for the PTAs against frequency for a $10\, {\rm yr}$ PTA using a constant cadence $c=26\,{\rm yr}^{-1}$. 
+The curves include spin noise, but not jitter noise. 
+A small increase in sensitivity can be seen in comparison to the original observing strategy, however the difference is minimal with $\approx 0.5 \times 10^{-16}$ difference at the most sensitive frequency (shown by the zoom inset). 
+ 
+
+
+
+
+
+
+
+
+
+\begin{comment}
 \begin{figure*}
 \includegraphics[trim={0cm 1cm 0cm 2cm},clip,width=0.8\textwidth]{./images/skymapHD.pdf}
 \caption{\label{fig:skyHD}
@@ -82,15 +125,7 @@ Identical to Fig.~\ref{fig:skyHD} expect that an equal valued correlation functi
 Similar to Fig.~\ref{fig:skyDPHDDiff}, the integration time gains are no longer concentrated in the galactic centre. 
 }
 \end{figure*}
+\end{comment}
 
 
-\begin{figure*}
-\includegraphics[width=0.8\textwidth]{images/hasasiaShuffle.pdf}
-\caption{\label{fig:hasasiaShuffle}
-PTA sensitivity curves for reallocation results using \texttt{hasasia}.
-The original observing schedule is shown by the blue-solid line. 
-Timing reallocation results using HD, DPHD, and Equal correlation functions are shown by the orange-dot, green-dash, and red-dot-dash lines, respetively. 
-The inset show a zoom of the most sensitive frequencies. 
-}
-\end{figure*}
 

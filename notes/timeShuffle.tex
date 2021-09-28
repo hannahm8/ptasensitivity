@@ -11,19 +11,30 @@ We use the initial integration times as a starting point (see Section~\ref{sec:d
 The total observation time available to MeerTime is kept constant ($\sum_{I} T_{{\rm obs},I} = \TwoWkObsTimeS\,{\rm s}$) and the cadence is fixed at $c=26\,{\rm yr}^{-1}$, which means only limited changes to the current observing schedule.
 We also place the additional constraint of a minimum integration time per pulsar of $T_{{\rm obs},I} \geq 256\,{\rm s}$ so that no pulsar is removed entirely.
 Integration time is swapped between pulsars to find an S/N improvement. 
-At each step, a fraction $f$ of integration time is subtracted from a pulsar and reallocated to another pulsar so that 
+At each step, a fraction $g$ of integration time is subtracted from a pulsar and reallocated to another pulsar so that 
 \begin{eqnarray}
-T_{{\rm obs},I} &\rightarrow& T_{{\rm obs},I} - f T_{{\rm obs},I}\,, \nonumber\\
-T_{{\rm obs},J} &\rightarrow& T_{{\rm obs},J} + f T_{{\rm obs},I}\,, \nonumber
+T_{{\rm obs},I} &\rightarrow& T_{{\rm obs},I} - g T_{{\rm obs},I}\,, \nonumber\\
+T_{{\rm obs},J} &\rightarrow& T_{{\rm obs},J} + g T_{{\rm obs},I}\,, \nonumber
 \end{eqnarray}
-where we choose $f=1/8$. 
+where we choose $g=1/8$. 
 Every possible combination of time swaps between pulsar pairs is trialled.
 The swap which gives the biggest S/N increase at $10\,{\rm yrs}$ is selected and the list of $T_{{\rm obs},I}$ is updated accordingly.
 The new time allocations become the starting point for the next time swaps. 
 The process is repeated until the algorithm cannot find further gains in SNR. 
 
-The shape of the Hellings-Downs function (Eqn~\ref{eqn:hd}) means that pulsars pairs with small angular separations have higher contributions to the SNR in equation~\ref{eqn:snrPIPJPg}. 
-The Hellings-Downs curve is shown by the blue line in Fig,~\ref{fig:correlations}.
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{./images/correlationFunctions.pdf}
+\caption{\label{fig:correlations}
+Correlation functions. 
+The orange-dot line shows the Hellings and Downs curve, Eqn.~\ref{eqn:hd}. 
+The grey-solid line shows a dipole correlation, Eqn.~\ref{eqn:dip}.
+The green-dash line shows the function constructed in Eqn.~\ref{eqn:chimod} to favour pulsars at larger angular separations.
+The grey markers at the bottom of the plot indicate the angular coverate of the pulsars pairs being timed by MeerTime.
+}
+\end{figure}
+
+The shape of the Hellings-Downs function (Eqn.~\ref{eqn:hd}) means that pulsars pairs with small angular separations have higher contributions to the SNR in Eqn.~\ref{eqn:snrPIPJPg}. 
+The Hellings-Downs curve is shown by the orange-dot line in Fig,~\ref{fig:correlations}.
 This shape leads to pulsars in the galactic centre being favoured in the time swap due to a higher number of pulsar pairs with small angular separations.
 It is, however, important for a PTA to have a good coverage of angular separations so that a Helling-Downs GW signature can be confirmed. 
 We therefore repeat the analysis with two alternative correlation functions.
@@ -39,22 +50,14 @@ where $\chiIJdip$ is given by~\citep{AnholmEtAl:2009},
                    \ln \left( \sin \frac{\zeta}{2} \right) \right]\,.
 \label{eqn:dip}
 \end{equation}
-This instead favours pairs at wider separations, shown by the green line in Fig.~\ref{fig:correlations}.
+This instead favours pairs at wider separations, shown by the green-dash line in Fig.~\ref{fig:correlations}.
 The second correlation function sets all values of $\chiIJhd$ to an equal value, removing the sky position bias completely. 
-The alternative correlation functions are only used during the time shuffle analysis. 
+The alternative correlation functions are only used during the time-swap analysis. 
 All final SNR comparisons use the Hellings-Downs correlation. 
 
 
 
-\begin{figure}
-\includegraphics[width=0.5\textwidth]{../snr/correlationFunctions.png}
-\caption{\label{fig:correlations}
-Correlation functions. 
-The blue line shows the Hellings and Downs curve, Eqn.~\ref{eqn:hd}. 
-The orange line shows a dipole correlation, Eqn.~\ref{eqn:dip} and the green line shows a correlation function which no longer favours the galactic centre pulsars (Eqn.~\ref{eqn:chimod}).
-The grey markers at the bottom of the plot indicate the angular coverate of the pulsars pairs being timed by MeerTime.
-}
-\end{figure}
+
 
 
 

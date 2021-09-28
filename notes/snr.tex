@@ -1,5 +1,5 @@
 
-The average S/N for a given PTA and a predicted  SGWB signal following the method in~\cite{SiemensEtAl:2013}. 
+We compute the average S/N for a given PTA and a predicted SGWB signal following the method in~\cite{SiemensEtAl:2013}. 
 The power spectrum for a SGWB is given by
 \begin{equation}
 \Pg (f) = \frac{A^2}{24 \pi^2} \left(\frac{f}{\fref}\right)^{2\alpha} f^{-3}\,,
@@ -9,7 +9,7 @@ The power spectrum for a SGWB is given by
 where $f$ is the gravitational-wave frequency, $\fref$ is a reference frequency chosen as $1\,{\rm yr}^{-1}$, $A$ is the amplitude of the background at $f=\fref$, and $\alpha$ is the slope of the spectrum. 
 Throughout this work we assume $a=-2/3$ consistent with a stochastic background from circular massive black hole binaries and $A = 2 \times 10^{-15}$ consistent with recent speculative hints of detection~\citep{GoncharovEtAlPPTA:2021,NANOGrav12.5GWB:2020}.
 
-The average SNR for a PTA with total timespan $T$ is given by
+The average S/N for a PTA with total timespan $T$ is given by
 \begin{equation}
 \left< \rho \right> = \left( 2 T \sum_{IJ} \chiIJhd^2 
                              \int_{f_L}^{f_H} {\rm d}f  
@@ -28,7 +28,7 @@ The Hellings and Downs coefficients $\chi_{IJ}$ describe the expected angular co
            \log \left( \frac{1 - \cos(\zeta)}{2} \right)\,,
 \label{eqn:hd}
 \end{eqnarray}
-for pulsars separated by angle $\zeta$.
+for pulsars $I$ and $J$ separated by angle $\zeta$.
 
 If we assume evenly sampled data and that there is only white noise in the pulsars then $\PI$ is the sum of Eqn.~\ref{eqn:Pgw} plus white noise, 
 \begin{equation}
@@ -44,7 +44,7 @@ The power spectral density of spin noise for the $I{\rm th}$ pulsar is given by
 \PsnI (f) = \frac{\ARedI^2}{12 \pi^2} 
             \left( \frac{f}{\fref} \right)^{-\gammaRedI} {\rm yr}^3\,,
 \end{equation}
-where $\ARedI$ and $\gammaRedI$ are the amplitude and slope of the power law for the $I$th pulsar and ${\rm yr}$ is the number of seconds in a year. 
+where $\ARedI$ and $\gammaRedI$ are the amplitude and slope of the spin noise power law for the $I$th pulsar and ${\rm yr}$ is the number of seconds in a year. 
 Jitter noise $\sigma_{\rm jit}$ is added in quadrature to the white noise part the the spectrum.
 The resulting power spectrum is
 \begin{eqnarray}
@@ -54,7 +54,7 @@ The resulting power spectrum is
           \left( \frac{f}{\fref} \right)^{-\gammaRedI} {\rm yr}^3\,,
 \label{eqn:PIGWWR}
 \end{eqnarray}
-which includes SGWB, white noise, spin noise, and jitter noise.
+which includes the SGWB, white noise, spin noise, and jitter noise.
 Equations~\ref{eqn:snrPIPJPg} and~\ref{eqn:PIGWWR} can therefore be used to compute the average PTA SNR for a given observation strategy and assumed SGWB signal. 
 \begin{comment}
 \begin{equation}
