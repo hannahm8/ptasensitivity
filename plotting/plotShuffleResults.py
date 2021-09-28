@@ -7,7 +7,6 @@ sys.path.append('/fred/oz005/users/hmiddlet/ptasensitivity/snr/')
 import snrFunctions
 import readInData
 
-
 def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
                         redAs,redGammas,jitters,label,linestyle='solid'): 
 
@@ -32,7 +31,6 @@ def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
                                         psrTimes,\
                                         redAs, redGammas,jitters, \
                                         A,alpha,beta,fref,Ti,c)
-
 
     T10Yr = 10.*oneYearInSeconds
     snr10Year = snrFunctions.avePTASNR(psrNames,\
