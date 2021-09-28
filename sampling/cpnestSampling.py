@@ -44,6 +44,7 @@ class snrTime(cpnest.model.Model):
         self.fref = 1./oneYearInSeconds
         self.c = 26./oneYearInSeconds
 
+        self.totalTime = 44096.
 
         self.bounds=[]
 
@@ -52,17 +53,28 @@ class snrTime(cpnest.model.Model):
             self.bounds.append([minT,maxT])
 
 
+
+    def getValues(self,p):
+        theta = ((p[str(self.names[0])]),)
+        for i in range(self.dim-1):
+            theta = theta + ((p[str(self.names[i+1])]),)
+        return theta
+
+
+
     def log_prior(self, p):
         if not self.in_bounds(p): return -np.inf
+        theta = self.getValues(p)
+        if sum(theta)>self.totalTime: return -np.inf
         return 0
         
 
     def log_likelihood(self,param):
 
-        theta = ((param[str(self.names[0])]),)
-
-        for i in range(self.dim-1):
-            theta = theta + ((param[str(self.names[i+1])]),)
+        #theta = ((param[str(self.names[0])]),)
+        #for i in range(self.dim-1):
+        #    theta = theta + ((param[str(self.names[i+1])]),)
+        theta = self.getValues(param)
 
 
         obsTimes = {}
@@ -88,7 +100,7 @@ class snrTime(cpnest.model.Model):
 
 mymodel = snrTime()
 #nest = cpnest.CPNest(mymodel,maxmcmc=1000,nlive=10000,verbose=3,nthreads=1)
-nest = cpnest.CPNest(mymodel,maxmcmc=100,nlive=500,verbose=3,nthreads=1)
+nest = cpnest.CPNest(mymodel,maxmcmc=100,nlive=500,verbose=3,nthreads=8)
 nest.run()
 cpnest.CPNest.get_posterior_samples(nest)
 
