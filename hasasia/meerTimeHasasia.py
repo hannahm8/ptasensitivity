@@ -123,7 +123,7 @@ plt.rcParams.update({'font.size': 14})
 fig, ax = plt.subplots(figsize=[10,8])
 
 scGWBOriginal = constructPTA(sigmas, radRA, radDEC, freqs, redNoise=True, redA=rA, redGamma=rG)
-ax.loglog(freqs,scGWBOriginal.h_c,label='original',ls='solid')
+ax.loglog(freqs,scGWBOriginal.h_c,label='Original',ls='solid')
 
 scGWBShuffleHD = constructPTA(sigmaShuffleHD, \
                               radRA, radDEC, \
