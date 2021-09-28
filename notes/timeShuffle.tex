@@ -1,15 +1,16 @@
 
 
-In this work we take a greedy algorithm approach to find SNR improvements. 
+We take a greedy algorithm approach to make S/N improvements to the MeerTime PTA.
 The approach has its limitations in that it will always take the locally optimal step, and can miss the global optimal solution. 
-However, it has a reasonably low computational cost and can still achieve SNR improvement. 
+However, it has a reasonably low computational cost and can still achieve S/N improvement. 
+Here we describe the method and in Section~\ref{sec:results} we present results.
 
 
-The method we use focuses on reorganising the time allocation between pulsars. 
+The method we use focuses on swapping a fraction of the time allocation between pulsars. 
 We use the initial integration times as a starting point (see Section~\ref{sec:data}).
-The total observation time available to MeerTime is kept constant ($\sum_{I} T_{{\rm obs},I} = \TwoWkObsTimeS\,{\rm s}$) and the cadence is fixed at $c=26\,{\rm yr}^{-1}$, which means only limited changes to the current observing schedule(?).
-We also place the additional constraint of a minimum integration time per pulsar of $256\,{\rm s}$ so that no pulsar is removed entirely.
-Integration time is swapped between pulsars to find an SNR improvement. 
+The total observation time available to MeerTime is kept constant ($\sum_{I} T_{{\rm obs},I} = \TwoWkObsTimeS\,{\rm s}$) and the cadence is fixed at $c=26\,{\rm yr}^{-1}$, which means only limited changes to the current observing schedule.
+We also place the additional constraint of a minimum integration time per pulsar of $T_{{\rm obs},I} \geq 256\,{\rm s}$ so that no pulsar is removed entirely.
+Integration time is swapped between pulsars to find an S/N improvement. 
 At each step, a fraction $f$ of integration time is subtracted from a pulsar and reallocated to another pulsar so that 
 \begin{eqnarray}
 T_{{\rm obs},I} &\rightarrow& T_{{\rm obs},I} - f T_{{\rm obs},I}\,, \nonumber\\
@@ -17,14 +18,14 @@ T_{{\rm obs},J} &\rightarrow& T_{{\rm obs},J} + f T_{{\rm obs},I}\,, \nonumber
 \end{eqnarray}
 where we choose $f=1/8$. 
 Every possible combination of time swaps between pulsar pairs is trialled.
-The swap which gives the biggest SNR increase at $10\,{\rm yrs}$ is selected and the list of $T_{{\rm obs},I}$ is updated accordingly.
-The new time allocations become the starting point for the next time shuffle. 
+The swap which gives the biggest S/N increase at $10\,{\rm yrs}$ is selected and the list of $T_{{\rm obs},I}$ is updated accordingly.
+The new time allocations become the starting point for the next time swaps. 
 The process is repeated until the algorithm cannot find further gains in SNR. 
 
-The shape of the Hellings-Downs function (equation~\ref{eqn:hd}) means that pulsars pairs with small angular separations have higher contributions to the SNR in equation~\ref{eqn:snrPIPJPg}. 
+The shape of the Hellings-Downs function (Eqn~\ref{eqn:hd}) means that pulsars pairs with small angular separations have higher contributions to the SNR in equation~\ref{eqn:snrPIPJPg}. 
 The Hellings-Downs curve is shown by the blue line in Fig,~\ref{fig:correlations}.
-This shape leads to pulsars in the galactic centre being favoured in the time shuffle due to a higher number of pulsar pairs with small angular separations.
-It is, however, important for a PTA to have a good coverage of angular separations so that a Helling-Downs gravitational wave signature can be confirmed. 
+This shape leads to pulsars in the galactic centre being favoured in the time swap due to a higher number of pulsar pairs with small angular separations.
+It is, however, important for a PTA to have a good coverage of angular separations so that a Helling-Downs GW signature can be confirmed. 
 We therefore repeat the analysis with two alternative correlation functions.
 The first is a dipole $\chiIJdip$ minus a Hellings-Downs curve
 \begin{equation}
