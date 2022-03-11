@@ -24,9 +24,8 @@ hdValues = readInData.readDataIntoDicts(psrDataFile)
 
 """
 
-def constructPTA(sig,radRA,radDec,freqs,redNoise=False,redA=None,redGamma=None):
+def constructPTA(sig,radRA,radDec,freqs,redNoise=False,redA=None,redGamma=None,c=26):
     T = 10 # in years 
-    c = 26
     
     if redNoise==True: 
         print(redA)
