@@ -10,7 +10,8 @@ import copy
 
 
 
-def getSNR(givePSR,takePSR,modifiedIntegrals,obsConsts,times,redAmps,redGammas,jitters,constants):
+def getSNR(givePSR,takePSR,modifiedIntegrals,obsConsts,times,\
+           redAmps,redGammas,dmAmps,dmGammas,jitters,constants):
 
     A, alpha, beta, TInSeconds, c, fref = constants
 
@@ -29,14 +30,19 @@ def getSNR(givePSR,takePSR,modifiedIntegrals,obsConsts,times,redAmps,redGammas,j
                     sigI = obsConsts[ipsr] / np.sqrt(times[ipsr])
                     sigJ = obsConsts[jpsr] / np.sqrt(times[jpsr])
 
-                    intValue = snrFunctions.get_integral_rnoise_jitter(c,fref,\
+                    # integral including red, dm, jitter nosie
+                    intValue = snrFunctions.get_integral_rnoise_dmnoise_jitter(c,fref,\
                                                                        sigI,\
-                                                                       redAmps[ipsr],
+                                                                       redAmps[ipsr],\
                                                                        redGammas[ipsr],\
+                                                                       dmAmps[ipsr],\
+                                                                       dmGammas[ipsr],\
                                                                        jitters[ipsr],\
                                                                        sigJ,\
                                                                        redAmps[jpsr],\
                                                                        redGammas[jpsr],\
+                                                                       dmAmps[jpsr],\
+                                                                       dmGammas[jpsr],\
                                                                        jitters[jpsr],\
                                                                        A,alpha,beta,TInSeconds)
                     # update the precompute values
@@ -68,7 +74,10 @@ def get_arguments():
                         help='psr data path (PSR RA DEC IntTime ExpPrecision)')
     parser.add_argument('--redNoiseFile', '-r', dest='psrRedNoiseFile', default=None,
                         required=False, type=str,
-                        help='red noise data path (PSR ASN gammaSN Ref)')
+                        help='red noise data path (PSR ASN gammaSN Ref?)')
+    parser.add_argument('--dmNoiseFile', '-dm', dest='psrDMNoiseFile', default=None,
+                        required=False, type=str,
+                        help='DM noise data path (PSR ADM gammaDM Ref?)')
     parser.add_argument('--jitterNoiseFile', '-j', dest='psrJitterNoiseFile',
                         required=False, type=str, default=None,
                         help='jitter noise data path (PSR jitter error)')
@@ -87,6 +96,7 @@ args = get_arguments()
 psrDataFile     = args.psrDataFile
 chooseCorrFunc  = args.whichCorrFunc
 redNoisePath    = args.psrRedNoiseFile
+dmNoisePath     = args.psrDMNoiseFile
 jitterNoisePath = args.psrJitterNoiseFile
 
 print("""
@@ -94,8 +104,7 @@ data {}
 corr {}
 redn {}
 jitn {}
-""".format(psrDataFile, chooseCorrFunc, redNoisePath, jitterNoisePath))
-
+""".format(psrDataFile, chooseCorrFunc, redNoisePath, dmNoisePath, jitterNoisePath))
 
 
 
@@ -108,11 +117,13 @@ angles, \
 angCorrValues, \
 redAmps, \
 redGammas, \
+dmAmps, \
+dmGammas, \
 jitters = readInData.readDataIntoDicts(psrDataFile,\
                                        chooseCorrFunc,\
                                        redNoiseFile=redNoisePath,\
+                                       dmNoiseFile=dmNoisePath,\
                                        jitterNoiseFile=jitterNoisePath)
-
 
 oneYearInSeconds = (365.25*24.*60.*60.)
 
@@ -137,18 +148,23 @@ for ipsr in psrNames:
         sigI = psrObsConstants[ipsr] / np.sqrt(psrStartingObsTimes[ipsr])
         sigJ = psrObsConstants[jpsr] / np.sqrt(psrStartingObsTimes[jpsr])
 
-        thisInt[jpsr] = snrFunctions.get_integral_rnoise_jitter(c,fref,\
+        thisInt[jpsr] = snrFunctions.get_integral_rnoise_dmnoise_jitter(c,fref,\
                                                                 sigI,\
                                                                 redAmps[ipsr],
                                                                 redGammas[ipsr],\
+                                                                dmAmps[ipsr],\
+                                                                dmGammas[ipsr],\
                                                                 jitters[ipsr],\
                                                                 sigJ,\
                                                                 redAmps[jpsr],\
                                                                 redGammas[jpsr],\
+                                                                dmAmps[jpsr],\
+                                                                dmGammas[jpsr],\
                                                                 jitters[jpsr],\
                                                                 A,alpha,beta,TInSeconds)
 
     intContributions[ipsr] = thisInt
+
 
 
 startSNR = snrFunctions.avePTASNR(psrNames,\
@@ -156,12 +172,14 @@ startSNR = snrFunctions.avePTASNR(psrNames,\
                                   angCorrValues,\
                                   psrStartingObsTimes,\
                                   redAmps, redGammas, \
+                                  dmAmps, dmGammas, \
                                   jitters, \
                                   A,alpha,beta,fref,TInSeconds,c)
 
 
 
-print(startSNR)
+print('startSNR', startSNR)
+exit()
 total=0
 for i,ipsr in enumerate(psrNames):
     for j,jpsr in enumerate(psrNames):
@@ -174,7 +192,9 @@ for i,ipsr in enumerate(psrNames):
 snr = np.sqrt(total)
 print(snr)
 
-snr,mod = getSNR('None','None',intContributions,psrObsConstants,psrStartingObsTimes,redAmps,redGammas,jitters,constants)
+# what's the nones about? XX does this do anything at the moment?
+snr,mod = getSNR('None','None',intContributions,psrObsConstants,psrStartingObsTimes,\
+                  redAmps,redGammas,dmAmps,dmGammas,jitters,constants)
 print(snr)
 
 ############################################################
@@ -225,6 +245,7 @@ while improvement==True:
                 snr,modInt = getSNR(ipsr,jpsr,editedIntContrib,\
                                     psrObsConstants,editedTimes,\
                                     redAmps,redGammas,\
+                                    dmAmps,dmGammas,\
                                     jitters,constants)  
 
                 

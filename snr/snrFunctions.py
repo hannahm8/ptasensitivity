@@ -233,8 +233,61 @@ def get_integral_rnoise_jitter(c,fref,sigI,rAI,gamI,jitI,sigJ,rAJ,gamJ,jitJ,A,al
 
 
 
+
+def get_integral_rnoise_dmnoise_jitter(c,fref,\
+                                       sigI,rAI,rgamI,dmAI,dmgamI,jitI,\
+                                       sigJ,rAJ,rgamJ,dmAJ,dmgamJ,jitJ,\
+                                       A,alpha,beta,T):
+
+
+    def wrdj_integrand(f,c,fref,\
+                       sigmaI,redAI,redgammaI,dispmAI,dispmgammaI,jitterI,\
+                       sigmaJ,redAJ,redgammaJ,dispmAJ,dispmgammaJ,jitterJ,\
+                       A,alpha,beta):
+    
+        # white noise
+        deltat = 1./c
+        
+        # red noise 
+        nSecondsInYear = 365.25*24.*60.*60. 
+        aRedI = (redAI*redAI*(nSecondsInYear**3.)) / (12.*np.pi*np.pi)
+        aRedJ = (redAJ*redAJ*(nSecondsInYear**3.)) / (12.*np.pi*np.pi)
+        
+        # dm noise
+        aDMI = (dispmAI*dispmAI*(nSecondsInYear**3.)) / (12.*np.pi*np.pi)
+        aDMJ = (dispmAJ*dispmAJ*(nSecondsInYear**3.)) / (12.*np.pi*np.pi)
+        
+        # gravitational wave signal
+        b = get_b(A,fref,alpha)
+        
+        # measurement and jitter noise
+        sigmaSquaredI = (sigI*sigI + jitI*jitI)
+        sigmaSquaredJ = (sigJ*sigJ + jitJ*jitJ)
+        
+        
+                
+        I = ((b**2.)*(f**-(2.*beta))) \
+            / (  (b*(f**-beta) + 2.*sigmaSquaredI*deltat \
+                  + aRedI*(f/fref)**-redgammaI + aDMI*(f/fref)**-dispmgammaI) \
+               * (b*(f**-beta) + 2.*sigmaSquaredJ*deltat \
+                  + aRedJ*(f/fref)**-redgammaJ + aDMJ*(f/fref)**-dispmgammaJ) ) 
+          
+        return I
+        
+    fL = 1./T
+    fH = 0.5*c
+
+    value = quad(wrdj_integrand, fL, fH, args=(c,fref,\
+                                           sigI,rAI,rgamI,dmAI,dmgamI,jitI,\
+                                           sigJ,rAJ,rgamJ,dmAJ,dmgamJ,jitJ,\
+                                           A,alpha,beta))
+
+    return value[0], value[1]
+    
+
+
 def avePTASNR(psrNames,psrConstants,angCorrelationValues, \
-              obsTimes,rAs,gammas,jitters,\
+              obsTimes,rAs,rgammas,dmAs,dmgammas,jitters,\
               A,alpha,beta,fref,T,c):
 
     fL=1./T
@@ -258,7 +311,9 @@ def avePTASNR(psrNames,psrConstants,angCorrelationValues, \
             # get the sigmas for these times. 
             sigI = psrConstants[ipsr] / np.sqrt(obsTimes[ipsr])
             sigJ = psrConstants[jpsr] / np.sqrt(obsTimes[jpsr])
-            
+
+            """
+            replaced with the version that includes dm noise            
             integral = get_integral_rnoise_jitter(c,fref,\
                                                   sigI, \
                                                   rAs[ipsr],gammas[ipsr], \
@@ -267,7 +322,20 @@ def avePTASNR(psrNames,psrConstants,angCorrelationValues, \
                                                   rAs[jpsr],gammas[jpsr], \
                                                   jitters[jpsr],\
                                                   A,alpha,beta,T)
-  
+            """
+            
+            integral,err = get_integral_rnoise_dmnoise_jitter(c,fref,\
+                                      sigI, \
+                                      rAs[ipsr],rgammas[ipsr], \
+                                      dmAs[ipsr],dmgammas[ipsr],\
+                                      jitters[ipsr],\
+                                      sigJ, \
+                                      rAs[jpsr],rgammas[jpsr], \
+                                      dmAs[jpsr],dmgammas[jpsr],\
+                                      jitters[jpsr],\
+                                      A,alpha,beta,T)
+
+            print('integral is: ', integral,err)
             aveSNRSinglePulsarPair = 2.*T*corr*corr*integral 
             total+=aveSNRSinglePulsarPair
 
@@ -285,6 +353,8 @@ def avePTASNR_from_sigmas(psrNames,sigmas, \
     """
     This is the same as avePTASNR() above, but it takes the precisions
     directly (rather than integration times)
+    
+    WARNING IT DOES NOT YET DO DM! 
     """
 
     fL=1./T

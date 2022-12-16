@@ -26,6 +26,29 @@ def readRedNoise(fileName,allPSRNames):
     return ARed, gRed 
 
 
+def readDMNoise(fileName,allPSRNames):
+
+    dmPSRNames = np.genfromtxt(fileName,usecols=0,dtype=str)
+    dmData = np.genfromtxt(fileName,names=True)
+    
+    As     = {}
+    gammas = {}
+    for dmpsr, a, g in zip(dmPSRNames,dmData['ADM'],dmData['gammaDM']):
+        As[dmpsr]     = a
+        gammas[dmpsr] = g
+        
+    ADM = {}
+    gDM = {}
+    for psr in allPSRNames:
+        try: 
+            ADM[psr] = 10.**As[psr]
+            gDM[psr] = gammas[psr]
+        except: 
+            ADM[psr] = 0.
+            gDM[psr] = 1.
+            
+    return ADM, gDM
+
 
 
 
@@ -149,6 +172,7 @@ def equalCorrs(psrNames,psrData):
 def readDataIntoDicts(psrDataFile,\
                       whichCorrelationFunction,\
                       redNoiseFile=None,\
+                      dmNoiseFile=None,\
                       jitterNoiseFile=None):
 
 
@@ -202,6 +226,21 @@ def readDataIntoDicts(psrDataFile,\
 
 
     """
+    read in the dm noies parameter if available. Returns:
+        ampDM = 0
+        gammaDM = 1
+    if not available.
+    """    
+    if dmNoiseFile!=None:
+        ampDM, gammaDM = readDMNoise(dmNoiseFile,psrNames)
+    else:
+        ampDM, gammaDM = {}, {}
+        for psr in psrNames: 
+            ampDM[psr] = 0
+            gammaDM[psr] = 1
+
+
+    """
     read in the jitter noise values if available. Returns
         jitter = 0
     for all if not available
@@ -214,7 +253,6 @@ def readDataIntoDicts(psrDataFile,\
             jitterNoise[psr] = 0
 
 
-    
 
     return psrNames, \
            psrObsConstants, \
@@ -222,73 +260,7 @@ def readDataIntoDicts(psrDataFile,\
            angles, \
            correlationValues, \
            ampRed, gammaRed, \
+           ampDM, gammaDM, \
            jitterNoise 
 
-
-
-
-
-'''
-this will be replaced by single function above
-def readDataIntoDicts_dphdDiff(psrDataFile,\
-                               redNoiseFile=None,\
-                               jitterNoiseFile=None):
-
-    """
-    Same as above but this will return difference between dipole and hd     
-    correlations 
-    """
-    psrNames = np.genfromtxt(psrDataFile,usecols=0,dtype=str)
-    psrData  = np.genfromtxt(psrDataFile,names=True)
-
-    # compute obs constants 
-    obsConstants = [ sig * np.sqrt(intT) for sig, intT in \
-                                         zip (psrData['ExpPrecision']*1.E-6, \
-                                              psrData['IntTime'])]
-    psrObsConstants = {}
-    psrStartingObsTimes = {}
-    for psr, oc, st in zip(psrNames, obsConstants, psrData['IntTime']):
-        psrObsConstants[psr] = float(oc)
-        psrStartingObsTimes[psr] = float(st)
-
-
-    # work out angles and hd values ahead of time
-    angles = {}
-    dphdDiffValues = {}
-    for i, ipsr in enumerate(psrNames):
-        onePSRAng = {}
-        onePSRDiffs = {}
-        for j, jpsr in enumerate(psrNames):
-            if jpsr==ipsr:
-                angle = 0
-                diff = None
-            else: 
-                rai, deci = psrData['RA'][i], psrData['DEC'][i]
-                raj, decj = psrData['RA'][j], psrData['DEC'][j]
-                angle = snrFunctions.h2(rai,raj,deci,decj)
-                hd = snrFunctions.hellings_downs(angle)
-                dp = snrFunctions.dipole(angle)
-                diff = dp-(2.*hd) # normalise both to 1 
-            onePSRAng[jpsr] = angle
-            onePSRDiffs[jpsr] = diff
-        angles[ipsr] = onePSRAng
-        dphdDiffValues[ipsr] = onePSRDiffs
-
-    if redNoiseFile!=None:
-        ampRed, gammaRed = readRedNoise(redNoiseFile,psrNames)
-    else: 
-        ampRed,gammaRed = {}, {}
-        for psr in psrNames:
-            ampRed[psr] = 0
-            gammaRed[psr] = 1
-
-    
-    return psrNames, \
-           psrObsConstants, \
-           psrStartingObsTimes, \
-           angles, \
-           dphdDiffValues, \
-           ampRed, gammaRed 
-
-'''
 
