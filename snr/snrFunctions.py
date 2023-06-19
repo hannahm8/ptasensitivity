@@ -372,10 +372,10 @@ def avePTASNR(psrNames,psrConstants,angCorrelationValues, \
             replaced with the version that includes dm noise            
             integral = get_integral_rnoise_jitter(c,fref,\
                                                   sigI, \
-                                                  rAs[ipsr],gammas[ipsr], \
+                                                  rAs[ipsr],rgammas[ipsr], \
                                                   jitters[ipsr],\
                                                   sigJ, \
-                                                  rAs[jpsr],gammas[jpsr], \
+                                                  rAs[jpsr],rgammas[jpsr], \
                                                   jitters[jpsr],\
                                                   A,alpha,beta,T)
             """
@@ -390,6 +390,7 @@ def avePTASNR(psrNames,psrConstants,angCorrelationValues, \
                                       dmAs[jpsr],dmgammas[jpsr],\
                                       jitters[jpsr],\
                                       A,alpha,beta,T)
+
 
             #print('integral is: ', integral,err)
 

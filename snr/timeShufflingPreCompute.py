@@ -31,6 +31,7 @@ def getSNR(givePSR,takePSR,modifiedIntegrals,obsConsts,times,\
                     sigJ = obsConsts[jpsr] / np.sqrt(times[jpsr])
 
                     # integral including red, dm, jitter nosie
+
                     intValue = snrFunctions.get_integral_rnoise_dmnoise_jitter(c,fref,\
                                                                        sigI,\
                                                                        redAmps[ipsr],\
@@ -45,7 +46,20 @@ def getSNR(givePSR,takePSR,modifiedIntegrals,obsConsts,times,\
                                                                        dmGammas[jpsr],\
                                                                        jitters[jpsr],\
                                                                        A,alpha,beta,TInSeconds)
+                    '''                                                   
+                    intValue = snrFunctions.get_integral_rnoise_jitter(c,fref,\
+                                                                       sigI,\
+                                                                       redAmps[ipsr],\
+                                                                       redGammas[ipsr],\
+                                                                       jitters[ipsr],\
+                                                                       sigJ,\
+                                                                       redAmps[jpsr],\
+                                                                       redGammas[jpsr],\
+                                                                       jitters[jpsr],\
+                                                                       A,alpha,beta,TInSeconds)
+                    '''
                     # update the precompute values
+
                     #print(intValue, modifiedIntegrals[ipsr][jpsr])
                     modifiedIntegrals[ipsr][jpsr] = intValue
                     #print(ipsr,jpsr,modifiedIntegrals[ipsr][jpsr])
@@ -192,7 +206,7 @@ for i,ipsr in enumerate(psrNames):
             total+=aveSNRSinglePulsarPair
 
 snr = np.sqrt(total)
-print(snr)
+print('snr', snr)
 
 # what's the nones about? XX does this do anything at the moment?
 snr,mod = getSNR('None','None',intContributions,psrObsConstants,psrStartingObsTimes,\
