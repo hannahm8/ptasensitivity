@@ -179,13 +179,15 @@ startSNR = snrFunctions.avePTASNR(psrNames,\
 
 
 print('startSNR', startSNR)
-exit()
+
+
 total=0
 for i,ipsr in enumerate(psrNames):
     for j,jpsr in enumerate(psrNames):
         if (i>j): # no double counting
             corr = angCorrValues[ipsr][jpsr]    
             inte = intContributions[ipsr][jpsr]
+            #print(TInSeconds,corr,inte,type(TInSeconds),type(corr),type(inte))
             aveSNRSinglePulsarPair = 2*TInSeconds*corr*corr*inte
             total+=aveSNRSinglePulsarPair
 

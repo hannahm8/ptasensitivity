@@ -233,7 +233,7 @@ def get_integral_rnoise_jitter(c,fref,sigI,rAI,gamI,jitI,sigJ,rAJ,gamJ,jitJ,A,al
 
 
 
-
+#This is the original version integrating over f
 def get_integral_rnoise_dmnoise_jitter(c,fref,\
                                        sigI,rAI,rgamI,dmAI,dmgamI,jitI,\
                                        sigJ,rAJ,rgamJ,dmAJ,dmgamJ,jitJ,\
@@ -245,7 +245,7 @@ def get_integral_rnoise_dmnoise_jitter(c,fref,\
                        sigmaJ,redAJ,redgammaJ,dispmAJ,dispmgammaJ,jitterJ,\
                        A,alpha,beta):
     
-        # white noise
+        # delta t - used later
         deltat = 1./c
         
         # red noise 
@@ -256,7 +256,7 @@ def get_integral_rnoise_dmnoise_jitter(c,fref,\
         # dm noise
         aDMI = (dispmAI*dispmAI*(nSecondsInYear**3.)) / (12.*np.pi*np.pi)
         aDMJ = (dispmAJ*dispmAJ*(nSecondsInYear**3.)) / (12.*np.pi*np.pi)
-        
+
         # gravitational wave signal
         b = get_b(A,fref,alpha)
         
@@ -264,14 +264,15 @@ def get_integral_rnoise_dmnoise_jitter(c,fref,\
         sigmaSquaredI = (sigI*sigI + jitI*jitI)
         sigmaSquaredJ = (sigJ*sigJ + jitJ*jitJ)
         
+        #print(  aRedI*(f/fref)**-redgammaI )
+
         
-                
         I = ((b**2.)*(f**-(2.*beta))) \
             / (  (b*(f**-beta) + 2.*sigmaSquaredI*deltat \
                   + aRedI*(f/fref)**-redgammaI + aDMI*(f/fref)**-dispmgammaI) \
                * (b*(f**-beta) + 2.*sigmaSquaredJ*deltat \
                   + aRedJ*(f/fref)**-redgammaJ + aDMJ*(f/fref)**-dispmgammaJ) ) 
-          
+ 
         return I
         
     fL = 1./T
@@ -282,8 +283,63 @@ def get_integral_rnoise_dmnoise_jitter(c,fref,\
                                            sigJ,rAJ,rgamJ,dmAJ,dmgamJ,jitJ,\
                                            A,alpha,beta))
 
-    return value[0], value[1]
+    return value[0]#, value[1]
+
+'''
+def get_integral_rnoise_dmnoise_jitter(c,fref,\
+                                       sigI,rAI,rgamI,dmAI,dmgamI,jitI,\
+                                       sigJ,rAJ,rgamJ,dmAJ,dmgamJ,jitJ,\
+                                       A,alpha,beta,T):
+
+
+    def wrdj_integrand(Fint,c,fref,\
+                       sigmaI,redAI,redgammaI,dispmAI,dispmgammaI,jitterI,\
+                       sigmaJ,redAJ,redgammaJ,dispmAJ,dispmgammaJ,jitterJ,\
+                       A,alpha,beta):
     
+        # delta t - used later
+        deltat = 1./c
+        
+        # red noise 
+        nSecondsInYear = 365.25*24.*60.*60. 
+        aRedI = (redAI*redAI*(nSecondsInYear**3.)) / (12.*np.pi*np.pi)
+        aRedJ = (redAJ*redAJ*(nSecondsInYear**3.)) / (12.*np.pi*np.pi)
+        
+        # dm noise
+        aDMI = (dispmAI*dispmAI*(nSecondsInYear**3.)) / (12.*np.pi*np.pi)
+        aDMJ = (dispmAJ*dispmAJ*(nSecondsInYear**3.)) / (12.*np.pi*np.pi)
+
+        # gravitational wave signal
+        b = get_b(A,fref,alpha)
+        
+        # measurement and jitter noise
+        sigmaSquaredI = (sigI*sigI + jitI*jitI)
+        sigmaSquaredJ = (sigJ*sigJ + jitJ*jitJ)
+        
+        
+        I = (Fint**(-2.*beta)) \
+            / (  (b*(Fint**-beta) + 2.*sigmaSquaredI*deltat \
+                  + aRedI*(Fint/fref)**-redgammaI + aDMI*(Fint/fref)**-dispmgammaI) \
+               * (b*((fref*Fint)**-beta) + 2.*sigmaSquaredJ*deltat \
+                  + aRedJ*(Fint/fref)**-redgammaJ + aDMJ*(Fint/fref)**-dispmgammaJ) ) 
+        #print(I)
+        if str(I)=='nan':
+            pass
+            #print(aRedI,aRedJ,redgammaI,redgammaJ,aDMI,aDMJ,dispmgammaI,dispmgammaJ)
+        contants = b*b*fref*fref**(-2*beta)
+        return I
+    
+    fL = 1./T / fref
+    fH = 0.5*c / fref
+
+    value = quad(wrdj_integrand, fL, fH, args=(c,fref,\
+                                           sigI,rAI,rgamI,dmAI,dmgamI,jitI,\
+                                           sigJ,rAJ,rgamJ,dmAJ,dmgamJ,jitJ,\
+                                           A,alpha,beta),\
+                                           epsabs=1.5e-15, epsrel=1.5e-15)
+
+    return value[0], value[1]    
+'''
 
 
 def avePTASNR(psrNames,psrConstants,angCorrelationValues, \
@@ -324,7 +380,7 @@ def avePTASNR(psrNames,psrConstants,angCorrelationValues, \
                                                   A,alpha,beta,T)
             """
             
-            integral,err = get_integral_rnoise_dmnoise_jitter(c,fref,\
+            integral = get_integral_rnoise_dmnoise_jitter(c,fref,\
                                       sigI, \
                                       rAs[ipsr],rgammas[ipsr], \
                                       dmAs[ipsr],dmgammas[ipsr],\
@@ -335,7 +391,8 @@ def avePTASNR(psrNames,psrConstants,angCorrelationValues, \
                                       jitters[jpsr],\
                                       A,alpha,beta,T)
 
-            print('integral is: ', integral,err)
+            #print('integral is: ', integral,err)
+
             aveSNRSinglePulsarPair = 2.*T*corr*corr*integral 
             total+=aveSNRSinglePulsarPair
 
