@@ -4,11 +4,13 @@ import matplotlib.pyplot as plt
 
 sys.path.append('/home/hannahm/repositories/ptasensitivity/snr/')
 sys.path.append('/fred/oz005/users/hmiddlet/ptasensitivity/snr/')
+sys.path.append('/home/ADF/middlehr/repositories/ptasensitivity/snr/')
 import snrFunctions
 import readInData
 
 def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
-                        redAs,redGammas,jitters,label,linestyle='solid'): 
+                        redAs,redGammas,dmAs,dmGammas, \
+                        jitters,label,linestyle='solid'): 
 
     # general stuff 
     oneYearInSeconds = (365.25*24.*60.*60.)
@@ -29,7 +31,9 @@ def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
                                         psrObsConstants,\
                                         hdValues,\
                                         psrTimes,\
-                                        redAs, redGammas,jitters, \
+                                        redAs, redGammas,\
+                                        dmAs, dmGammas, \
+                                        jitters, \
                                         A,alpha,beta,fref,Ti,c)
 
     T10Yr = 10.*oneYearInSeconds
@@ -37,7 +41,9 @@ def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
                                        psrObsConstants,\
                                        hdValues,\
                                        psrTimes,\
-                                       redAs,redGammas,jitters,\
+                                       redAs,redGammas,\
+                                       dmAs, dmGammas,\
+                                       jitters,\
                                        A,alpha,beta,fref,T10Yr,c)
     print("\nSNR at 10 years: {} \n".format(snr10Year))
     plt.plot(T,snr,label=label,ls=linestyle)
@@ -133,9 +139,11 @@ shuffleLabel3  = sys.argv[8]
 
 redNoiseFile  = sys.argv[9]
 
-jitterNoiseFile = sys.argv[10]
+dmNoiseFile = sys.argv[10]
 
-outputDir = sys.argv[11]
+jitterNoiseFile = sys.argv[11]
+
+outputDir = sys.argv[12]
 
 
 print(shuffleFile2,shuffleFile3)
@@ -156,12 +164,16 @@ angles, \
 hdValues, \
 ampRed, \
 gammaRed, \
+ampDM, \
+gammaDM, \
 jitterNoise = readInData.readDataIntoDicts(originalFile, \
                                         whichCorrelationFunction, \
                                         redNoiseFile=redNoiseFile, \
+                                        dmNoiseFile=dmNoiseFile, \
                                         jitterNoiseFile=jitterNoiseFile)
 
 
+ 
 # shuffled times 
 #psrTimeShuffleDataNames = np.genfromtxt('oneToOneShuffle/shuffle_14.dat',usecols=0,dtype=str)
 #psrTimeShuffleDataTimes = np.genfromtxt('oneToOneShuffle/shuffle_14.dat',usecols=1)
@@ -194,6 +206,8 @@ if shuffleFile2!='None' and shuffleFile3!='None':
                             psrTime, \
                             ampRed, \
                             gammaRed, \
+                            ampDM, \
+                            gammaDM, \
                             jitterNoise, \
                             runLabel, \
                             linestyle=ls)

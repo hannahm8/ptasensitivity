@@ -94,6 +94,7 @@ def convert(ra_deg, dec_deg):
 
 psrDataFile = sys.argv[1]
 shuffleFile = sys.argv[2]
+shuffleLabel = sys.argv[3]
 
 #psrDataFile = '/home/hannahm/repositories/ptasensitivity/data/psrDetails.dat'
 data = np.genfromtxt(psrDataFile,names=True)
@@ -165,8 +166,8 @@ ax.set_xticklabels(['4h','2h','0h','22h','20h','18h','16h','14h','12h','10h','8h
 
 plt.tight_layout()
 
-plt.savefig('skymap.png')
-plt.savefig('skymap.pdf')
+plt.savefig('skymap_{}.png'.format(shuffleLabel))
+plt.savefig('skymap_{}.pdf'.format(shuffleLabel))
 plt.show()
 exit()
 
