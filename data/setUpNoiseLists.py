@@ -1,18 +1,19 @@
 import numpy as np
 
 def getPSRNames():
-    data = np.genfromtxt('psrDetails_new.dat',dtype=str)
+    data = np.genfromtxt('psrDetails.dat',dtype=str)
     psrNames = data[:,0]
     return psrNames
 
 
-#def readDMNoise():
     
         
 def makeDMDict():
     """
     create a dictionary of the puslar DM noise values 
-    when the value is unknow, use the median of the rest
+    when the value is unknow, use the minimum of the rest
+    for the noise amplitude and the median of the rest for
+    the noise slope. 
     """
     # set up dictionaries
     ADMs, gDMs = {}, {}
@@ -41,16 +42,20 @@ def makeDMDict():
         # next line 
         line = f.readline().split()
 
-    # get the median values
+    # get the minimum value for A
     As = np.atleast_1d(As)    
-    medianA = np.median(As)
+    minimumA = min(As)
+    
+    # get the median value for gamma
     gs = np.atleast_1d(gs)
     mediang = np.median(gs)
 
-    # put the median values in the dictionaries when noise unknown
+    # put the minimum/median values in the dictionaries when noise unknown
+    # minimum for A
+    # median for gamma 
     for psr in ADMs.keys():
         if ADMs[psr]==None:
-            ADMs[psr] = medianA
+            ADMs[psr] = minimumA
         else: pass
         if gDMs[psr]==None:
             gDMs[psr] = mediang
@@ -60,8 +65,9 @@ def makeDMDict():
    
 def makeSNDict():
     """
-    create a dictionary of the puslar DM noise values 
-    when the value is unknow, use the median of the rest
+    create a dictionary of the puslar spin/red noise values 
+    when the value is unknow, use the minium for the amplitude
+    and the median for the slope
     """
     ASNs, gSNs = {}, {}
     As, gs = [], []
@@ -85,14 +91,19 @@ def makeSNDict():
         # next line 
         line = f.readline().split()
    
-    # get median values
-    As,gs = np.atleast_1d(As), np.atleast_1d(gs)
-    medianA = np.median(As)
+    # get minimum value for A
+    As = np.atleast_1d(As)
+    minimumA = min(As)
+
+    # get median for gamma
+    gs = np.atleast_1d(gs)
     mediang = np.median(gs)
 
+    # set the default (minimum or median) values for psrs with no 
+    # measured noise
     for psr in ASNs.keys():
         if ASNs[psr]==None:
-            ASNs[psr] = medianA
+            ASNs[psr] = minimumA
         else: pass
         
         if gSNs[psr]==None:
@@ -125,13 +136,14 @@ def makeJitterDict():
         # next line
         line = f.readline().split()
     
+    # get the minimum jitter value
     j = np.atleast_1d(j)
-    medianj = np.median(j)
+    minimumj = min(j)
     
-    # put the median value in where the value is unknown
+    # use the minimum value where the jitter is unknown
     for psr in jitters.keys():
         if jitters[psr]==None:
-            jitters[psr] = medianj
+            jitters[psr] = minimumj
         else: pass
         
     return jitters
