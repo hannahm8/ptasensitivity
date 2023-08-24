@@ -8,6 +8,14 @@ sys.path.append('/home/ADF/middlehr/repositories/ptasensitivity/snr/')
 import snrFunctions
 import readInData
 
+
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.serif": "Helvetica",
+    "font.size":18,
+})
+
 def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
                         redAs,redGammas,dmAs,dmGammas, \
                         jitters,label,linestyle='solid'): 
@@ -47,17 +55,23 @@ def plotSNRVTimeCompare(psrNames,psrObsConstants,hdValues,psrTimes,\
                                        A,alpha,beta,fref,T10Yr,c)
     print("\nSNR at 10 years: {} \n".format(snr10Year))
     plt.plot(T,snr,label=label,ls=linestyle)
+    
+    #write the results out as we may want them later for plotting
+    results = open('{}_snrVtime.dat'.format(label),'w')
+    for Ti, snri in zip(T,snr):
+        results.write('{}\t{}\n'.format(Ti,snri))
+    results.close()
     return None
 
 
-def obsTime(psrNames,psrObsTimes,label,marker='.'):
+def obsTime(psrNames,psrObsTimes,label,colour,marker='.'):
     
     # move from dict to list
     obsTimes = np.zeros(len(psrNames))
     for i,psr in enumerate(psrNames):
         obsTimes[i] = psrObsTimes[psr]
     print(len(obsTimes),len(psrNames))
-    plt.scatter(obsTimes,psrNames,label=label,marker=marker)
+    plt.scatter(obsTimes,psrNames,label=label,marker=marker,color=colour)
     return None
   
 
@@ -197,6 +211,7 @@ if shuffleFile2!='None' and shuffleFile3!='None':
     label = [originalLabel,shuffleLabel1,shuffleLabel2,shuffleLabel3]
     linestyles = ['solid','dotted','dashed','dashdot']
     markers = ['o','x','+','*']
+    colours = '#0072B2', '#E69F00', '#009E73', '#D55E00'
      
     for psrTime,runLabel,ls in zip(times,label,linestyles):
 
@@ -225,11 +240,12 @@ if shuffleFile2!='None' and shuffleFile3!='None':
     for i,psrNamesHalf in enumerate([psrNamesFirstHalf,psrNamesSecondHalf]):
       plt.clf()
       plt.figure(figsize=(5,10))
-      for psrTime,runLabel,mark in zip(times,label,markers):
-        obsTime(psrNamesHalf,psrTime,runLabel,marker=mark)
+      for psrTime,runLabel,mark,col in zip(times,label,markers,colours):
+        obsTime(psrNamesHalf,psrTime,runLabel,col,marker=mark)
       plt.legend()
       plt.xlabel('Integration time (s)')
       plt.tight_layout()
+      plt.xlim(0,2590)
       plt.savefig('{}/timeComparison-{}.pdf'.format(outputDir,i))
       plt.savefig('{}/timeComparison-{}.png'.format(outputDir,i))
       plt.show()

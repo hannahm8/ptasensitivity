@@ -8,6 +8,12 @@ import sys
 sys.path.append('/home/hannahm/repositories/ptasensitivity/snr/')
 sys.path.append('/fred/oz005/users/hmiddlet/ptasensitivity/snr/')
 
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.serif": "Helvetica",
+    "font.size":18,
+})
 
 
 
@@ -108,13 +114,13 @@ shuffleTobs = np.genfromtxt(shuffleFile,usecols=1)
 nPSRs = len(data['RA'])
 
 # size depends on how much time shifted
-timeDiff = (shuffleTobs - startTobs)/10
+timeDiff = (shuffleTobs - startTobs)/5
 
 # set up for plot colours
 c = []
 for i in range(nPSRs):
-    if timeDiff[i]>=0: c.append('#F5793A')
-    elif timeDiff[i]<0: c.append('#85C8F9')
+    if timeDiff[i]>=0: c.append('#EDA247')    #F5793A')
+    elif timeDiff[i]<0: c.append('#57C4AD')  #85C8F9')
 
 
 
@@ -140,7 +146,7 @@ raGC = GC.icrs.ra.value *np.pi/180 + shiftTo18h
 decGC = GC.icrs.dec.value  *np.pi/180
 if raGC > np.pi:
     raGC = raGC - 2*np.pi
-plt.scatter(-raGC, decGC, color='yellow', s=200, marker='*')
+plt.scatter(-raGC, decGC, color='yellow', s=300, marker='*')
 
 for i,ra in enumerate(ras):
     if ra > np.pi:
@@ -159,8 +165,9 @@ plt.scatter(testRA,testDec,color='r',marker='x')
 galacticPlane(shiftTo18h)
 
 # plot all pulsar positions
-plt.scatter(-ras, decs, color='k',marker='x',alpha=0.5)
+
 plt.scatter(-ras, decs, s=abs(timeDiff), alpha=0.9,color=c)
+plt.scatter(-ras, decs, color='k',marker='x',alpha=0.5)
 
 ax.set_xticklabels(['4h','2h','0h','22h','20h','18h','16h','14h','12h','10h','8h'])
 
