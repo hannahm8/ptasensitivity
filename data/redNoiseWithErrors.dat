@@ -1,8 +1,8 @@
 ## RED NOISE VALUES
-# [1] PPTA DR3 Noise Paper
-# [2] NANOGrav 15 year
-# [3] EPTA new
-# [4] Miles MPTA release 2022
+# [1] PPTA. Reardon et al., (2023), ApJ: 10.3847/2041-8213/acdd03, arXiv: 10.48550/arXiv.2306.16229
+# [2] NANOGrav. Agazie et al., (2023), ApJ: 10.3847/2041-8213/acda88, MNRAS: 10.48550/arXiv.2306.16218
+# [3]: EPTA + InPTA. Antoniadis et al., (2023), A&A: 10.1051/0004-6361/202346842, arXiv: 10.48550/arXiv.2306.16225 
+# [4] Miles et al., (2023), MNRAS: 10.1093/mnras/stac3644, arXiv: 10.48550/arXiv.2212.04648 
 # Order is [4] first, then which ever PTA has lowest Arn
 PSR         Arn     Arn_L   Arn_H   gamma   gamma_L gamma_H     Ref
 J0030+0451  -16.3   -2.5    2.5     3.4     -2.3    2.4         [1]
