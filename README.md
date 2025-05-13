@@ -1,7 +1,5 @@
 # ptasensitivity
 
-## Notes
-
 This repository accompanies the paper:
 
 > A simple optimisation for the MeerKAT Pulsar Timing Array
@@ -10,8 +8,11 @@ This repository accompanies the paper:
 >
 > arXiv: [2505.02524](https://arxiv.org/abs/2505.02524)
 > 
-> MNRAS: 
+> Accepted in MNRAS: [doi.org/10.1093/mnras/staf748](https://doi.org/10.1093/mnras/staf748)
 
+## About this work 
+
+We investigate whether small changes to a pulsar timing array observing schedule can provide gains in signal-to-noise ratio (S/N) for a stochastic gravitational wave background signal from a populsation of massive black hole binaries. We use the MeerKat Pulsar Timing Array (MPTA) as a test. The approach uses a greedly algorithm to reallocated available integration time between pulsars in the array. The overall observing time dedicated to the MPTA is kept constant so that there is only minimal disruption to the existing observation strategy. We make several assumptions on the gravitational wave signal and the pulsar noise properties to demonstrate our method. See the paper (linked above) for full details. 
 
 For more information about the MeerKAT Pulsar Timing Array (MPTA) visit [mpta-gw.github.io/](https://mpta-gw.github.io/)
 
