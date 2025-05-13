@@ -5,8 +5,12 @@
 This repository accompanies the paper:
 
 > A simple optimisation for the MeerKAT Pulsar Timing Array
+>
 > [Hannah Middleton](https://orcid.org/0000-0001-5532-3622), [Ryan M. Shannon](https://orcid.org/0000-0002-7285-6348), [Matthew Bailes](https://orcid.org/0000-0003-3294-3081), [Andrew D. Cameron](https://orcid.org/0000-0002-2037-4216), [Alessandro Corongiu](https://orcid.org/0000-0002-5924-3141), [Marisa Geyer](https://orcid.org/0000-0002-2822-1919), [Max Jones](https://orcid.org/0009-0005-9124-1348), [Michael Kramer](https://orcid.org/0000-0002-4175-2271), [Matthew T. Miles](https://orcid.org/0000-0002-5455-3474), [Aditya Parthasarathy](https://orcid.org/0000-0002-4140-5616), [Andrea Possenti](https://orcid.org/0000-0001-5902-3731), [Daniel J. Reardon](https://orcid.org/0000-0002-2035-4688).
-> [add link when available]
+>
+> arXiv: [2505.02524](https://arxiv.org/abs/2505.02524)
+> 
+> MNRAS: 
 
 
 For more information about the MeerKAT Pulsar Timing Array (MPTA) visit [mpta-gw.github.io/](https://mpta-gw.github.io/)
