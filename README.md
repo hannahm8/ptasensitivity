@@ -23,6 +23,7 @@ Where to find material:
  - `snr` scripts for the time-swap analysis 
  - `plotting` scripts used to make plots
  - `paper` material used for the paper including the manuscript and results of the time-swap runs
+ - `otherInvestigations` includes a separate investigation used in [Miles et al. (2021)](https://doi.org/10.1093/mnras/stab3549)
 
 
 ## Acknowledgements
